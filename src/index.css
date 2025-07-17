@@ -1,0 +1,214 @@
+@import "tailwindcss";
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Battambang:wght@100;300;400;700;900&display=swap');
+
+/* Default font settings */
+body {
+  font-family: 'Battambang', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Apply Battambang to common text elements */
+p, span, div, li, a, button, input, textarea, select, label {
+  font-family: 'Battambang', 'Inter', sans-serif;
+}
+
+/* Keep Khmer OS Muol Light for specific titles */
+.khmer-title {
+  font-family: 'Khmer OS Muol Light', serif;
+}
+
+/* Custom toggle checkbox styles */
+.toggle-checkbox {
+  appearance: none;
+  width: 3rem;
+  height: 1.5rem;
+  background-color: #e5e7eb;
+  border-radius: 9999px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.toggle-checkbox:checked {
+  background-color: #3b82f6;
+}
+
+.toggle-checkbox::before {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 1.25rem;
+  height: 1.25rem;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.toggle-checkbox:checked::before {
+  transform: translateX(1.5rem);
+}
+
+/* Custom animations for typing indicators */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes typing-pulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(0.8);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.3s ease-out;
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.4s ease-out;
+}
+
+.animate-typing-pulse {
+  animation: typing-pulse 1.4s ease-in-out infinite;
+}
+
+/* Mobile-specific improvements */
+@media (max-width: 768px) {
+  /* Improve touch targets */
+  button, 
+  a[role="button"],
+  .clickable {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Better scrolling on mobile */
+  body {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Prevent horizontal scroll */
+  body, html {
+    overflow-x: hidden;
+  }
+  
+  /* Better form inputs on mobile */
+  input, 
+  textarea, 
+  select {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+  
+  /* Mobile navigation improvements */
+  .mobile-nav-item {
+    padding: 12px 16px;
+    border-radius: 8px;
+  }
+  
+  /* Better spacing for mobile cards */
+  .mobile-card {
+    margin: 0 -4px;
+    border-radius: 12px;
+  }
+}
+
+/* Extra small mobile devices */
+@media (max-width: 400px) {
+  .xs\:hidden {
+    display: none !important;
+  }
+  
+  .xs\:flex {
+    display: flex !important;
+  }
+  
+  .xs\:text-xs {
+    font-size: 0.75rem !important;
+    line-height: 1rem !important;
+  }
+  
+  /* Even more compact spacing for very small screens */
+  .xs\:space-x-1 > :not([hidden]) ~ :not([hidden]) {
+    margin-left: 0.25rem !important;
+  }
+  
+  .xs\:px-1 {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+  }
+}
+
+/* Mobile header optimizations */
+@media (max-width: 640px) {
+  /* Compact header spacing */
+  .mobile-header-compact {
+    padding: 0.5rem 0.75rem;
+  }
+  
+  /* Better mobile typography */
+  .mobile-title {
+    font-size: 1.125rem;
+    line-height: 1.25;
+  }
+  
+  .mobile-subtitle {
+    font-size: 0.875rem;
+    line-height: 1.25;
+  }
+  
+  .mobile-description {
+    font-size: 0.75rem;
+    line-height: 1.25;
+  }
+  
+  /* Mobile button optimizations */
+  .mobile-btn {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+  }
+  
+  /* Responsive flag images */
+  .mobile-flag {
+    width: 0.75rem;
+    height: 0.5rem;
+  }
+}
+
+/* Ultra compact for very small screens */
+@media (max-width: 360px) {
+  .ultra-compact {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .ultra-compact-spacing > :not([hidden]) ~ :not([hidden]) {
+    margin-left: 0.125rem;
+  }
+}
+

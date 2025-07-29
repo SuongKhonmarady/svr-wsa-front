@@ -1,3 +1,6 @@
+import React from 'react';
+import { Link } from 'react-router-dom'; // Import Link
+
 function NewsList() {
   const newsData = [
     {
@@ -20,7 +23,7 @@ function NewsList() {
       category: "បច្ចេកវិទ្យា",
       author: "លោកស្រី ចាន់ សុភា",
       image: "https://images.unsplash.com/photo-1559827260-dc66d52bef19?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
-      featured: false
+      featured: true
     },
     {
       id: 3,
@@ -30,7 +33,7 @@ function NewsList() {
       date: "២៨ មករា ២០២៥",
       category: "សហគមន៍",
       author: "លោក វុទ្ធី ចន្ទ្រា",
-      image: "https://images.unsplash.com/photo-1594736797933-d0e501ba2fe8?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       featured: false
     },
     {
@@ -41,7 +44,7 @@ function NewsList() {
       date: "២៥ មករា ២០២៥",
       category: "គុណភាព",
       author: "លោកស្រី ពេជ្រ ស្រីមុំ",
-      image: "https://images.unsplash.com/photo-1559493748-11b98480cc4e?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
+      image: "https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       featured: false
     },
     {
@@ -66,9 +69,9 @@ function NewsList() {
       image: "https://images.unsplash.com/photo-1450101499163-c8848c66ca85?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80",
       featured: false
     }
-  ]
+  ];
 
-  const categories = ["ទាំងអស់", "ការអភិវឌ្ឍន៍", "បច្ចេកវិទ្យា", "សហគមន៍", "គុណភាព", "ការបណ្តុះបណ្តាល", "អាជីវកម្ម"]
+  const categories = ["ទាំងអស់", "ការអភិវឌ្ឍន៍", "បច្ចេកវិទ្យា", "សហគមន៍", "គុណភាព", "ការបណ្តុះបណ្តាល", "អាជីវកម្ម"];
 
   return (
     <div className="py-16 bg-gray-50">
@@ -79,11 +82,11 @@ function NewsList() {
             ព័ត៌មានសំខាន់
           </h2>
           {newsData.filter(news => news.featured).map((news) => (
-            <div key={news.id} className="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <div key={news.id} className="bg-white rounded-2xl shadow-xl overflow-hidden gap_8 mb-12">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
                 <div className="relative h-64 lg:h-auto">
-                  <img 
-                    src={news.image} 
+                  <img
+                    src={news.image}
                     alt={news.title}
                     className="w-full h-full object-cover"
                   />
@@ -103,16 +106,20 @@ function NewsList() {
                   <p className="text-gray-600 mb-6 text-lg leading-relaxed">
                     {news.excerpt}
                   </p>
-                  <button className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium">
+                  {/* Changed button to Link */}
+                  <Link
+                    to={`/news/${news.id}`}
+                    className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium inline-block"
+                  >
                     អានបន្ថែម
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
           ))}
         </div>
 
-        {/* Category Filter */}
+        {/* Category Filter - No changes needed here for now */}
         <div className="flex flex-wrap gap-3 mb-12">
           {categories.map((category) => (
             <button
@@ -133,8 +140,8 @@ function NewsList() {
             {newsData.filter(news => !news.featured).map((news) => (
               <article key={news.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
                 <div className="relative">
-                  <img 
-                    src={news.image} 
+                  <img
+                    src={news.image}
                     alt={news.title}
                     className="w-full h-48 object-cover"
                   />
@@ -144,30 +151,34 @@ function NewsList() {
                     </span>
                   </div>
                 </div>
-                
+
                 <div className="p-6">
                   <div className="text-sm text-gray-500 mb-3">
                     {news.date} • {news.author}
                   </div>
-                  
+
                   <h3 className="text-xl font-bold text-gray-900 mb-3 leading-tight">
                     {news.title}
                   </h3>
-                  
+
                   <p className="text-gray-600 mb-4 leading-relaxed">
                     {news.excerpt}
                   </p>
-                  
-                  <button className="text-blue-600 font-medium hover:text-blue-700 transition-colors duration-200">
+
+                  {/* Changed button to Link */}
+                  <Link
+                    to={`/news/${news.id}`}
+                    className="text-blue-600 font-medium hover:text-blue-700 transition-colors duration-200"
+                  >
                     អានបន្ថែម →
-                  </button>
+                  </Link>
                 </div>
               </article>
             ))}
           </div>
         </div>
 
-        {/* Load More */}
+        {/* Load More - No changes needed here for now */}
         <div className="text-center mt-12">
           <button className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium">
             មើលព័ត៌មានបន្ថែម
@@ -175,7 +186,7 @@ function NewsList() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default NewsList
+export default NewsList;

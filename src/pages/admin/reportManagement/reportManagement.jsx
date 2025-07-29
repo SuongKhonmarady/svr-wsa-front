@@ -4,190 +4,302 @@ import AdminLayout from '../components/AdminLayout'
 import apiService from '../../../services/api'
 
 function ReportManagement() {
-    const navigate = useNavigate()
-    const location = useLocation()
-    const [reports, setReports] = useState([])
-    const [loading, setLoading] = useState(true)
-    const [error, setError] = useState('')
-    const [success, setSuccess] = useState('')
-    const [statistics, setStatistics] = useState({
-        totalReports: 0,
-        publishedReports: 0,
-        draftReports: 0,
-        completionRate: 0
-    })
+    const navigate = useNavigate();
+    const location = useLocation();
+    const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+    const [years, setYears] = useState([]);
+    const [months, setMonths] = useState([]);
+    const [monthlyReports, setMonthlyReports] = useState([]);
+    const [allReports, setAllReports] = useState([])
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
+    const [initialLoading, setInitialLoading] = useState(true);
 
-    // Check for success message from navigation state
-    useEffect(() => {
-        if (location.state?.message) {
-            setSuccess(location.state.message)
-            // Clear the state to prevent showing message on refresh
-            window.history.replaceState({}, document.title)
-        }
-    }, [location.state])
+    // Khmer month names mapping (optional, for admin you can use English)
+    const monthNames = {
+        'January': 'មករា',
+        'February': 'កុម្ភៈ',
+        'March': 'មីនា',
+        'April': 'មេសា',
+        'May': 'ឧសភា',
+        'June': 'មិថុនា',
+        'July': 'កក្កដា',
+        'August': 'សីហា',
+        'September': 'កញ្ញា',
+        'October': 'តុលា',
+        'November': 'វិច្ឆិកា',
+        'December': 'ធ្នូ'
+    };
 
-    // Load reports on component mount
-    useEffect(() => {
-        loadReports()
-    }, [])
-
-    // Load all reports
-    const loadReports = async () => {
+    // Fetch months and years
+    const fetchMonths = async () => {
         try {
-            setLoading(true)
-            setError('')
+            const result = await apiService.getReportMonths()
+            
+            console.log('Months API Response:', result)
+            
+            if (result.error) {
+                console.error('Error fetching months:', result.error)
+                return []
+            }
 
-            const result = await apiService.getMonthlyReports()
+            // Handle different response structures
+            let monthsData = []
+            if (Array.isArray(result.data)) {
+                monthsData = result.data
+            } else if (result.data && result.data.data && Array.isArray(result.data.data)) {
+                monthsData = result.data.data
+            } else {
+                console.error('Unexpected months response format:', result)
+                return []
+            }
 
+            // Transform API data to include Khmer names
+            const transformedMonths = monthsData.map(month => ({
+                id: month.id,
+                name:month.month,
+                nameEn: month.month,
+                created_at: month.created_at,
+                updated_at: month.updated_at
+            }))
+
+            console.log('Transformed months:', transformedMonths)
+            return transformedMonths
+        } catch (error) {
+            console.error('Error fetching months:', error)
+            return []
+        }
+    };
+
+    const fetchYears = async () => {
+        try {
+            const result = await apiService.getReportYears();
+            let yearsData = [];
+            if (Array.isArray(result.data)) {
+                yearsData = result.data;
+            } else if (result.data && Array.isArray(result.data.data)) {
+                yearsData = result.data.data;
+            }
+            return yearsData.sort((a, b) => b.year_value - a.year_value);
+        } catch (error) {
+            return [];
+        }
+    };
+
+    // Fetch all monthly reports for selected year
+    const fetchMonthlyReports = async (year = selectedYear) => {
+        setLoading(true)
+        setError('')
+        
+        try {
+            const result = await apiService.getMonthlyReportsByYear(year)
+            
+            console.log('Monthly Reports API Response:', result)
+            
             if (result.error) {
                 setError(result.error)
-                setReports([])
-                setStatistics({
-                    totalReports: 0,
-                    publishedReports: 0,
-                    draftReports: 0,
-                    completionRate: 0
-                })
                 return
             }
 
-
-            // Handle paginated API response: { data: { data: [...] } }
-            let reportsData = []
-            if (Array.isArray(result.data)) {
-                reportsData = result.data
-            } else if (result.data && Array.isArray(result.data.data)) {
-                reportsData = result.data.data
-            } else if (result.data && Array.isArray(result.data.reports)) {
-                reportsData = result.data.reports
-            } else {
-                reportsData = []
+            // Validate the response structure
+            if (!result.data) {
+                setError('Invalid response format from server')
+                return
             }
 
-            setReports(reportsData)
+            // Handle different response structures
+            let reports = []
+            if (Array.isArray(result.data)) {
+                reports = result.data
+            } else if (result.data.data && Array.isArray(result.data.data)) {
+                reports = result.data.data
+            } else {
+                console.error('Unexpected response format:', result)
+                setError('Unexpected response format from server')
+                return
+            }
 
-            // Calculate statistics
-            const totalReports = reportsData.length
-            const publishedReports = reportsData.filter(r => r.status === 'published').length
-            const draftReports = reportsData.filter(r => r.status === 'draft').length
-            const completionRate = totalReports > 0 ? Math.round((publishedReports / totalReports) * 100) : 0
-
-            setStatistics({
-                totalReports,
-                publishedReports,
-                draftReports,
-                completionRate
+            // Validate each report object
+            const validReports = reports.filter(report => {
+                return report && typeof report === 'object' && 
+                       report.id && report.month_id && 
+                       (report.year_id || report.report_date)
             })
 
+            console.log('Valid reports:', validReports)
+            setAllReports(validReports)
+            
+            if (validReports.length === 0 && reports.length > 0) {
+                setError('No valid reports found in the response')
+            }
+            
         } catch (err) {
-            console.error('Error loading reports:', err)
-            setError('Failed to load reports. Please try again.')
-            setReports([])
-            setStatistics({
-                totalReports: 0,
-                publishedReports: 0,
-                draftReports: 0,
-                completionRate: 0
-            })
+            console.error('Error fetching monthly reports:', err)
+            setError('មិនអាចទាញយកទិន្នន័យបាន។ សូមព្យាយាមម្តងទៀត។')
         } finally {
             setLoading(false)
         }
     }
 
-    // Delete report with confirmation
+    const processReportsForYear = (year) => {
+        // Since we're fetching reports by year, allReports already contains only reports for the selected year
+        const yearReports = allReports
+
+        // Create monthly structure
+        const monthlyData = months.map(month => {
+            const monthReport = yearReports.find(report => report.month_id === month.id)
+            
+            if (monthReport) {
+                return {
+                    id: monthReport.id,
+                    month: month.id,
+                    monthName: month.name,
+                    monthNameEn: month.nameEn,
+                    year: year,
+                    yearId: monthReport.year_id,
+                    title: monthReport.title,
+                    description: monthReport.description,
+                    status: monthReport.status,
+                    reportUrl: monthReport.file_url,
+                    fileName: monthReport.file_name,
+                    fileSize: monthReport.file_size,
+                    reportDate: monthReport.report_date,
+                    publishedDate: monthReport.published_at,
+                    createdBy: monthReport.created_by,
+                    createdAt: monthReport.created_at,
+                    updatedAt: monthReport.updated_at,
+                    // Additional data from nested objects
+                    yearData: monthReport.year,
+                    monthData: monthReport.month,
+                    isAvailable: monthReport.status === 'published'
+                }
+            } else {
+                return {
+                    id: `${year}-${month.id}`,
+                    month: month.id,
+                    monthName: month.name,
+                    monthNameEn: month.nameEn,
+                    year: year,
+                    yearId: null,
+                    title: null,
+                    description: null,
+                    status: 'unavailable',
+                    reportUrl: null,
+                    fileName: null,
+                    fileSize: null,
+                    reportDate: null,
+                    publishedDate: null,
+                    createdBy: null,
+                    createdAt: null,
+                    updatedAt: null,
+                    yearData: null,
+                    monthData: null,
+                    isAvailable: false
+                }
+            }
+        })
+
+        setMonthlyReports(monthlyData)
+    }
+
+    // Initialize months, years, and reports
+    const initializeData = async () => {
+        setInitialLoading(true);
+        setError('');
+        try {
+            const [monthsData, yearsData] = await Promise.all([
+                fetchMonths(),
+                fetchYears()
+            ]);
+            setMonths(monthsData);
+            setYears(yearsData);
+            if (yearsData.length > 0) {
+                setSelectedYear(yearsData[0].year_value);
+                await fetchMonthlyReports(yearsData[0].year_value);
+            }
+        } catch (error) {
+            setError('Failed to initialize data.');
+        } finally {
+            setInitialLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        initializeData();
+    }, []);
+
+    useEffect(() => {
+        if (!initialLoading && selectedYear) {
+            fetchMonthlyReports(selectedYear);
+        }
+    }, [selectedYear]);
+    
+    useEffect(() => {
+        if (allReports.length >= 0 && months.length > 0) {
+            processReportsForYear(selectedYear)
+        }
+    }, [allReports, months, selectedYear])
+
+    // Delete report
     const handleDeleteReport = async (id) => {
         if (window.confirm('Are you sure you want to delete this report? This action cannot be undone.')) {
             try {
-                const result = await apiService.deleteMonthlyReport(id)
-                
+                const result = await apiService.deleteMonthlyReport(id);
                 if (result.error) {
-                    setError(result.error)
-                    return
+                    setError(result.error);
+                    return;
                 }
-                
-                // Remove from local state
-                setReports(prev => prev.filter(r => r.id !== id))
-                setSuccess('Report deleted successfully')
-                
-                // Recalculate statistics
-                const updatedReports = reports.filter(r => r.id !== id)
-                const totalReports = updatedReports.length
-                const publishedReports = updatedReports.filter(r => r.status === 'published').length
-                const draftReports = updatedReports.filter(r => r.status === 'draft').length
-                const completionRate = Math.round((publishedReports / totalReports) * 100) || 0
-
-                setStatistics({
-                    totalReports,
-                    publishedReports,
-                    draftReports,
-                    completionRate
-                })
-                
+                setMonthlyReports(prev => prev.filter(r => r.id !== id));
+                setSuccess('Report deleted successfully');
             } catch (err) {
-                console.error('Error deleting report:', err)
-                setError('Failed to delete report')
+                setError('Failed to delete report');
             }
         }
-    }
+    };
 
-    // Publish/Unpublish report
+    // Toggle report status
     const handleToggleStatus = async (id, currentStatus) => {
         try {
-            const newStatus = currentStatus === 'published' ? 'draft' : 'published'
-            
-            let result
+            const newStatus = currentStatus === 'published' ? 'draft' : 'published';
+            let result;
             if (newStatus === 'published') {
-                result = await apiService.publishMonthlyReport(id)
+                result = await apiService.publishMonthlyReport(id);
             } else {
-                result = await apiService.unpublishMonthlyReport(id)
+                result = await apiService.unpublishMonthlyReport(id);
             }
-            
             if (result.error) {
-                setError(result.error)
-                return
+                setError(result.error);
+                return;
             }
-            
-            // Update local state
-            setReports(prev => prev.map(r => 
+            setMonthlyReports(prev => prev.map(r =>
                 r.id === id ? { ...r, status: newStatus } : r
-            ))
-            
-            setSuccess(`Report ${newStatus === 'published' ? 'published' : 'unpublished'} successfully`)
-            
+            ));
+            setSuccess(`Report ${newStatus === 'published' ? 'published' : 'unpublished'} successfully`);
         } catch (err) {
-            console.error('Error toggling report status:', err)
-            setError('Failed to update report status')
+            setError('Failed to update report status');
         }
-    }
+    };
 
     // Format file size
     const formatFileSize = (bytes) => {
-        if (bytes === 0) return '0 Bytes'
-        const k = 1024
-        const sizes = ['Bytes', 'KB', 'MB', 'GB']
-        const i = Math.floor(Math.log(bytes) / Math.log(k))
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-    }
+        if (!bytes || bytes <= 0) return '0 Bytes';
+        const k = 1024;
+        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+    };
 
-    // Get month name
-    const getMonthName = (monthNumber) => {
-        const months = [
-            'January', 'February', 'March', 'April', 'May', 'June',
-            'July', 'August', 'September', 'October', 'November', 'December'
-        ]
-        return months[monthNumber - 1] || 'Unknown'
-    }
-
-    // Auto-hide success/error messages after 5 seconds
+    // Auto-hide messages
     useEffect(() => {
         if (success || error) {
             const timer = setTimeout(() => {
-                setSuccess('')
-                setError('')
-            }, 5000)
-            return () => clearTimeout(timer)
+                setSuccess('');
+                setError('');
+            }, 5000);
+            return () => clearTimeout(timer);
         }
-    }, [success, error])
+    }, [success, error]);
 
     return (
         <AdminLayout>
@@ -195,12 +307,8 @@ function ReportManagement() {
                 {/* Header */}
                 <div className="flex items-center justify-between">
                     <div>
-                        <h1 className="text-3xl font-bold text-gray-900">
-                            📊 Reports Management
-                        </h1>
-                        <p className="text-gray-600 mt-2">
-                            Manage monthly and yearly reports with PDF uploads
-                        </p>
+                        <h1 className="text-3xl font-bold text-gray-900">📊 Reports Management</h1>
+                        <p className="text-gray-600 mt-2">Manage monthly and yearly reports with PDF uploads</p>
                     </div>
                     <div className="flex space-x-3">
                         <Link
@@ -209,116 +317,73 @@ function ReportManagement() {
                         >
                             📄 Create New Report
                         </Link>
-                        <Link
-                            to="/admin/reports/monthly-years"
-                            className="px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors duration-200"
-                        >
-                            📅 Monthly Reports
-                        </Link>
                     </div>
                 </div>
 
-                {/* Statistics Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-                    <div className="bg-white rounded-lg shadow-lg p-6">
-                        <div className="flex items-center">
-                            <div className="bg-blue-100 rounded-lg p-3">
-                                <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                {/* Years List */}
+                <div className="bg-white rounded-xl shadow-lg p-6 mb-8 border border-gray-100">
+                    <div className="mb-6">
+                        <h2 className="text-2xl font-bold text-gray-900 mb-2">Yearly Reports</h2>
+                        <p className="text-sm text-gray-600">Select a year to view all monthly reports</p>
+                    </div>
+                    {years.length > 0 ? (
+                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                            {years.map(year => (
+                                <button
+                                    key={year.id}
+                                    onClick={() => setSelectedYear(year.year_value)}
+                                    className={`p-4 rounded-lg border-2 transition-all duration-200 font-medium ${selectedYear === year.year_value ? 'border-blue-500 bg-blue-50 text-blue-700 shadow-md' : 'border-gray-300 bg-white text-gray-700 hover:border-blue-400 hover:bg-blue-50 hover:text-blue-600 shadow-sm hover:shadow-md'}`}
+                                    disabled={loading}
+                                >
+                                    <div className="text-center">
+                                        <div className="text-xl font-bold mb-1">{year.year_value}</div>
+                                        <div className="text-xs text-gray-500">Year</div>
+                                    </div>
+                                </button>
+                            ))}
+                        </div>
+                    ) : (
+                        <div className="text-center py-8">
+                            <div className="text-gray-400 mb-3">
+                                <svg className="w-12 h-12 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M8 7V3a2 2 0 012-2h4a2 2 0 012 2v4M8 7H6a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V9a2 2 0 00-2-2h-2M8 7v5a2 2 0 002 2h4a2 2 0 002-2V7" />
                                 </svg>
                             </div>
-                            <div className="ml-4">
-                                <p className="text-sm text-gray-600">Total Reports</p>
-                                <p className="text-2xl font-bold text-gray-900">{statistics.totalReports}</p>
-                            </div>
+                            <p className="text-gray-500">No year data</p>
                         </div>
-                    </div>
-                    
-                    <div className="bg-white rounded-lg shadow-lg p-6">
-                        <div className="flex items-center">
-                            <div className="bg-green-100 rounded-lg p-3">
-                                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                            <div className="ml-4">
-                                <p className="text-sm text-gray-600">Published</p>
-                                <p className="text-2xl font-bold text-gray-900">{statistics.publishedReports}</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div className="bg-white rounded-lg shadow-lg p-6">
-                        <div className="flex items-center">
-                            <div className="bg-orange-100 rounded-lg p-3">
-                                <svg className="w-6 h-6 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                            </div>
-                            <div className="ml-4">
-                                <p className="text-sm text-gray-600">Draft</p>
-                                <p className="text-2xl font-bold text-gray-900">{statistics.draftReports}</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div className="bg-white rounded-lg shadow-lg p-6">
-                        <div className="flex items-center">
-                            <div className="bg-purple-100 rounded-lg p-3">
-                                <svg className="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
-                                </svg>
-                            </div>
-                            <div className="ml-4">
-                                <p className="text-sm text-gray-600">Completion Rate</p>
-                                <p className="text-2xl font-bold text-gray-900">{statistics.completionRate}%</p>
-                            </div>
-                        </div>
-                    </div>
+                    )}
                 </div>
 
                 {/* Alerts */}
-                {error && (
-                    <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+                {(error || success) && (
+                    <div className={`p-4 rounded-lg border ${error ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'}`}>
                         <div className="flex items-center">
-                            <svg className="w-5 h-5 text-red-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            <svg className={`w-5 h-5 mr-3 ${error ? 'text-red-600' : 'text-green-600'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={error ? 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' : 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z'} />
                             </svg>
-                            <p className="text-red-800">{error}</p>
-                        </div>
-                    </div>
-                )}
-
-                {success && (
-                    <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                        <div className="flex items-center">
-                            <svg className="w-5 h-5 text-green-600 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            <p className="text-green-800">{success}</p>
+                            <p className={error ? 'text-red-800' : 'text-green-800'}>{error || success}</p>
                         </div>
                     </div>
                 )}
 
                 {/* Loading State */}
-                {loading && (
+                {(loading || initialLoading) && (
                     <div className="flex justify-center items-center py-12">
                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                        <p className="ml-4 text-gray-600">Loading reports...</p>
+                        <p className="ml-4 text-gray-600">{initialLoading ? 'Loading data...' : 'Updating...'}</p>
                     </div>
                 )}
 
                 {/* Reports List */}
-                {!loading && (
+                {!loading && !initialLoading && (
                     <div className="bg-white rounded-lg shadow-lg p-6">
-                        <h2 className="text-xl font-bold text-gray-900 mb-6">All Reports</h2>
-                        
-                        {reports.length === 0 ? (
+                        <h2 className="text-xl font-bold text-gray-900 mb-6">Monthly Reports for {selectedYear}</h2>
+                        {monthlyReports.length === 0 ? (
                             <div className="text-center py-12">
                                 <svg className="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>
-                                <p className="text-gray-500">No reports found</p>
+                                <p className="text-gray-500">No reports found for {selectedYear}</p>
                                 <Link
                                     to="/admin/reports/create"
                                     className="mt-4 inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
@@ -328,42 +393,37 @@ function ReportManagement() {
                             </div>
                         ) : (
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {reports.map(report => (
+                                {monthlyReports.map(report => (
                                     <div key={report.id} className="border border-gray-200 rounded-lg p-4 hover:shadow-md transition-shadow duration-200">
                                         <div className="flex items-center justify-between mb-3">
-                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                                                report.status === 'published' 
-                                                    ? 'bg-green-100 text-green-800' 
+                                            <span className={`px-2 py-1 rounded-full text-xs font-medium ${report.status === 'published'
+                                                    ? 'bg-green-100 text-green-800'
                                                     : 'bg-orange-100 text-orange-800'
-                                            }`}>
+                                                }`}>
                                                 {report.status}
                                             </span>
                                             <span className="text-sm text-gray-500">
-                                                {report.year} - {getMonthName(report.month)}
+                                                {report.year?.year_value || report.year_id || selectedYear} - {report.month?.month || monthNames[report.month_id - 1] || report.month_id}
                                             </span>
                                         </div>
-                                        
                                         <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2">
                                             {report.title}
                                         </h3>
-                                        
                                         {report.description && (
                                             <p className="text-sm text-gray-600 mb-3 line-clamp-2">
                                                 {report.description}
                                             </p>
                                         )}
-                                        
                                         {report.file_url && (
                                             <div className="mb-3 p-2 bg-gray-50 rounded text-sm">
-                                                <span className="text-gray-600">📁 File attached</span>
-                                                {report.file_size && (
+                                                <span className="text-gray-600">📁 {report.file_name}</span>
+                                                {report.file_size > 0 && (
                                                     <span className="text-gray-500 ml-2">
                                                         ({formatFileSize(report.file_size)})
                                                     </span>
                                                 )}
                                             </div>
                                         )}
-                                        
                                         <div className="flex space-x-2">
                                             <Link
                                                 to={`/admin/reports/edit/monthly/${report.id}`}
@@ -373,11 +433,10 @@ function ReportManagement() {
                                             </Link>
                                             <button
                                                 onClick={() => handleToggleStatus(report.id, report.status)}
-                                                className={`flex-1 px-3 py-2 text-sm rounded-lg text-center transition-colors duration-200 ${
-                                                    report.status === 'published'
+                                                className={`flex-1 px-3 py-2 text-sm rounded-lg text-center transition-colors duration-200 ${report.status === 'published'
                                                         ? 'bg-orange-600 hover:bg-orange-700 text-white'
                                                         : 'bg-green-600 hover:bg-green-700 text-white'
-                                                }`}
+                                                    }`}
                                             >
                                                 {report.status === 'published' ? '📝 Unpublish' : '✅ Publish'}
                                             </button>
@@ -388,7 +447,6 @@ function ReportManagement() {
                                                 🗑️
                                             </button>
                                         </div>
-                                        
                                         {report.file_url && (
                                             <a
                                                 href={report.file_url}
@@ -396,7 +454,7 @@ function ReportManagement() {
                                                 rel="noopener noreferrer"
                                                 className="block w-full mt-2 px-3 py-2 text-sm bg-gray-600 hover:bg-gray-700 text-white rounded-lg text-center transition-colors duration-200"
                                             >
-                                                👁️ View PDF
+                                                👁️ View File
                                             </a>
                                         )}
                                     </div>
@@ -407,7 +465,7 @@ function ReportManagement() {
                 )}
             </div>
         </AdminLayout>
-    )
+    );
 }
 
-export default ReportManagement
+export default ReportManagement;

@@ -172,7 +172,7 @@ function Layout({ children, activeNav, setActiveNav }) {
                 <div className="relative group">
                   <div className="absolute -inset-1 bg-gradient-to-r from-blue-300 to-cyan-400 rounded-full blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
                   <img
-                    src="/image/410640094_122096341784159313_2294110224216625627_n.jpg"
+                    src="/image/រដ្ឋាករទឹកស្វាយរៀង.png"
                     alt="SVR Water Utility Logo"
                     className="relative h-16 w-16 sm:h-24 sm:w-24 rounded-full border-4 border-white object-cover shadow-xl group-hover:scale-105 transition-transform duration-300"
                   />

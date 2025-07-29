@@ -1,458 +1,315 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import AdminLayout from '../components/AdminLayout'
 import apiService from '../../../services/api'
 
 // Pass currentUserId as a prop or get it from your auth context/store
-function CreateReport({ currentUserId }) {
-    const navigate = useNavigate()
-    const [searchParams] = useSearchParams()
-    const reportType = searchParams.get('type') || 'monthly'
+function CreateMonthlyReport() {
+  // State variables to hold form data
+  const [yearId, setYearId] = useState('');
+  const [monthId, setMonthId] = useState('');
+  const [title, setTitle] = useState('');
+  const [description, setDescription] = useState('');
+  const [status, setStatus] = useState('draft');
+  const [file, setFile] = useState(null);
 
-    const [formData, setFormData] = useState({
-        title: '',
-        type: reportType,
-        status: 'draft',
-        year_id: '', // always string
-        month_id: reportType === 'monthly' ? '' : '', // always string
-        report_date: '',
-        description: '',
-        file: null
-    })
+  // State to hold data fetched from the API for dropdowns
+  const [years, setYears] = useState([]);
+  const [months, setMonths] = useState([]);
+  
+  // State variables for UI feedback
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+  const [successMessage, setSuccessMessage] = useState(null);
+  const [isFetchingInitialData, setIsFetchingInitialData] = useState(true);
 
-    const [years, setYears] = useState([])
-    const [months, setMonths] = useState([])
-    const [errors, setErrors] = useState({})
-    const [submitLoading, setSubmitLoading] = useState(false)
-    const [selectedFile, setSelectedFile] = useState(null)
-    const [loading, setLoading] = useState(true)
+  // State variables for authorization
+  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [user, setUser] = useState(null);
 
-    useEffect(() => {
-        fetchYearsAndMonths()
-    }, [])
+  /**
+   * On component mount, check localStorage for admin credentials.
+   */
+  useEffect(() => {
+    try {
+      const token = localStorage.getItem('admin_token');
+      const adminUserString = localStorage.getItem('admin_user');
 
-    useEffect(() => {
-        generateDefaultTitle()
-    }, [formData.type, formData.year_id, formData.month_id, years, months])
+      if (token && adminUserString) {
+        const adminUser = JSON.parse(adminUserString);
+        setUser({ ...adminUser, token });
+        setIsAuthorized(true);
+      }
+    } catch (e) {
+      console.error("Failed to parse user from localStorage:", e);
+    } finally {
+      setIsCheckingAuth(false);
+    }
+  }, []);
 
-    const fetchYearsAndMonths = async () => {
-        setLoading(true)
-        try {
-            console.log('Starting API calls...')
-            
-            const yearsResult = await apiService.getReportYears()
-            console.log('YEARS API RESPONSE:', yearsResult)
-            console.log('Years response keys:', Object.keys(yearsResult || {}))
-            
-            const monthsResult = await apiService.getReportMonths()
-            console.log('MONTHS API RESPONSE:', monthsResult)
-            console.log('Months response keys:', Object.keys(monthsResult || {}))
-            
-            // Temporary: Just use the raw response as arrays to test
-            // Remove this and replace with proper extraction once we see the structure
-            let yearsArr = []
-            let monthsArr = []
-            
-            // Try all possible ways to extract data
-            if (yearsResult) {
-                // Check if it's a direct array
-                if (Array.isArray(yearsResult)) {
-                    yearsArr = yearsResult
-                } else {
-                    // Check all properties for arrays
-                    for (const key in yearsResult) {
-                        if (Array.isArray(yearsResult[key])) {
-                            console.log(`Found years array in key "${key}":`, yearsResult[key])
-                            yearsArr = yearsResult[key]
-                            break
-                        }
-                    }
-                }
-            }
-            
-            if (monthsResult) {
-                // Check if it's a direct array
-                if (Array.isArray(monthsResult)) {
-                    monthsArr = monthsResult
-                } else {
-                    // Check all properties for arrays
-                    for (const key in monthsResult) {
-                        if (Array.isArray(monthsResult[key])) {
-                            console.log(`Found months array in key "${key}":`, monthsResult[key])
-                            monthsArr = monthsResult[key]
-                            break
-                        }
-                    }
-                }
-            }
-            
-            console.log('EXTRACTED YEARS:', yearsArr)
-            console.log('EXTRACTED MONTHS:', monthsArr)
-            
-            setYears(yearsArr)
-            setMonths(monthsArr)
-            
-            // Set default year if available
-            if (yearsArr.length > 0) {
-                const currentYear = yearsArr.find(y => y.status === 'current') || yearsArr[0]
-                setFormData(prev => ({ ...prev, year_id: String(currentYear.id) }))
-            }
-        } catch (error) {
-            console.error('API ERROR:', error)
-            console.error('Error response:', error.response)
-            setYears([])
-            setMonths([])
-            setErrors(prev => ({ ...prev, fetch: 'Failed to load years and months data' }))
-        } finally {
-            setLoading(false)
-        }
+  /**
+   * After authorization, fetch years and months for the form dropdowns.
+   */
+  useEffect(() => {
+    if (!isAuthorized || !user?.token) {
+        setIsFetchingInitialData(false);
+        return;
     }
 
-    const generateDefaultTitle = () => {
-        if (!formData.year_id || !years.length) return
+    const fetchInitialData = async () => {
+      setIsFetchingInitialData(true);
+      setError(null);
+      try {
+        // Updated API endpoints to use the full URL.
+        const [yearsResponse, monthsResponse] = await Promise.all([
+          fetch('http://localhost:8000/api/reports/years', { headers: { 'Authorization': `Bearer ${user.token}`, 'Accept': 'application/json' } }),
+          fetch('http://localhost:8000/api/reports/months', { headers: { 'Authorization': `Bearer ${user.token}`, 'Accept': 'application/json' } })
+        ]);
 
-        const year = years.find(y => String(y.id) === formData.year_id)
-        if (!year) return
-
-        let title = ''
-        if (formData.type === 'monthly' && formData.month_id && months.length) {
-            const month = months.find(m => String(m.id) === formData.month_id)
-            if (month) {
-                title = `Monthly Water Quality Report - ${month.name} ${year.year_value}`
-            }
-        } else if (formData.type === 'yearly') {
-            title = `Annual Water Service Report ${year.year_value}`
+        if (!yearsResponse.ok) {
+          throw new Error(`Failed to fetch years (status: ${yearsResponse.status}). Please check API endpoint and server status.`);
+        }
+        if (!monthsResponse.ok) {
+          throw new Error(`Failed to fetch months (status: ${monthsResponse.status}). Please check API endpoint and server status.`);
         }
 
-        if (title && (!formData.title || formData.title.startsWith('Monthly') || formData.title.startsWith('Annual'))) {
-            setFormData(prev => ({ ...prev, title }))
+        const yearsData = await yearsResponse.json();
+        const monthsData = await monthsResponse.json();
+
+        // Assuming API returns an array of objects like [{id: 1, name: '2024'}]
+        // Adjust '.data' if your API response structure is different.
+        setYears(yearsData.data || yearsData);
+        setMonths(monthsData.data || monthsData);
+
+      } catch (err) {
+        // Catch network errors and provide a more helpful message.
+        if (err instanceof TypeError) { // This often indicates a network error like ERR_CONNECTION_REFUSED
+             setError('Network error: Could not connect to the API. Please ensure the backend server is running and accessible.');
+        } else {
+             setError(`Form load error: ${err.message}`);
         }
+      } finally {
+        setIsFetchingInitialData(false);
+      }
+    };
+
+    fetchInitialData();
+  }, [isAuthorized, user]);
+
+  const handleFileChange = (e) => {
+    if (e.target.files && e.target.files.length > 0) {
+      setFile(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!isAuthorized || !user) {
+        setError("You are not authorized to create a report.");
+        return;
     }
 
-    const validateFile = (file) => {
-        const allowedTypes = [
-            'application/pdf',
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'text/plain'
-        ]
-        if (!allowedTypes.includes(file.type)) {
-            throw new Error('Invalid file type. Allowed: PDF, DOC, DOCX, TXT')
-        }
-        if (file.size > 10 * 1024 * 1024) {
-            throw new Error('File too large. Max 10MB')
-        }
+    setIsLoading(true);
+    setError(null);
+    setSuccessMessage(null);
+
+    const formData = new FormData();
+    formData.append('year_id', yearId);
+    formData.append('month_id', monthId);
+    formData.append('title', title);
+    formData.append('description', description);
+    formData.append('status', status);
+    formData.append('created_by', user.name);
+    if (file) {
+      formData.append('file', file);
     }
+    
+    try {
+      // Updated API endpoint to use the full URL.
+      const response = await fetch('http://localhost:8000/api/reports/admin/monthly', {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${user.token}`,
+        },
+        body: formData,
+      });
 
-    const handleFileSelect = (e) => {
-        const file = e.target.files[0]
-        if (file) {
-            try {
-                validateFile(file)
-                setSelectedFile(file)
-                setFormData(prev => ({ ...prev, file }))
-                setErrors(prev => ({ ...prev, file: '' }))
-            } catch (error) {
-                setErrors(prev => ({ ...prev, file: error.message }))
-                e.target.value = ''
-                setSelectedFile(null)
-                setFormData(prev => ({ ...prev, file: null }))
-            }
+      const result = await response.json();
+
+      if (!response.ok) {
+        // Handle validation errors from the server
+        if (response.status === 422 && result.errors) {
+            const errorMessages = Object.values(result.errors).flat().join(' ');
+            throw new Error(errorMessages);
         }
+        throw new Error(result.message || `HTTP error! status: ${response.status}`);
+      }
+      
+      setSuccessMessage(result.message || 'Report created successfully!');
+      // Reset form fields
+      setYearId('');
+      setMonthId('');
+      setTitle('');
+      setDescription('');
+      setStatus('draft');
+      setFile(null);
+      if(document.getElementById('file-input')) {
+        document.getElementById('file-input').value = '';
+      }
+
+    } catch (err) {
+      setError(err.message || 'An unexpected error occurred.');
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        // Always store as string for select compatibility
-        setFormData(prev => ({ ...prev, [name]: value }));
-        if (errors[name]) {
-            setErrors(prev => ({ ...prev, [name]: '' }));
-        }
-    }
-
-    const validateForm = () => {
-        const newErrors = {}
-        if (!formData.title.trim()) newErrors.title = 'Title is required'
-        if (!formData.type) newErrors.type = 'Report type is required'
-        if (!formData.year_id) newErrors.year_id = 'Year is required'
-        if (formData.type === 'monthly' && !formData.month_id) newErrors.month_id = 'Month is required'
-        if (!formData.status) newErrors.status = 'Status is required'
-        setErrors(newErrors)
-        return Object.keys(newErrors).length === 0
-    }
-
-    const formatFileSize = (bytes) => {
-        if (bytes === 0) return '0 Bytes'
-        const k = 1024
-        const sizes = ['Bytes', 'KB', 'MB', 'GB']
-        const i = Math.floor(Math.log(bytes) / Math.log(k))
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i]
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!validateForm()) return;
-        if (formData.type === 'monthly' && !formData.file) {
-            setErrors(prev => ({ ...prev, file: 'Please select a file to upload.' }));
-            return;
-        }
-        setSubmitLoading(true);
-        try {
-            const submitData = new FormData();
-            // Always append required fields
-            submitData.append('title', formData.title || '');
-            submitData.append('type', formData.type || '');
-            submitData.append('status', formData.status || '');
-            submitData.append('year_id', formData.year_id || '');
-            if (formData.type === 'monthly') {
-                submitData.append('month_id', formData.month_id || '');
-            }
-            if (formData.description) submitData.append('description', formData.description);
-            // Add created_by (replace with your actual user ID source if needed)
-            submitData.append('created_by', currentUserId ? String(currentUserId) : '');
-
-            const year = years.find(y => String(y.id) === formData.year_id);
-            if (year) {
-                let reportDate = '';
-                if (formData.type === 'monthly' && formData.month_id) {
-                    const lastDay = new Date(year.year_value, Number(formData.month_id), 0).getDate();
-                    reportDate = `${year.year_value}-${String(formData.month_id).padStart(2, '0')}-${String(lastDay).padStart(2, '0')}`;
-                } else {
-                    reportDate = `${year.year_value}-12-31`;
-                }
-                submitData.append('report_date', reportDate);
-            }
-
-            if (formData.file) {
-                submitData.append('file', formData.file);
-            }
-
-            let result;
-            if (formData.type === 'monthly') {
-                result = await apiService.createMonthlyReport(submitData);
-            } else {
-                result = await apiService.createYearlyReport(submitData);
-            }
-
-            if (result && result.error) {
-                setErrors({ submit: result.error });
-            } else {
-                navigate('/admin/reports', {
-                    state: { message: 'Report created successfully' }
-                });
-            }
-        } catch (error) {
-            let errorMsg = error?.response?.data?.message || error.message || 'Error submitting report';
-            if (error?.response?.data?.errors) {
-                const details = error.response.data.errors;
-                errorMsg += ': ' + Object.values(details).flat().join(' ');
-            }
-            setErrors({ submit: errorMsg });
-            console.error('Submit failed:', error);
-        } finally {
-            setSubmitLoading(false);
-        }
-    }
-
+  if (isCheckingAuth || (isAuthorized && isFetchingInitialData)) {
     return (
-        <AdminLayout>
-            <div className="max-w-4xl mx-auto px-4 py-8 space-y-8">
-                {/* Header */}
-                <div className="flex items-center justify-between">
-                    <div>
-                        <button
-                            onClick={() => navigate('/admin/reports')}
-                            className="text-blue-600 hover:text-blue-800 font-medium text-sm"
-                        >
-                            ← Back to Reports
-                        </button>
-                        <h1 className="text-3xl font-bold text-gray-900 mt-2">📄 Create New Report</h1>
-                        <p className="text-gray-600 text-sm">Fill in the details to create a new {reportType} report</p>
-                    </div>
-                </div>
+        <div className="w-full max-w-lg p-8 text-center text-gray-600">
+            <p>{isCheckingAuth ? 'Checking authorization...' : 'Loading form data...'}</p>
+        </div>
+    );
+  }
 
-                {/* Form */}
-                <form
-                    onSubmit={handleSubmit}
-                    className="bg-white rounded-xl shadow-md border border-gray-100 p-8 space-y-6"
-                >
-                    {errors.submit && (
-                        <div className="text-red-700 bg-red-100 border border-red-200 px-4 py-3 rounded-lg text-sm">
-                            {errors.submit}
-                        </div>
-                    )}
+  if (!isAuthorized) {
+      return (
+        <div className="w-full max-w-lg p-8 space-y-4 bg-white rounded-lg shadow-md text-center">
+            <h1 className="text-2xl font-bold text-red-700">Access Denied</h1>
+            <p className="text-gray-700">Only administrators are permitted to create monthly reports. Please ensure you are logged in.</p>
+        </div>
+      );
+  }
 
-                    {errors.fetch && (
-                        <div className="text-red-700 bg-red-100 border border-red-200 px-4 py-3 rounded-lg text-sm">
-                            {errors.fetch}
-                        </div>
-                    )}
+  return (
+    <div className="w-full max-w-lg p-8 space-y-6 bg-white rounded-lg shadow-md">
+      <h1 className="text-2xl font-bold text-center text-gray-800">Create Monthly Report</h1>
+      
+      {/* Display a general error message at the top of the form if initial data fails to load */}
+      {error && !successMessage && (
+        <div className="p-4 text-sm text-red-700 bg-red-100 rounded-lg" role="alert">
+          <span className="font-medium">Error!</span> {error}
+        </div>
+      )}
 
-                    {/* Type, Year, Month */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Report Type *</label>
-                            <select
-                                name="type"
-                                value={formData.type}
-                                onChange={handleChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                                <option value="monthly">📅 Monthly Report</option>
-                                <option value="yearly">🗓️ Yearly Report</option>
-                            </select>
-                        </div>
+      <form onSubmit={handleSubmit} className="space-y-6">
+        {/* Year Dropdown */}
+        <div>
+          <label htmlFor="year" className="block text-sm font-medium text-gray-700">Year</label>
+          <select
+            id="year"
+            value={yearId}
+            onChange={(e) => setYearId(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            required
+            disabled={isFetchingInitialData || years.length === 0}
+          >
+            <option value="" disabled>Select a year</option>
+            {years.map((y) => (
+              <option key={y.id} value={y.id}>{y.name || y.year}</option> // Use y.name or y.year based on your API
+            ))}
+          </select>
+        </div>
 
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Year *</label>
-                            <select
-                                name="year_id"
-                                value={formData.year_id}
-                                onChange={handleChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                disabled={loading}
-                            >
-                                <option value="">{loading ? 'Loading...' : years.length === 0 ? 'No years available' : 'Select Year'}</option>
-                                {years.map(y => (
-                                    <option key={y.id} value={String(y.id)}>
-                                        {y.year_value} {y.status === 'current' ? '(Current)' : ''}
-                                    </option>
-                                ))}
-                            </select>
-                            {errors.year_id && <p className="text-sm text-red-600 mt-1">{errors.year_id}</p>}
-                        </div>
+        {/* Month Dropdown */}
+        <div>
+          <label htmlFor="month" className="block text-sm font-medium text-gray-700">Month</label>
+          <select
+            id="month"
+            value={monthId}
+            onChange={(e) => setMonthId(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            required
+            disabled={isFetchingInitialData || months.length === 0}
+          >
+            <option value="" disabled>Select a month</option>
+            {months.map((m) => (
+              <option key={m.id} value={m.id}>{m.name}</option>
+            ))}
+          </select>
+        </div>
+        
+        {/* Title Input */}
+        <div>
+          <label htmlFor="title" className="block text-sm font-medium text-gray-700">Title</label>
+          <input
+            type="text"
+            id="title"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            required
+          />
+        </div>
 
-                        {formData.type === 'monthly' && (
-                            <div className="md:col-span-2">
-                                <label className="block text-sm font-medium text-gray-700 mb-1">Month *</label>
-                                <select
-                                    name="month_id"
-                                    value={formData.month_id || ''}
-                                    onChange={handleChange}
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                                    disabled={loading}
-                                >
-                                    <option value="">{loading ? 'Loading...' : months.length === 0 ? 'No months available' : 'Select Month'}</option>
-                                    {months.map(m => (
-                                        <option key={m.id} value={String(m.id)}>{m.name}</option>
-                                    ))}
-                                </select>
-                                {errors.month_id && <p className="text-sm text-red-600 mt-1">{errors.month_id}</p>}
-                            </div>
-                        )}
-                    </div>
+        {/* Description Textarea */}
+        <div>
+          <label htmlFor="description" className="block text-sm font-medium text-gray-700">Description</label>
+          <textarea
+            id="description"
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+            rows="3"
+            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            required
+          ></textarea>
+        </div>
 
-                    {/* Debug info - remove this in production */}
-                    {process.env.NODE_ENV === 'development' && (
-                        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-sm">
-                            <h4 className="font-medium mb-2">Debug Info:</h4>
-                            <p>Years loaded: {years.length}</p>
-                            <p>Months loaded: {months.length}</p>
-                            <p>Loading: {loading ? 'true' : 'false'}</p>
-                        </div>
-                    )}
+        {/* Status Dropdown */}
+        <div>
+          <label htmlFor="status" className="block text-sm font-medium text-gray-700">Status</label>
+          <select
+            id="status"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            className="mt-1 block w-full px-3 py-2 bg-white border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            required
+          >
+            <option value="draft">Draft</option>
+            <option value="published">Published</option>
+          </select>
+        </div>
 
-                    {/* Title */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Title *</label>
-                        <input
-                            type="text"
-                            name="title"
-                            value={formData.title}
-                            onChange={handleChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            placeholder="Enter report title"
-                        />
-                        {errors.title && <p className="text-sm text-red-600 mt-1">{errors.title}</p>}
-                    </div>
+        {/* File Input */}
+        <div>
+          <label htmlFor="file-input" className="block text-sm font-medium text-gray-700">Report File</label>
+          <input
+            type="file"
+            id="file-input"
+            onChange={handleFileChange}
+            className="mt-1 block w-full text-sm text-gray-500
+                       file:mr-4 file:py-2 file:px-4
+                       file:rounded-md file:border-0
+                       file:text-sm file:font-semibold
+                       file:bg-indigo-50 file:text-indigo-700
+                       hover:file:bg-indigo-100"
+            required
+          />
+           {file && <p className="text-xs text-gray-500 mt-1">Selected: {file.name}</p>}
+        </div>
 
-                    {/* Description */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
-                        <textarea
-                            name="description"
-                            value={formData.description}
-                            onChange={handleChange}
-                            rows="4"
-                            placeholder="Enter description (optional)"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        />
-                    </div>
-
-                    {/* Status and File Upload */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {/* Status */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Status *</label>
-                            <select
-                                name="status"
-                                value={formData.status}
-                                onChange={handleChange}
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                            >
-                                <option value="draft">📝 Draft</option>
-                                <option value="published">✅ Published</option>
-                            </select>
-                        </div>
-
-                        {/* File Upload */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">Upload Report File</label>
-                            <input
-                                type="file"
-                                onChange={handleFileSelect}
-                                accept=".pdf,.doc,.docx,.txt"
-                                className="block w-full text-sm text-gray-600 border border-gray-300 rounded-lg cursor-pointer bg-white file:mr-4 file:py-2 file:px-4 file:border-0 file:text-sm file:font-semibold file:bg-blue-100 file:text-blue-700 hover:file:bg-blue-200"
-                            />
-                            {errors.file && <p className="text-sm text-red-600 mt-1">{errors.file}</p>}
-                            <p className="text-sm text-gray-500 mt-1">Max 10MB – PDF, DOC, DOCX, TXT</p>
-                        </div>
-                    </div>
-
-                    {/* Selected File Info */}
-                    {selectedFile && (
-                        <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-sm text-gray-700">
-                            <h4 className="font-medium mb-2">📎 Selected File Info</h4>
-                            <p><strong>Name:</strong> {selectedFile.name}</p>
-                            <p><strong>Size:</strong> {formatFileSize(selectedFile.size)}</p>
-                            <p><strong>Type:</strong> {selectedFile.type}</p>
-                        </div>
-                    )}
-
-                    {/* Submit Buttons */}
-                    <div className="flex justify-end gap-4 pt-6 border-t">
-                        <button
-                            type="button"
-                            onClick={() => navigate('/admin/reports')}
-                            className="px-5 py-2 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200"
-                        >
-                            Cancel
-                        </button>
-                        <button
-                            type="submit"
-                            disabled={submitLoading || loading}
-                            className="px-6 py-2 rounded-lg bg-blue-600 text-white font-medium hover:bg-blue-700 disabled:opacity-50"
-                        >
-                            {submitLoading ? (
-                                <span className="flex items-center gap-2">
-                                    <svg className="animate-spin h-4 w-4 text-white" viewBox="0 0 24 24" fill="none">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10"
-                                            stroke="currentColor" strokeWidth="4" />
-                                        <path className="opacity-75" fill="currentColor"
-                                            d="M4 12a8 8 0 018-8v4a4 4 0 000 8v4a8 8 0 01-8-8z" />
-                                    </svg>
-                                    Creating...
-                                </span>
-                            ) : (
-                                '📄 Create Report'
-                            )}
-                        </button>
-                    </div>
-                </form>
-            </div>
-
-        </AdminLayout>
-    )
+        {/* Submit Button */}
+        <div>
+          <button
+            type="submit"
+            disabled={isLoading || isFetchingInitialData}
+            className="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-indigo-300 disabled:cursor-not-allowed"
+          >
+            {isLoading ? 'Creating...' : 'Create Report'}
+          </button>
+        </div>
+      </form>
+      
+      {/* Feedback Messages for submission */}
+      {successMessage && (
+        <div className="p-4 mt-4 text-sm text-green-700 bg-green-100 rounded-lg" role="alert">
+          <span className="font-medium">Success!</span> {successMessage}
+        </div>
+      )}
+    </div>
+  );
 }
 
-export default CreateReport
+export default CreateMonthlyReport

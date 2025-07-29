@@ -6,7 +6,7 @@ function ProtectedRoute({ children }) {
   if (!isAuthenticatedAdmin()) {
     // Clear any invalid auth data
     clearAuth()
-    return <Navigate to="/admin-login-secret/login" replace />
+    return <Navigate to="*" replace />
   }
   
   return children

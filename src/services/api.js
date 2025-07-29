@@ -22,7 +22,7 @@ class ApiService {
       ...this.defaultHeaders,
       ...options.headers,
     }
-    
+
     // Add authorization header if token exists
     if (token) {
       headers['Authorization'] = `Bearer ${token}`
@@ -40,7 +40,7 @@ class ApiService {
       if (!response.ok) {
         // Try to get error details from response body
         let errorMessage = `HTTP ${response.status}: ${response.statusText}`
-        
+
         try {
           const errorData = await response.json()
           if (errorData.message) {
@@ -73,16 +73,16 @@ class ApiService {
       }
 
       const data = await response.json()
-      
+
       // Log the response for debugging
       console.log(`API Response for ${url}:`, data)
-      
+
       return { data, error: null }
     } catch (error) {
       clearTimeout(timeoutId)
-      
+
       let errorMessage = 'An unknown error occurred'
-      
+
       if (error.name === 'AbortError') {
         errorMessage = 'Request timed out. Please check your connection.'
       } else if (error.message.includes('Failed to fetch')) {
@@ -118,10 +118,10 @@ class ApiService {
   // Generic POST request
   async post(endpoint, data = {}, options = {}) {
     const url = `${this.baseURL}${endpoint}`
-    
+
     let body
     let headers = { ...this.defaultHeaders }
-    
+
     // Handle file uploads with FormData
     if (data instanceof FormData) {
       body = data
@@ -130,7 +130,7 @@ class ApiService {
     } else {
       body = JSON.stringify(data)
     }
-    
+
     return this.fetchWithErrorHandling(url, {
       method: 'POST',
       mode: 'cors',
@@ -144,10 +144,10 @@ class ApiService {
   // Generic PUT request
   async put(endpoint, data = {}, options = {}) {
     const url = `${this.baseURL}${endpoint}`
-    
+
     let body
     let headers = { ...this.defaultHeaders }
-    
+
     // Handle file uploads with FormData
     if (data instanceof FormData) {
       body = data
@@ -156,7 +156,7 @@ class ApiService {
     } else {
       body = JSON.stringify(data)
     }
-    
+
     return this.fetchWithErrorHandling(url, {
       method: 'PUT',
       mode: 'cors',
@@ -181,7 +181,7 @@ class ApiService {
   // News API Methods
   async getNews() {
     const result = await this.get('/news')
-    
+
     if (result.error) {
       return result
     }
@@ -218,7 +218,7 @@ class ApiService {
   // Monthly Reports API Methods
   async getMonthlyReports() {
     const result = await this.get('/reports/monthly')
-    
+
     if (result.error) {
       return result
     }
@@ -228,7 +228,7 @@ class ApiService {
 
   async getMonthlyReportsByYear(year) {
     const result = await this.get(`/reports/monthly/year/${year}`)
-    
+
     if (result.error) {
       return result
     }
@@ -242,7 +242,7 @@ class ApiService {
 
   async getReportMonths() {
     const result = await this.get('/reports/months')
-    
+
     if (result.error) {
       return result
     }
@@ -263,7 +263,7 @@ class ApiService {
 
   async getReportYears() {
     const result = await this.get('/reports/years')
-    
+
     if (result.error) {
       return result
     }
@@ -312,7 +312,7 @@ class ApiService {
   // Admin get methods for management
   async getAdminMonthlyReports() {
     const result = await this.get('/reports/admin/monthly')
-    
+
     if (result.error) {
       return result
     }
@@ -344,7 +344,7 @@ class ApiService {
 
   async getAdminYearlyReports() {
     const result = await this.get('/reports/admin/yearly')
-    
+
     if (result.error) {
       return result
     }
@@ -359,12 +359,30 @@ class ApiService {
   // Public yearly reports method
   async getYearlyReports() {
     const result = await this.get('/reports/yearly')
-    
+
     if (result.error) {
       return result
     }
 
     return result
+  }
+
+  async getAllReports() {
+    const [monthly, yearly] = await Promise.all([
+      this.get('/reports/monthly'),
+      this.get('/reports/yearly')
+    ]);
+
+    if (monthly.error || yearly.error) {
+      return { data: null, error: 'Failed to fetch all reports' };
+    }
+
+    const allReports = [
+      ...(monthly.data.data || []).map(r => ({ ...r, type: 'monthly' })),
+      ...(yearly.data.data || []).map(r => ({ ...r, type: 'yearly' }))
+    ];
+
+    return { data: allReports, error: null };
   }
 
   // Admin Yearly Reports API Methods (placeholder for future implementation)
@@ -382,7 +400,7 @@ class ApiService {
 
   async getAdminYearlyReports() {
     const result = await this.get('/reports/admin/yearly')
-    
+
     if (result.error) {
       return result
     }
@@ -396,7 +414,7 @@ class ApiService {
 
   async getYearlyReports() {
     const result = await this.get('/reports/yearly')
-    
+
     if (result.error) {
       return result
     }

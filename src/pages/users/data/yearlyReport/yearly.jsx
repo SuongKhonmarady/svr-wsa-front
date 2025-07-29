@@ -1,4 +1,4 @@
-import YearlyReports from '../Components/YearlyReports'
+import YearlyReports from '../Components/yearly/YearlyReports'
 
 function Yearly() {
     return (
@@ -8,7 +8,7 @@ function Yearly() {
                 backgroundImage: "url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')"
             }}>
             {/* Page Header */}
-            <div className="relative bg-gradient-to-r from-green-800/40 via-green-700/80 to-green-800/40 text-white py-16 lg:py-20 overflow-hidden">
+            <div className="relative bg-gradient-to-r from-green-800/40 via-green-700/90 to-green-800/40 text-white py-16 lg:py-20 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center">
                         <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 font-khmer-title">

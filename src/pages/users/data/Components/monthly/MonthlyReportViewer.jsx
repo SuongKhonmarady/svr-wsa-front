@@ -212,7 +212,7 @@ function MonthlyReportViewer() {
                         
                         <div className="p-6">
                             {!pdfError ? (
-                                <div className="w-full" style={{ height: '80vh' }}>
+                                <div className="w-full" style={{ height: '85vh' }}>
                                     <iframe
                                         src={`${report.file_url}#toolbar=1&navpanes=1&scrollbar=1`}
                                         width="100%"

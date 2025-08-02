@@ -1,7 +1,8 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useState, useEffect, useRef } from 'react'
 
 function Layout({ children, activeNav, setActiveNav }) {
+  const navigate = useNavigate();
   const location = useLocation()
   const [selectedLanguage, setSelectedLanguage] = useState('kh')
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false)
@@ -109,7 +110,7 @@ function Layout({ children, activeNav, setActiveNav }) {
                     <span className="text-green-300">📞</span>
                     <span className="font-medium">0123 456 789</span>
                   </div>
-                  <div className="hidden xs:flex items-center space-x-1 sm:space-x-2 bg-white/10 rounded-full px-2 sm:px-3 py-1 sm:py-1.5 backdrop-blur-sm">
+                  <div className="xs:flex items-center space-x-1 sm:space-x-2 bg-white/10 rounded-full px-2 sm:px-3 py-1 sm:py-1.5 backdrop-blur-sm">
                     <span className="text-blue-300">✉️</span>
                     <span className="hidden sm:inline font-medium">info@svayringwater.gov.kh</span>
                     <span className="sm:hidden font-medium">Email</span>
@@ -172,14 +173,14 @@ function Layout({ children, activeNav, setActiveNav }) {
                 <div className="relative group">
                   <div className="absolute -inset-1 bg-gradient-to-r from-blue-300 to-cyan-400 rounded-full blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
                   <img
-                    src="/image/រដ្ឋាករទឹកស្វាយរៀង.png"
+                    src="/image/រដ្ឋាករទឹកស្វាយរៀង (4).png"
                     alt="SVR Water Utility Logo"
-                    className="relative h-16 w-16 sm:h-24 sm:w-24 rounded-full border-4 border-white object-cover shadow-xl group-hover:scale-105 transition-transform duration-300"
+                    className="relative h-16 w-16 sm:h-28 sm:w-28 rounded-full border-4 border-white object-cover shadow-xl group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
 
                 <div className="space-y-1 sm:space-y-2">
-                  <h1 className="text-xl sm:text-3xl md:text-4xl font-bold text-blue-900 tracking-tight leading-tight khmer-title">
+                  <h1 className="text-xl sm:text-3xl md:text-4xl font-bold text-blue-700 tracking-tight leading-tight khmer-title">
                     រដ្ឋាករទឹកស្វាយរៀង
                   </h1>
                   <div className="flex items-center space-x-2 sm:space-x-3">
@@ -389,16 +390,19 @@ function Layout({ children, activeNav, setActiveNav }) {
                               <div className="ml-4 mt-1 space-y-1">
                                 <Link
                                   to={item.href}
-                                  onClick={() => {
-                                    setActiveNav(item.id)
-                                    setIsMobileMenuOpen(false)
+                                  onClick={e => {
+                                    e.preventDefault();
+                                    setActiveNav(item.id);
+                                    setIsMobileMenuOpen(false);
                                     if (item.id === 'services') {
-                                      setIsServicesDropdownOpen(false)
+                                      setIsServicesDropdownOpen(false);
                                     } else if (item.id === 'about') {
-                                      setIsAboutDropdownOpen(false)
+                                      setIsAboutDropdownOpen(false);
                                     } else if (item.id === 'data') {
-                                      setIsDataDropdownOpen(false)
+                                      setIsDataDropdownOpen(false);
                                     }
+                                    // Use SPA navigation for mobile submenu
+                                    navigate(item.href);
                                   }}
                                   className="block px-3 py-2 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md border-l-2 border-blue-200"
                                 >
@@ -462,7 +466,7 @@ function Layout({ children, activeNav, setActiveNav }) {
               <div className="md:col-span-1">
                 <div className="flex items-center space-x-4 mb-6">
                   <img
-                    src="/image/410640094_122096341784159313_2294110224216625627_n.jpg"
+                    src="/image/រដ្ឋាករទឹកស្វាយរៀង (4).png"
                     alt="Company Logo"
                     className="h-24 w-24 rounded-full object-cover border-2 border-gray-600"
                   />

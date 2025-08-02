@@ -21,15 +21,16 @@ function AdminLayout({ children }) {
     } finally {
       // Clear all auth data and redirect
       clearAuth()
-      navigate('/admin-login-secret/login')
+      navigate('/')
     }
   }
 
   const navigation = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: '🏠' },
     { name: 'News Management', href: '/admin/news', icon: '📰' },
+    { name: 'Service Requests', href: '/admin/service-requests', icon: '🔧' },
     { name: 'Report Management', href: '/admin/reports', icon: '📋' },
-    { name: 'Services', href: '/admin/services', icon: '🔧' },
+    { name: 'Services', href: '/admin/services', icon: '�️' },
     { name: 'Laws', href: '/admin/laws', icon: '⚖️' },
     { name: 'Data', href: '/admin/data', icon: '📊' },
     { name: 'Contact', href: '/admin/contact', icon: '📞' },

@@ -40,9 +40,10 @@ class ApiService {
       if (!response.ok) {
         // Try to get error details from response body
         let errorMessage = `HTTP ${response.status}: ${response.statusText}`
+        let errorData = null
 
         try {
-          const errorData = await response.json()
+          errorData = await response.json()
           if (errorData.message) {
             errorMessage = errorData.message
           } else if (errorData.errors) {
@@ -69,7 +70,9 @@ class ApiService {
             window.location.href = '/admin-login-secret/login'
           }
         }
-        throw new Error(errorMessage)
+        
+        // Return error with both message and data for validation errors
+        return { data: errorData, error: errorMessage }
       }
 
       const data = await response.json()
@@ -178,6 +181,32 @@ class ApiService {
     })
   }
 
+  // Generic PATCH request
+  async patch(endpoint, data = {}, options = {}) {
+    const url = `${this.baseURL}${endpoint}`
+
+    let body
+    let headers = { ...this.defaultHeaders }
+
+    // Handle file uploads with FormData
+    if (data instanceof FormData) {
+      body = data
+      // Remove content-type header to let browser set it with boundary
+      delete headers['Content-Type']
+    } else {
+      body = JSON.stringify(data)
+    }
+
+    return this.fetchWithErrorHandling(url, {
+      method: 'PATCH',
+      mode: 'cors',
+      credentials: 'include',
+      headers,
+      body,
+      ...options,
+    })
+  }
+
   // News API Methods
   async getNews() {
     const result = await this.get('/news')
@@ -208,6 +237,19 @@ class ApiService {
 
   async deleteNews(id) {
     return this.delete(`/news/${id}`)
+  }
+
+  // Service Request API Methods
+  async getServiceRequests() {
+    return this.get('/service-requests')
+  }
+
+  async submitServiceRequest(requestData) {
+    return this.post('/service-requests', requestData)
+  }
+
+  async updateServiceRequestStatus(id, statusData) {
+    return this.patch(`/service-requests/${id}/status`, statusData)
   }
 
   // Authentication methods
@@ -457,6 +499,9 @@ export const {
   createNews,
   updateNews,
   deleteNews,
+  getServiceRequests,
+  submitServiceRequest,
+  updateServiceRequestStatus,
   logout,
   getMonthlyReports,
   getMonthlyReportsByYear,

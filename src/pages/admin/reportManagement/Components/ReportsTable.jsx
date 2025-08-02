@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import LoadingFallback from '../../../../components/LoadingPage';
 
 function ReportsTable({ reports, onDelete, loading }) {
     // 1. Show a loading message while data is being fetched

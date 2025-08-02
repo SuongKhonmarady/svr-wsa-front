@@ -10,6 +10,7 @@ import LoadingFallback from './components/LoadingPage';
 const Home = React.lazy(() => import('./pages/users/home/home'));
 const About = React.lazy(() => import('./pages/users/about/about'));
 const Services = React.lazy(() => import('./pages/users/services/services'));
+const WaterSupplyRequest = React.lazy(() => import('./pages/users/services/WaterSupplyRequest'));
 const News = React.lazy(() => import('./pages/users/news/news'));
 const Laws = React.lazy(() => import('./pages/users/laws/laws'));
 const Data = React.lazy(() => import('./pages/users/data/data'));
@@ -21,7 +22,8 @@ const Contact = React.lazy(() => import('./pages/users/contact/contact'));
 const Team = React.lazy(() => import('./pages/users/about/TeamSection'));
 const Location = React.lazy(() => import('./pages/users/about/Components/LocationMap'));
 const NewsDetailsPage = React.lazy(() => import('./pages/users/news/newsDetailsPage'));
-const NotFound = React.lazy(() => import('./pages/notFound/notFound'));
+const NotFound = React.lazy(() => import('./components/notFound'));
+
 
 // -------------------------------------------------------------------------
 // LAZY LOADED ADMIN ROUTES
@@ -29,13 +31,13 @@ const NotFound = React.lazy(() => import('./pages/notFound/notFound'));
 const AdminLogin = React.lazy(() => import('./pages/admin/login/login'));
 const AdminDashboard = React.lazy(() => import('./pages/admin/dashboard/dashboard'));
 const NewsManagement = React.lazy(() => import('./pages/admin/newsManagement/newsManagement'));
+const ServiceRequestsManagement = React.lazy(() => import('./pages/admin/serviceRequests/ServiceRequestsManagement'));
 const ReportsManagement = React.lazy(() => import('./pages/admin/reportManagement/reportpage')); // Corrected typo here
-const AdminMonthlyYearsListPage = React.lazy(() => import('./pages/admin/reportManagement/adminMonthlyYearsList'));
-const AdminMonthlyYearManagement = React.lazy(() => import('./pages/admin/reportManagement/adminMonthlyYearManagement'));
 const ReportForm = React.lazy(() => import('./pages/admin/reportManagement/Components/ReportForm'));
 
 // Your ProtectedRoute component
 import ProtectedRoute from './pages/admin/components/ProtectedRoute'; // This is a regular import as it's a wrapper, not a view component
+import YearlyReportViewer from './pages/users/data/Components/yearly/yearlyReportViewer';
 
 
 
@@ -109,7 +111,7 @@ function App() {
             path="/services/water-supply"
             element={
               <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
-                <Services />
+                <WaterSupplyRequest />
               </Layout>
             }
           />
@@ -210,6 +212,14 @@ function App() {
             }
           />
           <Route
+            path="/data/yearly/:year/report/:reportId"
+            element={
+              <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
+                <YearlyReportViewer />
+              </Layout>
+            }
+          />
+          <Route
             path="/contact"
             element={
               <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
@@ -237,26 +247,18 @@ function App() {
             }
           />
           <Route
+            path="/admin/service-requests"
+            element={
+              <ProtectedRoute>
+                <ServiceRequestsManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/admin/reports"
             element={
               <ProtectedRoute>
                 <ReportsManagement />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/reports/monthly"
-            element={
-              <ProtectedRoute>
-                <AdminMonthlyYearsListPage />
-              </ProtectedRoute>
-            }
-          />
-          <Route
-            path="/admin/reports/monthly/:year"
-            element={
-              <ProtectedRoute>
-                <AdminMonthlyYearManagement />
               </ProtectedRoute>
             }
           />

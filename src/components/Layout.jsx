@@ -1,38 +1,17 @@
-import { Link, useLocation, useNavigate } from 'react-router-dom'
-import { useState, useEffect, useRef } from 'react'
+import { useLocation } from 'react-router-dom'
+import { useState, useRef, useEffect } from 'react' // 1. Import new hooks
+import Navbar from './Navbar'
 
 function Layout({ children, activeNav, setActiveNav }) {
-  const navigate = useNavigate();
   const location = useLocation()
   const [selectedLanguage, setSelectedLanguage] = useState('kh')
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false)
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isServicesDropdownOpen, setIsServicesDropdownOpen] = useState(false)
-  const [isAboutDropdownOpen, setIsAboutDropdownOpen] = useState(false)
-  const [isDataDropdownOpen, setIsDataDropdownOpen] = useState(false)
-  const servicesDropdownRef = useRef(null)
-  const aboutDropdownRef = useRef(null)
-  const dataDropdownRef = useRef(null)
 
-  // Close dropdowns when clicking outside
-  useEffect(() => {
-    function handleClickOutside(event) {
-      if (servicesDropdownRef.current && !servicesDropdownRef.current.contains(event.target)) {
-        setIsServicesDropdownOpen(false)
-      }
-      if (aboutDropdownRef.current && !aboutDropdownRef.current.contains(event.target)) {
-        setIsAboutDropdownOpen(false)
-      }
-      if (dataDropdownRef.current && !dataDropdownRef.current.contains(event.target)) {
-        setIsDataDropdownOpen(false)
-      }
-    }
-
-    document.addEventListener('mousedown', handleClickOutside)
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-    }
-  }, [])
+  // 2. Add state and ref for the search functionality
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('')
+  const searchInputRef = useRef(null)
+  const searchContainerRef = useRef(null)
 
   const languages = [
     { code: 'kh', name: 'ខ្មែរ', flag: '/image/kh-flag.jpg' },
@@ -41,49 +20,66 @@ function Layout({ children, activeNav, setActiveNav }) {
 
   const currentLanguage = languages.find(lang => lang.code === selectedLanguage)
 
-  const servicesItems = [
-    { id: 'water-supply', label: 'ការផ្គត់ផ្គង់ទឹកស្អាត', href: '/services/water-supply' },
-    { id: 'water-treatment', label: 'ការចម្រាញ់ទឹក', href: '/services/water-treatment' },
-    { id: 'maintenance', label: 'ការថែទាំ', href: '/services/maintenance' },
-    { id: 'billing', label: 'ការបង់ប្រាក់', href: '/services/billing' },
-    { id: 'customer-service', label: 'សេវាកម្មអតិថិជន', href: '/services/customer-service' },
-  ]
-  const aboutDropdownItems = [
-    { id: 'team', label: 'ក្រុមការងារ', href: '/about/team' },
-    { id: 'location-map', label: 'ផែនទីទីតាំង', href: '/about/location' }
-  ]
-  const dataItems = [
-    { id: 'monthly', label: 'របាយការណ៍ប្រចាំខែ', href: '/data/monthly' },
-    { id: 'yearly', label: 'របាយការណ៍ប្រចាំឆ្នាំ', href: '/data/yearly' }
-  ]
+  // 3. Add an effect to auto-focus the input when it appears
+  useEffect(() => {
+    if (isSearchOpen) {
+      // Use a tiny delay to ensure the input is rendered before focusing
+      setTimeout(() => {
+        searchInputRef.current?.focus()
+      }, 100)
+    }
+  }, [isSearchOpen]) // This effect runs whenever isSearchOpen changes
 
-  const navItems = [
-    { id: 'home', label: 'ទំព័រដើម', href: '/home' },
-    {
-      id: 'about',
-      label: 'អំពី រ.ស.រ',
-      href: '/about',
-      hasDropdown: true,
-      dropdownItems: aboutDropdownItems
-    },
-    {
-      id: 'services',
-      label: 'សេវាកម្មពាក់ព័ន្ធនឹងការងារ',
-      href: '/services',
-      hasDropdown: true,
-      dropdownItems: servicesItems
-    },
-    { id: 'news', label: 'ពត័ម៌ាន', href: '/news' },
-    { id: 'laws', label: 'ច្បាប់', href: '/laws' },
-    {
-      id: 'data',
-      label: 'ទិន្នន័យ',
-      href: '/data',
-      hasDropdown: true,
-      dropdownItems: dataItems
-    },
-    { id: 'contact', label: 'ទំនាក់ទំនង', href: '/contact' }
-  ]
+  // 4. Create handler functions for search interaction
+  const handleSearchClick = () => {
+    setIsSearchOpen(true)
+  }
+
+  const handleSearchBlur = () => {
+    // Only close if search is empty
+    if (searchQuery.trim() === '') {
+      setIsSearchOpen(false)
+    }
+  }
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value)
+  }
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault()
+    if (searchQuery.trim()) {
+      // Handle search logic here
+      console.log('Searching for:', searchQuery)
+      // You can add your search logic here
+    }
+  }
+
+  const handleSearchClose = () => {
+    setIsSearchOpen(false)
+    setSearchQuery('')
+  }
+
+  // Close search when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
+        if (searchQuery.trim() === '') {
+          setIsSearchOpen(false)
+        }
+      }
+    }
+
+    if (isSearchOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+      document.addEventListener('touchstart', handleClickOutside)
+    }
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('touchstart', handleClickOutside)
+    }
+  }, [isSearchOpen, searchQuery])
 
   return (
     <div className="min-h-screen bg-gray-50/70 relative">
@@ -119,7 +115,6 @@ function Layout({ children, activeNav, setActiveNav }) {
               </div>
 
               <div className="flex items-center space-x-3">
-
                 {/* Language Selector */}
                 <div className="relative">
                   <button
@@ -166,44 +161,111 @@ function Layout({ children, activeNav, setActiveNav }) {
             </div>
           </div>
 
-          {/* Logo and Title Section */}
-          <div className="px-3 sm:px-6 py-4 sm:py-8 bg-gradient-to-r from-blue-50 via-white to-cyan-50 w-full">
-            <div className="flex items-center justify-between w-full">
-              <div className="flex items-center space-x-4 sm:space-x-8">
-                <div className="relative group">
+          {/* Logo and Title Section - Mobile Optimized */}
+          <div className="px-3 sm:px-6 py-3 sm:py-4 bg-gradient-to-r from-blue-50 via-gray-100 to-cyan-50 w-full">
+            <div className="flex flex-col sm:flex-row items-center justify-between w-full space-y-4 sm:space-y-0">
+              <div className="flex items-center space-x-3 sm:space-x-8 w-full sm:w-auto">
+                <div className="relative group flex-shrink-0">
                   <div className="absolute -inset-1 bg-gradient-to-r from-blue-300 to-cyan-400 rounded-full blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
                   <img
                     src="/image/រដ្ឋាករទឹកស្វាយរៀង (4).png"
                     alt="SVR Water Utility Logo"
-                    className="relative h-16 w-16 sm:h-28 sm:w-28 rounded-full border-4 border-white object-cover shadow-xl group-hover:scale-105 transition-transform duration-300"
+                    className="relative h-14 w-14 sm:h-20 sm:w-20 lg:h-24 lg:w-24 rounded-full border-3 sm:border-4 border-white object-cover shadow-xl group-hover:scale-105 transition-transform duration-300"
                   />
                 </div>
 
-                <div className="space-y-1 sm:space-y-2">
-                  <h1 className="text-xl sm:text-3xl md:text-4xl font-bold text-blue-700 tracking-tight leading-tight khmer-title">
+                <div className="space-y-1 sm:space-y-2 min-w-0 flex-1">
+                  <h1 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-blue-700 tracking-tight leading-tight khmer-title break-words">
                     រដ្ឋាករទឹកស្វាយរៀង
                   </h1>
                   <div className="flex items-center space-x-2 sm:space-x-3">
-                    <p className="text-sm sm:text-lg text-blue-800 font-semibold leading-tight">Svay Rieng Water Utility</p>
+                    <p className="text-xs sm:text-sm md:text-base lg:text-lg text-blue-800 font-semibold leading-tight">Svay Rieng Water Utility</p>
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-4 items-end sm:items-center">
-                {/* Search Button */}
-                <button className="flex items-center justify-center space-x-1 sm:space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-3 sm:px-5 py-2 sm:py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-xs sm:text-sm font-medium">
-                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                  <span>ស្វែងរក</span>
-                </button>
+              <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 items-center w-full sm:w-auto">
 
-                {/* Service Status Cards */}
-                <div className="hidden lg:flex items-center space-x-3">
-                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 px-4 py-3 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200">
+                {/* Enhanced Search Component with Mobile Support */}
+                <div ref={searchContainerRef} className="relative flex items-center h-full w-full sm:w-auto order-2 sm:order-1">
+                  {isSearchOpen ? (
+                    // Search input form with mobile optimization
+                    <form onSubmit={handleSearchSubmit} className="relative w-full sm:w-auto">
+                      <div className="flex items-center bg-white border-2 border-blue-500 rounded-xl shadow-lg overflow-hidden w-full sm:w-56 md:w-64">
+                        <input
+                          ref={searchInputRef}
+                          value={searchQuery}
+                          onChange={handleSearchChange}
+                          onBlur={handleSearchBlur}
+                          type="text"
+                          placeholder="វាយបញ្ចូលដើម្បីស្វែងរក..."
+                          className="flex-1 px-4 py-2.5 sm:py-3 focus:outline-none text-sm sm:text-base text-gray-700 placeholder-gray-400"
+                        />
+                        <div className="flex items-center">
+                          {searchQuery && (
+                            <button
+                              type="button"
+                              onClick={handleSearchClose}
+                              className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                            >
+                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                              </svg>
+                            </button>
+                          )}
+                          <button
+                            type="submit"
+                            className="bg-blue-500 hover:bg-blue-600 text-white p-2.5 sm:p-3 transition-colors duration-200"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                            </svg>
+                          </button>
+                        </div>
+                      </div>
+                      
+                      {/* Mobile: Show search suggestions/results dropdown */}
+                      {searchQuery && (
+                        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-[60] max-h-60 overflow-y-auto">
+                          <div className="p-3 text-sm text-gray-500 border-b bg-gray-50">
+                            <div className="flex items-center space-x-2">
+                              <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                              </svg>
+                              <span>ស្វែងរក: "{searchQuery}"</span>
+                            </div>
+                          </div>
+                          <div className="p-4">
+                            <div className="text-sm text-gray-500 text-center">
+                              <div className="space-y-2">
+                                <div className="text-gray-400">មិនមានលទ្ធផលស្វែងរក</div>
+                                <div className="text-xs text-gray-300">សូមព្យាយាមជាមួយពាក្យគន្លឹះផ្សេងទៀត</div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </form>
+                  ) : (
+                    // Search button with improved mobile design
+                    <button
+                      onClick={handleSearchClick}
+                      className="flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 sm:px-5 py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm font-medium w-full sm:w-auto min-w-[140px]"
+                    >
+                      <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                      <span className="whitespace-nowrap">ស្វែងរក</span>
+                    </button>
+                  )}
+                </div>
+
+                {/* Service Status Cards - Hidden on small mobile, visible on larger screens */}
+                <div className="hidden md:flex items-center space-x-3 order-1 sm:order-2">
+                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 px-3 sm:px-4 py-2 sm:py-3 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200">
                     <div className="flex items-center space-x-2">
                       <div>
-                        <div className="text-blue-700 font-bold text-sm">សេវាកម្ម ២៤/៧</div>
+                        <div className="text-blue-700 font-bold text-xs sm:text-sm">សេវាកម្ម ២៤/៧</div>
                         <div className="text-blue-600 text-xs">តែងតែបម្រើដល់អ្នក</div>
                       </div>
                     </div>
@@ -215,245 +277,7 @@ function Layout({ children, activeNav, setActiveNav }) {
         </header>
 
         {/* Navigation */}
-        <nav className="shadow-sm border-b border-blue-200"
-          style={{
-            background: 'linear-gradient(to right, #FFE4E1, #F5FFFA)',
-          }}>
-          <div className="max-w-7xl mx-auto">
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center justify-center px-4 sm:px-6 py-3">
-              <div className="flex items-center space-x-4 lg:space-x-6">
-                {navItems.map((item) => (
-                  <div key={item.id} className="relative" ref={item.hasDropdown ? (item.id === 'services' ? servicesDropdownRef : item.id === 'about' ? aboutDropdownRef : dataDropdownRef) : null}>
-                    {item.hasDropdown ? (
-                      <>
-                        <button
-                          onClick={() => {
-                            if (item.id === 'services') {
-                              setIsServicesDropdownOpen(!isServicesDropdownOpen)
-                              setIsAboutDropdownOpen(false)
-                              setIsDataDropdownOpen(false)
-                            } else if (item.id === 'about') {
-                              setIsAboutDropdownOpen(!isAboutDropdownOpen)
-                              setIsServicesDropdownOpen(false)
-                              setIsDataDropdownOpen(false)
-                            } else if (item.id === 'data') {
-                              setIsDataDropdownOpen(!isDataDropdownOpen)
-                              setIsServicesDropdownOpen(false)
-                              setIsAboutDropdownOpen(false)
-                            }
-                          }}
-                          className={`flex items-center space-x-1 px-3 lg:px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg ${location.pathname.startsWith(item.href)
-                              ? 'bg-white text-blue-700 shadow-md'
-                              : 'text-black-800 hover:text-blue-900 hover:bg-white/60'
-                            }`}
-                        >
-                          <span>{item.label}</span>
-                          <svg
-                            className={`w-4 h-4 transition-transform duration-200 ${(item.id === 'services' && isServicesDropdownOpen) ||
-                                (item.id === 'about' && isAboutDropdownOpen) ||
-                                (item.id === 'data' && isDataDropdownOpen)
-                                ? 'rotate-180' : ''
-                              }`}
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                          </svg>
-                        </button>
-
-                        {/* Dropdown Menu */}
-                        {((item.id === 'services' && isServicesDropdownOpen) || (item.id === 'about' && isAboutDropdownOpen) || (item.id === 'data' && isDataDropdownOpen)) && (
-                          <div className="absolute top-full left-0 mt-2 w-64 bg-white border border-gray-200 rounded-lg shadow-xl z-[9999] overflow-hidden">
-                            <div className="py-2">                                <Link
-                                  to={item.href}
-                                  onClick={() => {
-                                    setActiveNav(item.id)
-                                    if (item.id === 'services') {
-                                      setIsServicesDropdownOpen(false)
-                                    } else if (item.id === 'about') {
-                                      setIsAboutDropdownOpen(false)
-                                    } else if (item.id === 'data') {
-                                      setIsDataDropdownOpen(false)
-                                    }
-                                  }}
-                                  className="block px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 border-b border-gray-100 font-medium"
-                                >
-                                  {item.id === 'services' ? 'សេវាកម្មទាំងអស់' : item.id === 'about' ? 'បេសកកម្មនិងចក្ខុវិស័យ' : 'ទិន្នន័យទាំងអស់'}
-                                </Link>
-                              {item.dropdownItems.map((dropdownItem) => (
-                                <Link
-                                  key={dropdownItem.id}
-                                  to={dropdownItem.href}                                    onClick={() => {
-                                      setActiveNav(item.id)
-                                      if (item.id === 'services') {
-                                        setIsServicesDropdownOpen(false)
-                                      } else if (item.id === 'about') {
-                                        setIsAboutDropdownOpen(false)
-                                      } else if (item.id === 'data') {
-                                        setIsDataDropdownOpen(false)
-                                      }
-                                    }}
-                                  className="block px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors"
-                                >
-                                  {dropdownItem.label}
-                                </Link>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                      </>
-                    ) : (
-                      <Link
-                        to={item.href}
-                        onClick={() => setActiveNav(item.id)}
-                        className={`px-3 lg:px-4 py-2 text-sm font-medium transition-colors duration-200 rounded-lg ${location.pathname === item.href || (location.pathname === '/' && item.id === 'home')
-                            ? 'bg-white text-blue-700 shadow-md'
-                            : 'text-black-800 hover:text-blue-900 hover:bg-white/60'
-                          }`}
-                      >
-                        {item.label}
-                      </Link>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Mobile Navigation */}
-            <div className="md:hidden">
-              <div className="flex items-center justify-between px-4 py-3">
-                <div className="text-blue-700 font-medium text-sm">
-                  {navItems.find(item => location.pathname === item.href || (location.pathname === '/' && item.id === 'home'))?.label || 'ប្រការទ័រ'}
-                </div>
-                <button
-                  onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-                  className="p-2 rounded-md text-blue-700 hover:text-blue-900 hover:bg-white/60 transition-colors"
-                >
-                  <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    {isMobileMenuOpen ? (
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                    ) : (
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
-                    )}
-                  </svg>
-                </button>
-              </div>
-
-              {/* Mobile Menu Dropdown */}
-              {isMobileMenuOpen && (
-                <div className="border-t border-blue-200 bg-white/90 backdrop-blur-sm">
-                  <div className="px-2 pt-2 pb-3 space-y-1">
-                    {navItems.map((item) => (
-                      <div key={item.id}>
-                        {item.hasDropdown ? (
-                          <>
-                            <button
-                              onClick={() => {
-                                if (item.id === 'services') {
-                                  setIsServicesDropdownOpen(!isServicesDropdownOpen)
-                                  setIsAboutDropdownOpen(false)
-                                  setIsDataDropdownOpen(false)
-                                } else if (item.id === 'about') {
-                                  setIsAboutDropdownOpen(!isAboutDropdownOpen)
-                                  setIsServicesDropdownOpen(false)
-                                  setIsDataDropdownOpen(false)
-                                } else if (item.id === 'data') {
-                                  setIsDataDropdownOpen(!isDataDropdownOpen)
-                                  setIsServicesDropdownOpen(false)
-                                  setIsAboutDropdownOpen(false)
-                                }
-                              }}
-                              className={`w-full flex items-center justify-between px-3 py-2 text-sm font-medium transition-colors duration-200 rounded-md ${location.pathname.startsWith(item.href)
-                                  ? 'bg-blue-100 text-blue-800'
-                                  : 'text-blue-700 hover:text-blue-900 hover:bg-blue-50'
-                                }`}
-                            >
-                              <span>{item.label}</span>
-                              <svg
-                                className={`w-4 h-4 transition-transform duration-200 ${(item.id === 'services' && isServicesDropdownOpen) ||
-                                    (item.id === 'about' && isAboutDropdownOpen) ||
-                                    (item.id === 'data' && isDataDropdownOpen)
-                                    ? 'rotate-180' : ''
-                                  }`}
-                                fill="none"
-                                stroke="currentColor"
-                                viewBox="0 0 24 24"
-                              >
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                              </svg>
-                            </button>
-
-                            {/* Mobile Submenu */}
-                            {((item.id === 'services' && isServicesDropdownOpen) || (item.id === 'about' && isAboutDropdownOpen) || (item.id === 'data' && isDataDropdownOpen)) && (
-                              <div className="ml-4 mt-1 space-y-1">
-                                <Link
-                                  to={item.href}
-                                  onClick={e => {
-                                    e.preventDefault();
-                                    setActiveNav(item.id);
-                                    setIsMobileMenuOpen(false);
-                                    if (item.id === 'services') {
-                                      setIsServicesDropdownOpen(false);
-                                    } else if (item.id === 'about') {
-                                      setIsAboutDropdownOpen(false);
-                                    } else if (item.id === 'data') {
-                                      setIsDataDropdownOpen(false);
-                                    }
-                                    // Use SPA navigation for mobile submenu
-                                    navigate(item.href);
-                                  }}
-                                  className="block px-3 py-2 text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded-md border-l-2 border-blue-200"
-                                >
-                                  📋 {item.id === 'services' ? 'សេវាកម្មទាំងអស់' : item.id === 'about' ? 'អំពីយើងទាំងអស់' : 'ទិន្នន័យទាំងអស់'}
-                                </Link>
-                                {item.dropdownItems.map((dropdownItem) => (
-                                  <Link
-                                    key={dropdownItem.id}
-                                    to={dropdownItem.href}
-                                    onClick={() => {
-                                      setActiveNav(item.id)
-                                      setIsMobileMenuOpen(false)
-                                      if (item.id === 'services') {
-                                        setIsServicesDropdownOpen(false)
-                                      } else if (item.id === 'about') {
-                                        setIsAboutDropdownOpen(false)
-                                      } else if (item.id === 'data') {
-                                        setIsDataDropdownOpen(false)
-                                      }
-                                    }}
-                                    className="block px-3 py-2 text-sm text-gray-600 hover:text-blue-800 hover:bg-blue-50 rounded-md border-l-2 border-gray-200"
-                                  >
-                                    {dropdownItem.label}
-                                  </Link>
-                                ))}
-                              </div>
-                            )}
-                          </>
-                        ) : (
-                          <Link
-                            to={item.href}
-                            onClick={() => {
-                              setActiveNav(item.id)
-                              setIsMobileMenuOpen(false)
-                            }}
-                            className={`block px-3 py-2 text-sm font-medium transition-colors duration-200 rounded-md ${location.pathname === item.href || (location.pathname === '/' && item.id === 'home')
-                                ? 'bg-blue-100 text-blue-800'
-                                : 'text-blue-700 hover:text-blue-900 hover:bg-blue-50'
-                              }`}
-                          >
-                            {item.label}
-                          </Link>
-                        )}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </nav>
+        <Navbar activeNav={activeNav} setActiveNav={setActiveNav} />
 
         {/* Main Content */}
         {children}
@@ -472,13 +296,13 @@ function Layout({ children, activeNav, setActiveNav }) {
                   />
                   <div>
                     <h3 className="font-bold text-lg mb-1 font-khmer-title">
-                      រដ្ឋករទឹកខេត្តស្វាយរៀង
+                      រដ្ឋករទឹកស្វាយរៀង
                     </h3>
                     <p className="text-gray-300 text-sm">Svay Ring Water Utility</p>
                   </div>
                 </div>
                 <p className="text-gray-400 text-sm leading-relaxed mb-4">
-                  យើងជាស្ថាប័នឈានមុខគេក្នុងការផ្គត់ផ្គង់ទឹកស្អាត និងលើកកម្ពស់សុខុមាលភាពសហគមន៍។
+                  រដ្ឋករទឹកស្វាយរៀងជាស្ថាប័នឈានមុខក្នុងការផ្គត់ផ្គង់ទឹកស្អាត និងលើកកម្ពស់សុខុមាលក្នុងភាពសហគមន៍។
                 </p>
                 <div className="flex flex-col space-y-2 text-sm text-gray-400">
                   <div className="flex items-center space-x-2">

@@ -1,9 +1,11 @@
 import { useState, useEffect } from 'react'
 
-function NewsModal({ isOpen, onClose, news, onSave }) {
+function NewsModal({ isOpen, onClose, news, categories = [], onSave }) {
   const [formData, setFormData] = useState({
     title: '',
     content: '',
+    category_id: '',
+    featured: false,
     image: null,
     published_at: new Date().toISOString().split('T')[0],
   })
@@ -16,6 +18,8 @@ function NewsModal({ isOpen, onClose, news, onSave }) {
       setFormData({
         title: news.title || '',
         content: news.content || '',
+        category_id: news.category_id || '',
+        featured: news.featured || false,
         image: null, // Don't pre-fill image for editing
         published_at: news.published_at ? news.published_at.split('T')[0] : new Date().toISOString().split('T')[0],
       })
@@ -23,6 +27,8 @@ function NewsModal({ isOpen, onClose, news, onSave }) {
       setFormData({
         title: '',
         content: '',
+        category_id: '',
+        featured: false,
         image: null,
         published_at: new Date().toISOString().split('T')[0],
       })
@@ -32,9 +38,11 @@ function NewsModal({ isOpen, onClose, news, onSave }) {
   }, [news, isOpen])
 
   const handleChange = (e) => {
-    const { name, value, files } = e.target
+    const { name, value, files, checked, type } = e.target
     if (name === 'image') {
       setFormData(prev => ({ ...prev, [name]: files[0] }))
+    } else if (type === 'checkbox') {
+      setFormData(prev => ({ ...prev, [name]: checked }))
     } else {
       setFormData(prev => ({ ...prev, [name]: value }))
     }
@@ -53,6 +61,8 @@ function NewsModal({ isOpen, onClose, news, onSave }) {
         dataToSend = new FormData()
         dataToSend.append('title', formData.title)
         dataToSend.append('content', formData.content)
+        dataToSend.append('category_id', formData.category_id)
+        dataToSend.append('featured', formData.featured ? '1' : '0')
         dataToSend.append('published_at', formData.published_at)
         dataToSend.append('image', formData.image)
       } else {
@@ -60,6 +70,8 @@ function NewsModal({ isOpen, onClose, news, onSave }) {
         dataToSend = {
           title: formData.title,
           content: formData.content,
+          category_id: formData.category_id,
+          featured: formData.featured,
           published_at: formData.published_at
         }
       }
@@ -71,6 +83,8 @@ function NewsModal({ isOpen, onClose, news, onSave }) {
       setFormData({
         title: '',
         content: '',
+        category_id: '',
+        featured: false,
         image: null,
         published_at: new Date().toISOString().split('T')[0],
       })
@@ -166,6 +180,45 @@ function NewsModal({ isOpen, onClose, news, onSave }) {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter news content"
                 />
+              </div>
+
+              {/* Category field */}
+              <div>
+                <label htmlFor="category_id" className="block text-sm font-medium text-gray-700 mb-1">
+                  Category
+                </label>
+                <select
+                  id="category_id"
+                  name="category_id"
+                  value={formData.category_id}
+                  onChange={handleChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+                >
+                  <option value="">Select a category (optional)</option>
+                  {categories.map((category) => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* Featured checkbox */}
+              <div>
+                <div className="flex items-center">
+                  <input
+                    id="featured"
+                    name="featured"
+                    type="checkbox"
+                    checked={formData.featured}
+                    onChange={handleChange}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  />
+                  <label htmlFor="featured" className="ml-2 block text-sm font-medium text-gray-700">
+                    Featured Article
+                  </label>
+                </div>
+                <p className="text-xs text-gray-500 mt-1">Featured articles will be highlighted on the homepage</p>
               </div>
 
               {/* Image field */}

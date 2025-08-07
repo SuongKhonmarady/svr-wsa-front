@@ -1,5 +1,6 @@
 import HeroSection from './Components/HeroSection'
 import ServicesOverview from './Components/ServicesOverview'
+import ServiceRequestSection from './Components/ServiceRequestSection'
 import NewsSection from './Components/NewsSection'
 
 function Home() {
@@ -12,6 +13,7 @@ function Home() {
         >
             <HeroSection />
             <ServicesOverview />
+            <ServiceRequestSection />
             <NewsSection />
         </div>
     )

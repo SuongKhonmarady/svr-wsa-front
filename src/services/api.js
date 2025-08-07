@@ -18,10 +18,17 @@ class ApiService {
 
     // Get auth token for protected routes
     const token = localStorage.getItem('admin_token')
-    const headers = {
-      ...this.defaultHeaders,
-      ...options.headers,
+    
+    // Carefully handle headers - don't override FormData headers
+    let headers = {}
+    
+    // Only add default headers if not FormData
+    if (!(options.body instanceof FormData)) {
+      headers = { ...this.defaultHeaders }
     }
+    
+    // Add any custom headers from options
+    headers = { ...headers, ...options.headers }
 
     // Add authorization header if token exists
     if (token) {
@@ -223,6 +230,10 @@ class ApiService {
     return result
   }
 
+  async getNewsBySlug(slug) {
+    return this.get(`/news/${slug}`)
+  }
+
   async getNewsById(id) {
     return this.get(`/news/${id}`)
   }
@@ -231,17 +242,129 @@ class ApiService {
     return this.post('/news', newsData)
   }
 
-  async updateNews(id, newsData) {
-    return this.put(`/news/${id}`, newsData)
+  async updateNews(slug, newsData) {
+    return this.put(`/news/${slug}`, newsData)
   }
 
-  async deleteNews(id) {
-    return this.delete(`/news/${id}`)
+  async deleteNews(slug) {
+    return this.delete(`/news/${slug}`)
+  }
+
+  // Categories API Methods
+  async getCategories() {
+    const result = await this.get('/categories')
+
+    if (result.error) {
+      return result
+    }
+
+    // Validate data structure
+    if (!Array.isArray(result.data)) {
+      return { data: null, error: 'Invalid data format received from server' }
+    }
+
+    return result
+  }
+
+  async getCategoryById(id) {
+    return this.get(`/categories/${id}`)
+  }
+
+  async createCategory(categoryData) {
+    return this.post('/categories', categoryData)
+  }
+
+  async updateCategory(id, categoryData) {
+    return this.put(`/categories/${id}`, categoryData)
+  }
+
+  async deleteCategory(id) {
+    return this.delete(`/categories/${id}`)
   }
 
   // Service Request API Methods
   async getServiceRequests() {
     return this.get('/service-requests')
+  }
+
+  // Admin Service Request Methods
+  async getAdminServiceRequests() {
+    return this.get('/admin/service-requests')
+  }
+
+  async getAdminServiceRequestById(id) {
+    return this.get(`/admin/service-requests/${id}`)
+  }
+
+  async serveDocument(id, type, filename) {
+    console.log('serveDocument called with:', { id, type, filename });
+    
+    let routeType, actualFilename;
+    
+    if (filename.includes('/')) {
+      // Path like "private/id_docs/5/front.jpg"
+      const pathParts = filename.split('/');
+      if (pathParts.length >= 3) {
+        routeType = pathParts[1]; // "id_docs" or "family_books"
+        actualFilename = pathParts[pathParts.length - 1]; // "front.jpg"
+      } else {
+        actualFilename = pathParts[pathParts.length - 1];
+        routeType = type === 'id_card' ? 'id_docs' : 'family_books';
+      }
+    } else {
+      actualFilename = filename;
+      routeType = type === 'id_card' ? 'id_docs' : 'family_books';
+    }
+    
+    const url = `${this.baseURL}/admin/service-requests/${id}/documents/${routeType}/${actualFilename}`;
+    console.log('Generated URL:', url);
+    return url;
+  }
+
+  async getProtectedDocument(id, type, filename) {
+    console.log('getProtectedDocument called with:', { id, type, filename });
+    
+    let routeType, actualFilename;
+    
+    if (filename.includes('/')) {
+      // Path like "private/id_docs/5/front.jpg"
+      const pathParts = filename.split('/');
+      if (pathParts.length >= 3) {
+        routeType = pathParts[1]; // "id_docs" or "family_books"
+        actualFilename = pathParts[pathParts.length - 1]; // "front.jpg"
+      } else {
+        actualFilename = pathParts[pathParts.length - 1];
+        routeType = type === 'id_card' ? 'id_docs' : 'family_books';
+      }
+    } else {
+      actualFilename = filename;
+      routeType = type === 'id_card' ? 'id_docs' : 'family_books';
+    }
+    
+    const url = `${this.baseURL}/admin/service-requests/${id}/documents/${routeType}/${actualFilename}`;
+    console.log('Generated URL:', url);
+    
+    // Get auth token
+    const token = localStorage.getItem('admin_token');
+    
+    try {
+      const response = await fetch(url, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Accept': 'image/*'
+        }
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const blob = await response.blob();
+      return URL.createObjectURL(blob);
+    } catch (error) {
+      console.error('Error fetching protected document:', error);
+      throw error;
+    }
   }
 
   async submitServiceRequest(requestData) {
@@ -500,6 +623,10 @@ export const {
   updateNews,
   deleteNews,
   getServiceRequests,
+  getAdminServiceRequests,
+  getAdminServiceRequestById,
+  serveDocument,
+  getProtectedDocument,
   submitServiceRequest,
   updateServiceRequestStatus,
   logout,

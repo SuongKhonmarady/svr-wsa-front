@@ -136,6 +136,42 @@ p, span, div, li, a, button, input, textarea, select, label {
     margin: 0 -4px;
     border-radius: 12px;
   }
+
+  /* Ensure mobile menu links are clickable */
+  .mobile-menu-dropdown a,
+  .mobile-menu-dropdown button {
+    display: flex !important;
+    align-items: center;
+    min-height: 48px;
+    padding: 12px 16px;
+    text-decoration: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: rgba(59, 130, 246, 0.1);
+    cursor: pointer;
+    width: 100%;
+    border: none;
+    background: none;
+    text-align: left;
+    font-family: inherit;
+  }
+
+  .mobile-menu-dropdown a:active,
+  .mobile-menu-dropdown button:active {
+    background-color: rgba(59, 130, 246, 0.1) !important;
+    transform: scale(0.98);
+  }
+
+  /* Specific styles for submenu items */
+  .mobile-menu-dropdown .bg-gray-50 a {
+    min-height: 44px;
+    padding: 12px 32px 12px 48px;
+  }
+
+  /* Ensure proper stacking */
+  .mobile-menu-dropdown {
+    position: relative;
+    z-index: 1000;
+  }
 }
 
 /* Extra small mobile devices */
@@ -210,5 +246,66 @@ p, span, div, li, a, button, input, textarea, select, label {
   .ultra-compact-spacing > :not([hidden]) ~ :not([hidden]) {
     margin-left: 0.125rem;
   }
+}
+
+/* Custom animations for contact page */
+@keyframes fade-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(60px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-in-left {
+  0% {
+    opacity: 0;
+    transform: translateX(-100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-right {
+  0% {
+    opacity: 0;
+    transform: translateX(100px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slide-in-up {
+  0% {
+    opacity: 0;
+    transform: translateY(80px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.animate-slide-in-left {
+  animation: slide-in-left 1s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.animate-slide-in-right {
+  animation: slide-in-right 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.3s both;
+}
+
+.animate-slide-in-up {
+  animation: slide-in-up 1s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.6s both;
 }
 

@@ -32,6 +32,7 @@ const AdminLogin = React.lazy(() => import('./pages/admin/login/login'));
 const AdminDashboard = React.lazy(() => import('./pages/admin/dashboard/dashboard'));
 const NewsManagement = React.lazy(() => import('./pages/admin/newsManagement/newsManagement'));
 const ServiceRequestsManagement = React.lazy(() => import('./pages/admin/serviceRequests/ServiceRequestsManagement'));
+const CustomerDetailPage = React.lazy(() => import('./pages/admin/serviceRequests/CustomerDetailPage'));
 const ReportsManagement = React.lazy(() => import('./pages/admin/reportManagement/reportpage')); // Corrected typo here
 const ReportForm = React.lazy(() => import('./pages/admin/reportManagement/Components/ReportForm'));
 
@@ -49,15 +50,6 @@ function App() {
       <Suspense fallback={<LoadingFallback />}> {/* A single Suspense for all lazy-loaded routes */}
         <Routes>
           {/* Public routes */}
-          {/* The "*" path for NotFound should ideally be the last one if it's a catch-all */}
-          <Route
-            path="*"
-            element={
-              <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
-                <NotFound />
-              </Layout>
-            }
-          />
           <Route
             path="/"
             element={
@@ -156,7 +148,7 @@ function App() {
             }
           />
           <Route
-            path="/news/:id"
+            path="/news/:slug"
             element={
               <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
                 <NewsDetailsPage />
@@ -255,6 +247,14 @@ function App() {
             }
           />
           <Route
+            path="/admin/service-requests/:requestId"
+            element={
+              <ProtectedRoute>
+                <CustomerDetailPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/admin/reports"
             element={
               <ProtectedRoute>
@@ -276,6 +276,16 @@ function App() {
               <ProtectedRoute>
                 <ReportForm />
               </ProtectedRoute>
+            }
+          />
+          
+          {/* Catch-all route for 404 - This should be the last route */}
+          <Route
+            path="*"
+            element={
+              <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
+                <NotFound />
+              </Layout>
             }
           />
         </Routes>

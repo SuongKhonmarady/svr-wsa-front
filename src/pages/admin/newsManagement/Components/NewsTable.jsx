@@ -45,6 +45,12 @@ function NewsTable({ news, onEdit, onDelete, loading }) {
                 Content
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Category
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Featured
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Published Date
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -55,7 +61,7 @@ function NewsTable({ news, onEdit, onDelete, loading }) {
           <tbody className="bg-white divide-y divide-gray-200">
             {news.length === 0 ? (
               <tr>
-                <td colSpan="5" className="px-6 py-4 text-center text-gray-500">
+                <td colSpan="7" className="px-6 py-4 text-center text-gray-500">
                   No news found
                 </td>
               </tr>
@@ -86,6 +92,30 @@ function NewsTable({ news, onEdit, onDelete, loading }) {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
+                      {item.category ? (
+                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
+                          {item.category.name}
+                        </span>
+                      ) : (
+                        <span className="text-gray-400">No category</span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">
+                      {item.featured ? (
+                        <span className="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs font-medium">
+                          Featured
+                        </span>
+                      ) : (
+                        <span className="bg-gray-100 text-gray-600 px-2 py-1 rounded-full text-xs">
+                          Regular
+                        </span>
+                      )}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm text-gray-900">
                       {new Date(item.published_at || item.created_at).toLocaleDateString()}
                     </div>
                   </td>
@@ -98,7 +128,7 @@ function NewsTable({ news, onEdit, onDelete, loading }) {
                         Edit
                       </button>
                       <button
-                        onClick={() => onDelete(item.id)}
+                        onClick={() => onDelete(item)}
                         className="text-red-600 hover:text-red-900 bg-red-100 hover:bg-red-200 px-3 py-1 rounded-md transition-colors"
                       >
                         Delete

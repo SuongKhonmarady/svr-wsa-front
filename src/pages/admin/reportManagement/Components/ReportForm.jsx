@@ -310,6 +310,12 @@ function ReportForm() {
         }
         
         try {
+            // Frontend validation - check required fields before building FormData
+            console.log('Pre-submission validation check:');
+            console.log('- year_id:', formData.year_id, 'Type:', typeof formData.year_id);
+            console.log('- month_id:', formData.month_id, 'Type:', typeof formData.month_id, 'Report type:', formData.type);
+            console.log('- created_by:', formData.created_by, 'Type:', typeof formData.created_by);
+            
             // Build FormData properly - different structure for monthly vs yearly
             const data = new FormData();
             
@@ -319,51 +325,36 @@ function ReportForm() {
             data.append('status', formData.status);
             data.append('description', formData.description.trim());
             
-            // Add year_id (ensure it's a valid number and not empty)
-            if (formData.year_id && formData.year_id.toString().trim() !== '') {
-                data.append('year_id', formData.year_id.toString());
-            } else {
-                console.error('Year ID is missing or empty:', formData.year_id);
-            }
+            // Add year_id (always include, let backend validate)
+            data.append('year_id', formData.year_id ? formData.year_id.toString() : '');
             
-            // Add month_id ONLY for monthly reports (completely skip for yearly)
+            // Add month_id ONLY for monthly reports (always include for monthly, completely omit for yearly)
             if (formData.type === 'monthly') {
-                if (formData.month_id && formData.month_id.toString().trim() !== '') {
-                    data.append('month_id', formData.month_id.toString());
-                } else {
-                    console.error('Month ID is missing or empty for monthly report:', formData.month_id);
-                }
+                data.append('month_id', formData.month_id ? formData.month_id.toString() : '');
             }
             // Note: month_id completely omitted for yearly reports
             
-            // Add created_by (ensure it's not empty)
-            if (formData.created_by && formData.created_by.trim() !== '') {
-                data.append('created_by', formData.created_by.trim());
-            } else {
-                console.error('Created by is missing or empty:', formData.created_by);
-                data.append('created_by', 'Admin User'); // Fallback
-            }
+            // Add created_by (always include, use fallback if empty)
+            const createdBy = formData.created_by && formData.created_by.trim() !== '' 
+                ? formData.created_by.trim() 
+                : 'Admin User';
+            data.append('created_by', createdBy);
             
             // Add file
             if (formData.file && formData.file instanceof File) {
                 data.append('file', formData.file);
             }
 
-            // Validate required fields before submission
-            const requiredFields = ['year_id', 'created_by'];
-            if (formData.type === 'monthly') {
-                requiredFields.push('month_id');
+            // Debug: Log what we're sending
+            console.log('=== FORM SUBMISSION DEBUG ===');
+            console.log('isEditing:', isEditing);
+            console.log('Report ID:', id);
+            console.log('Form Data State:', formData);
+            console.log('FormData contents:');
+            for (let pair of data.entries()) {
+                console.log(`${pair[0]}:`, pair[1]);
             }
-            
-            for (const field of requiredFields) {
-                const value = data.get(field);
-                if (!value || value.toString().trim() === '') {
-                    console.error(`Missing required field: ${field}`, value);
-                    setGeneralError(`Missing required field: ${field}`);
-                    setSubmitLoading(false);
-                    return;
-                }
-            }
+            console.log('=== END DEBUG ===');
 
             console.log('Making API call...');
             
@@ -373,18 +364,6 @@ function ReportForm() {
                 setUploadProgress(0);
             }
 
-            // Check authentication 
-            const token = localStorage.getItem('admin_token');
-            
-            if (!token) {
-                setGeneralError('No authentication token found. Please log in again.');
-                setSubmitLoading(false);
-                return;
-            }
-            
-            // Make API call directly with FormData like the working HTML test
-            let response;
-            
             // Simulate upload progress for better UX
             if (isUploading) {
                 const progressInterval = setInterval(() => {
@@ -397,52 +376,21 @@ function ReportForm() {
                 setTimeout(() => clearInterval(progressInterval), 3000);
             }
             
-            try {
-                // Make the API call using direct fetch exactly like the HTML test
-                // Use different endpoints for monthly vs yearly reports
-                let endpoint;
-                if (formData.type === 'monthly') {
-                    endpoint = isEditing 
-                        ? `${import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api'}/reports/admin/monthly/${id}`
-                        : `${import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api'}/reports/admin/monthly`;
-                } else {
-                    // For yearly reports, use yearly endpoint
-                    endpoint = isEditing 
-                        ? `${import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api'}/reports/admin/yearly/${id}`
-                        : `${import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000/api'}/reports/admin/yearly`;
-                }
-                
-                // For editing with FormData, sometimes Laravel expects POST with _method
-                let method = 'POST';
+            // Make API call using the fixed API service
+            let response;
+            
+            if (formData.type === 'monthly') {
                 if (isEditing) {
-                    // Add _method for Laravel to understand this is a PUT request
-                    data.append('_method', 'PUT');
+                    response = await apiService.updateMonthlyReport(id, data);
+                } else {
+                    response = await apiService.createMonthlyReport(data);
                 }
-                
-                console.log(`${isEditing ? 'Updating' : 'Creating'} ${formData.type} report...`);
-                
-                const apiResponse = await fetch(endpoint, {
-                    method: method,
-                    headers: {
-                        'Accept': 'application/json',
-                        'Authorization': `Bearer ${token}`,
-                        'X-Requested-With': 'XMLHttpRequest'
-                        // Don't set Content-Type - let browser set it for FormData
-                    },
-                    body: data
-                });
-                
-                const responseData = await apiResponse.json();
-                
-                if (!apiResponse.ok) {
-                    throw new Error(responseData.message || `HTTP ${apiResponse.status}: ${apiResponse.statusText}`);
+            } else {
+                if (isEditing) {
+                    response = await apiService.updateYearlyReport(id, data);
+                } else {
+                    response = await apiService.createYearlyReport(data);
                 }
-                
-                response = { data: responseData, error: null };
-                
-            } catch (error) {
-                console.error('API call failed:', error);
-                response = { data: null, error: error.message };
             }
 
             // Complete progress

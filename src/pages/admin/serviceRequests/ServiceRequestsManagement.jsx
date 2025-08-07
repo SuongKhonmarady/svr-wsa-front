@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import apiService from '../../../services/api';
-import ServiceRequestDetailModal from './ServiceRequestDetailModal';
 import AdminLayout from '../components/AdminLayout';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
 function ServiceRequestsManagement() {
+    const navigate = useNavigate();
     const [serviceRequests, setServiceRequests] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [showModal, setShowModal] = useState(false);
-    const [showDetailModal, setShowDetailModal] = useState(false);
     const [statuses, setStatuses] = useState([]);
     const [updatingStatus, setUpdatingStatus] = useState(false);
     const [exportLoading, setExportLoading] = useState(false);
@@ -67,11 +67,11 @@ function ServiceRequestsManagement() {
     const fetchServiceRequests = async () => {
         try {
             setLoading(true);
-            const response = await apiService.getServiceRequests();
-            console.log('Service Requests Response:', response); // Debug log
+            const response = await apiService.getAdminServiceRequests();
+            console.log('Admin Service Requests Response:', response); // Debug log
             
             if (response.data && response.data.success) {
-                console.log('Service Requests Data:', response.data.data); // Debug log
+                console.log('Admin Service Requests Data:', response.data.data); // Debug log
                 setServiceRequests(response.data.data || []);
             } else if (response.error) {
                 setError(response.error);
@@ -133,8 +133,7 @@ function ServiceRequestsManagement() {
     };
 
     const openDetailModal = (request) => {
-        setSelectedRequest(request);
-        setShowDetailModal(true);
+        navigate(`/admin/service-requests/${request.id}`);
     };
 
     const formatDate = (dateString) => {
@@ -426,7 +425,7 @@ function ServiceRequestsManagement() {
                                                     onClick={() => openDetailModal(request)}
                                                     className="text-indigo-600 hover:text-indigo-900 mr-3"
                                                 >
-                                                    View Details
+                                                    View Details & Documents
                                                 </button>
                                                 <button
                                                     onClick={() => openStatusModal(request)}
@@ -500,16 +499,6 @@ function ServiceRequestsManagement() {
                     </div>
                 </div>
             )}
-
-            {/* Service Request Detail Modal */}
-            <ServiceRequestDetailModal
-                request={selectedRequest}
-                isOpen={showDetailModal}
-                onClose={() => {
-                    setShowDetailModal(false);
-                    setSelectedRequest(null);
-                }}
-            />
         </div>
         </AdminLayout>
     );

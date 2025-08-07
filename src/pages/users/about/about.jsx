@@ -1,5 +1,5 @@
-import AboutHero from './Components/AboutHero'
-import MissionVision from './Components/MissionVision'
+import AboutHero from './Components/about/AboutHero'
+import MissionVision from './Components/about/MissionVision'
 
 function About() {
     return (

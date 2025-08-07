@@ -1,4 +1,44 @@
+import { useState, useEffect, useRef } from 'react'
+
 function ServicesOverview() {
+  const [visibleSections, setVisibleSections] = useState({
+    title: false,
+    services: false
+  });
+
+  const titleRef = useRef(null);
+  const servicesRef = useRef(null);
+
+  useEffect(() => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          const targetId = entry.target.dataset.section;
+          setVisibleSections(prev => ({
+            ...prev,
+            [targetId]: true
+          }));
+        }
+      });
+    }, observerOptions);
+
+    if (titleRef.current) {
+      titleRef.current.dataset.section = 'title';
+      observer.observe(titleRef.current);
+    }
+    if (servicesRef.current) {
+      servicesRef.current.dataset.section = 'services';
+      observer.observe(servicesRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
   const services = [
     {
       icon: (
@@ -37,7 +77,14 @@ function ServicesOverview() {
       {/* Light overlay to make content readable while showing background */}
       <div className="absolute inset-0 bg-white"></div>
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
+        <div 
+          ref={titleRef}
+          className={`text-center mb-16 transition-all duration-1000 ${
+          visibleSections.title 
+            ? 'opacity-100 transform translate-y-0 animate-fade-in-up' 
+            : 'opacity-0 transform translate-y-8'
+        }`}
+        >
           <h2 className="text-4xl font-bold text-gray-900 mb-4 font-khmer-title">
             សេវាកម្មរបស់យើង
           </h2>
@@ -46,33 +93,46 @@ function ServicesOverview() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div 
+          ref={servicesRef}
+          className="grid grid-cols-1 md:grid-cols-3 gap-8"
+        >
           {services.map((service, index) => (
-            <div key={index} className="bg-gradient-to-br from-blue-50 to-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition-shadow duration-300 border border-blue-100">
-              <div className="text-blue-600 mb-6">
+            <div 
+              key={index}
+              className={`bg-white rounded-3xl shadow-lg hover:shadow-xl p-8 transition-all duration-1000 hover:scale-105 transform ${
+                visibleSections.services 
+                  ? 'opacity-100 translate-y-0' + (index === 0 ? ' animate-slide-in-left' : index === 1 ? ' animate-fade-in-up' : ' animate-slide-in-right')
+                  : 'opacity-0 translate-y-8'
+              }`}
+              style={{ transitionDelay: `${index * 200}ms` }}
+            >
+              {/* Icon */}
+              <div className="text-blue-600 mb-6 transform hover:scale-110 transition-transform duration-300 animate-pulse">
                 {service.icon}
               </div>
-              
-              <h3 className="text-2xl font-bold text-gray-900 mb-4">
+
+              {/* Title */}
+              <h3 className="text-2xl font-bold text-gray-900 mb-4 font-khmer-title">
                 {service.title}
               </h3>
-              
+
+              {/* Description */}
               <p className="text-gray-600 mb-6 leading-relaxed">
                 {service.description}
               </p>
-              
-              <ul className="space-y-2">
-                {service.features.map((feature, idx) => (
-                  <li key={idx} className="flex items-center text-sm text-gray-700">
-                    <span className="text-green-500 mr-2">✓</span>
+
+              {/* Features */}
+              <ul className="space-y-3">
+                {service.features.map((feature, featureIndex) => (
+                  <li key={featureIndex} className="flex items-center text-sm text-gray-700 bg-gray-50 p-3 rounded-xl hover:bg-blue-50 transition-colors duration-300">
+                    <svg className="w-4 h-4 text-green-500 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
                     {feature}
                   </li>
                 ))}
               </ul>
-              
-              <button className="mt-6 w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium">
-                ស្វែងយល់បន្ថែម
-              </button>
             </div>
           ))}
         </div>

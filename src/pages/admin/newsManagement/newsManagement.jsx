@@ -6,6 +6,7 @@ import apiService from '../../../services/api'
 
 function NewsManagement() {
   const [news, setNews] = useState([])
+  const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [success, setSuccess] = useState(null)
@@ -15,6 +16,7 @@ function NewsManagement() {
 
   useEffect(() => {
     fetchNews()
+    fetchCategories()
   }, [])
 
   const fetchNews = async () => {
@@ -33,6 +35,19 @@ function NewsManagement() {
     }
   }
 
+  const fetchCategories = async () => {
+    try {
+      const result = await apiService.getCategories()
+      if (result.error) {
+        console.error('Failed to fetch categories:', result.error)
+      } else {
+        setCategories(result.data)
+      }
+    } catch (err) {
+      console.error('Failed to fetch categories:', err)
+    }
+  }
+
   const handleCreateNews = () => {
     setSelectedNews(null)
     setModalOpen(true)
@@ -43,15 +58,15 @@ function NewsManagement() {
     setModalOpen(true)
   }
 
-  const handleDeleteNews = async (id) => {
+  const handleDeleteNews = async (newsItem) => {
     if (window.confirm('Are you sure you want to delete this news item?')) {
       try {
         setError(null)
-        const result = await apiService.deleteNews(id)
+        const result = await apiService.deleteNews(newsItem.slug)
         if (result.error) {
           setError('Error deleting news: ' + result.error)
         } else {
-          setNews(news.filter(item => item.id !== id))
+          setNews(news.filter(item => item.id !== newsItem.id))
           setSuccess('News deleted successfully!')
           setTimeout(() => setSuccess(null), 3000)
         }
@@ -61,13 +76,13 @@ function NewsManagement() {
     }
   }
 
-  const handleSaveNews = async (formData, id) => {
+  const handleSaveNews = async (formData, newsId) => {
     try {
       setError(null)
       let result
-      if (id) {
-        // Update existing news
-        result = await apiService.updateNews(id, formData)
+      if (newsId) {
+        // Update existing news - use selectedNews.slug instead of newsId
+        result = await apiService.updateNews(selectedNews.slug, formData)
       } else {
         // Create new news
         result = await apiService.createNews(formData)
@@ -79,7 +94,7 @@ function NewsManagement() {
       } else {
         // Refresh the news list
         await fetchNews()
-        setSuccess(id ? 'News updated successfully!' : 'News created successfully!')
+        setSuccess(newsId ? 'News updated successfully!' : 'News created successfully!')
         setTimeout(() => setSuccess(null), 3000)
         setModalOpen(false)
       }
@@ -190,6 +205,7 @@ function NewsManagement() {
           isOpen={modalOpen}
           onClose={() => setModalOpen(false)}
           news={selectedNews}
+          categories={categories}
           onSave={handleSaveNews}
         />
       </div>

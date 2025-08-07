@@ -1,14 +1,43 @@
+import { useState, useEffect, useRef } from 'react'
 import { useNews } from '../../../../hooks/useApi'
 import apiService from '../../../../services/api'
 
 function NewsSection() {
+  const [isVisible, setIsVisible] = useState(false)
+  const sectionRef = useRef(null)
+  
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true)
+          observer.unobserve(entry.target)
+        }
+      },
+      {
+        threshold: 0.1,
+        rootMargin: '50px 0px -50px 0px'
+      }
+    )
+
+    if (sectionRef.current) {
+      observer.observe(sectionRef.current)
+    }
+
+    return () => {
+      if (sectionRef.current) {
+        observer.unobserve(sectionRef.current)
+      }
+    }
+  }, [])
+
   // Use custom hook for news fetching with auto-refresh
   const { news, loading, error, retry, refresh, refreshing, retryCount } = useNews(true, 300000) // Auto-refresh every 5 minutes
 
   // Loading state
   if (loading) {
     return (
-      <div className="py-16 relative">
+      <div ref={sectionRef} className="py-16 relative">
         <div className="absolute inset-0 bg-gray-50"></div>
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center mb-12">
@@ -82,11 +111,15 @@ function NewsSection() {
   }
 
   return (
-    <div className="py-16 relative">
+    <div ref={sectionRef} className="py-16 relative">
       {/* Light overlay for better readability */}
       <div className="absolute inset-0 bg-gray-50"></div>
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center mb-12">
+        <div className={`flex justify-between items-center mb-12 transition-all duration-1000 ${
+          isVisible 
+            ? 'opacity-100 transform translate-y-0' 
+            : 'opacity-0 transform translate-y-8'
+        }`}>
           <div>
             <h2 className="text-4xl font-bold text-gray-900 mb-4 font-khmer-title">
               ព័ត៌មានថ្មីៗ
@@ -99,7 +132,7 @@ function NewsSection() {
             <button 
               onClick={refresh}
               disabled={refreshing}
-              className="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-colors disabled:opacity-50 flex items-center space-x-2"
+              className="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-all duration-200 disabled:opacity-50 flex items-center space-x-2 hover:scale-105"
             >
               {refreshing ? (
                 <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
@@ -107,8 +140,10 @@ function NewsSection() {
                 <span>↻</span>
               )}
             </button>
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors">
-              មើលទាំងអស់
+            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all duration-200 hover:scale-105">
+              <a href="/news" className="flex items-center space-x-2">
+                <span>មើលទាំងអស់</span>
+              </a>
             </button>
           </div>
         </div>
@@ -116,8 +151,16 @@ function NewsSection() {
         {/* Check if news data exists */}
         {news && news.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {news.map((item) => (
-              <article key={item.id} className="bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300">
+            {news.map((item, index) => (
+              <article 
+                key={item.id}
+                className={`bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-1000 hover:scale-105 ${
+                  isVisible 
+                    ? 'opacity-100 transform translate-y-0' 
+                    : 'opacity-0 transform translate-y-8'
+                }`}
+                style={{ transitionDelay: `${300 + index * 150}ms` }}
+              >
                 <div className="relative">
                   <img
                     src={apiService.getImageUrl(item.image)}

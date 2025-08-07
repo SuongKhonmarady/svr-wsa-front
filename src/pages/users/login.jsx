@@ -35,7 +35,7 @@ function UserLogin() {
           id: 'user123',
           email: formData.email,
           name: 'John Doe',
-          customerNumber: 'WSA001234',
+          customerNumber: 'W001234',
           loginTime: new Date().toISOString()
         }
         

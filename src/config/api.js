@@ -32,6 +32,7 @@ const API_CONFIG = {
   // Endpoints
   ENDPOINTS: {
     NEWS: '/news',
+    CATEGORIES: '/categories',
     SERVICES: '/services',
     CONTACT: '/contact',
     LAWS: '/laws',

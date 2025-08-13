@@ -1,6 +1,5 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNews } from '../../../../hooks/useApi'
-import apiService from '../../../../services/api'
 
 function NewsSection() {
   const [isVisible, setIsVisible] = useState(false)
@@ -48,8 +47,8 @@ function NewsSection() {
             <div className="hidden md:block h-12 bg-gray-200 rounded-lg w-24 animate-pulse"></div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[1, 2, 3, 4, 5, 6].map((i) => (
               <div key={i} className="bg-white rounded-2xl shadow-lg overflow-hidden animate-pulse">
                 <div className="h-48 bg-gray-200"></div>
                 <div className="p-6">
@@ -125,7 +124,7 @@ function NewsSection() {
               ព័ត៌មានថ្មីៗ
             </h2>
             <p className="text-xl text-gray-600">
-              ការធ្វើប្រើថ្មី និងព័ត៌មានសំខាន់ៗ
+              ព័ត៌មាន និងការប្រកាសចុងក្រោយបំផុត ១០ ដំបូង
             </p>
           </div>
           <div className="hidden md:flex space-x-4">
@@ -150,8 +149,17 @@ function NewsSection() {
 
         {/* Check if news data exists */}
         {news && news.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {news.map((item, index) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {news
+              // Sort by published_at or created_at (most recent first)
+              .sort((a, b) => {
+                const dateA = new Date(a.published_at || a.created_at)
+                const dateB = new Date(b.published_at || b.created_at)
+                return dateB - dateA // Most recent first
+              })
+              // Take only the first 10 items
+              .slice(0, 10)
+              .map((item, index) => (
               <article 
                 key={item.id}
                 className={`bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-1000 hover:scale-105 ${
@@ -159,11 +167,11 @@ function NewsSection() {
                     ? 'opacity-100 transform translate-y-0' 
                     : 'opacity-0 transform translate-y-8'
                 }`}
-                style={{ transitionDelay: `${300 + index * 150}ms` }}
+                style={{ transitionDelay: `${300 + index * 100}ms` }} // Reduced delay for more items
               >
                 <div className="relative">
                   <img
-                    src={apiService.getImageUrl(item.image)}
+                    src={item.image || '/image/svrwsa_logo_high_quality.png'}
                     alt={item.title || 'News image'}
                     className="w-full h-48 object-cover"
                     onError={(e) => {
@@ -172,10 +180,23 @@ function NewsSection() {
                     }}
                   />
                   <div className="absolute top-4 left-4">
-                    <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-medium">
-                      ព័ត៌មាន
-                    </span>
+                    {item.featured ? (
+                      <span className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                        ព័ត៌មានសំខាន់
+                      </span>
+                    ) : (
+                      <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                        ព័ត៌មាន
+                      </span>
+                    )}
                   </div>
+                  {item.category && (
+                    <div className="absolute top-4 right-4">
+                      <span className="bg-gray-800 bg-opacity-75 text-white px-2 py-1 rounded text-xs">
+                        {item.category.name}
+                      </span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="p-6">
@@ -202,15 +223,12 @@ function NewsSection() {
                     }
                   </p>
 
-                  <button 
+                  <a
+                    href={`/news/${item.slug}`}
                     className="text-blue-600 font-medium hover:text-blue-700 transition-colors duration-200"
-                    onClick={() => {
-                      // Handle read more action
-                      console.log('Read more clicked for:', item.title);
-                    }}
                   >
                     អានបន្ថែម →
-                  </button>
+                  </a>
                 </div>
               </article>
             ))}

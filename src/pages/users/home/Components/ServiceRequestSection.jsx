@@ -92,8 +92,8 @@ function ServiceRequestSection() {
                 </div>
 
                 {/* CTA Button */}
-                <Link
-                  to="/services/water-supply"
+                <a
+                  href="/services/water-supply"
                   className={`inline-flex items-center px-8 py-4 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all duration-1000 shadow-lg hover:shadow-xl group ${
                     isVisible 
                       ? 'opacity-100 transform translate-y-0 scale-100' 
@@ -105,7 +105,7 @@ function ServiceRequestSection() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
                   </svg>
                   ដាក់ពាក្យឥឡូវនេះ
-                </Link>
+                </a>
               </div>
             </div>
 

@@ -1,17 +1,12 @@
 import { useLocation } from 'react-router-dom'
-import { useState, useRef, useEffect } from 'react' // 1. Import new hooks
+import { useState } from 'react' 
 import Navbar from './Navbar'
+import GlobalSearch from './GlobalSearch'
 
 function Layout({ children, activeNav, setActiveNav }) {
   const location = useLocation()
   const [selectedLanguage, setSelectedLanguage] = useState('kh')
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false)
-
-  // 2. Add state and ref for the search functionality
-  const [isSearchOpen, setIsSearchOpen] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
-  const searchInputRef = useRef(null)
-  const searchContainerRef = useRef(null)
 
   const languages = [
     { code: 'kh', name: 'ខ្មែរ', flag: '/image/kh-flag.jpg' },
@@ -19,67 +14,6 @@ function Layout({ children, activeNav, setActiveNav }) {
   ]
 
   const currentLanguage = languages.find(lang => lang.code === selectedLanguage)
-
-  // 3. Add an effect to auto-focus the input when it appears
-  useEffect(() => {
-    if (isSearchOpen) {
-      // Use a tiny delay to ensure the input is rendered before focusing
-      setTimeout(() => {
-        searchInputRef.current?.focus()
-      }, 100)
-    }
-  }, [isSearchOpen]) // This effect runs whenever isSearchOpen changes
-
-  // 4. Create handler functions for search interaction
-  const handleSearchClick = () => {
-    setIsSearchOpen(true)
-  }
-
-  const handleSearchBlur = () => {
-    // Only close if search is empty
-    if (searchQuery.trim() === '') {
-      setIsSearchOpen(false)
-    }
-  }
-
-  const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value)
-  }
-
-  const handleSearchSubmit = (e) => {
-    e.preventDefault()
-    if (searchQuery.trim()) {
-      // Handle search logic here
-      console.log('Searching for:', searchQuery)
-      // You can add your search logic here
-    }
-  }
-
-  const handleSearchClose = () => {
-    setIsSearchOpen(false)
-    setSearchQuery('')
-  }
-
-  // Close search when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (searchContainerRef.current && !searchContainerRef.current.contains(event.target)) {
-        if (searchQuery.trim() === '') {
-          setIsSearchOpen(false)
-        }
-      }
-    }
-
-    if (isSearchOpen) {
-      document.addEventListener('mousedown', handleClickOutside)
-      document.addEventListener('touchstart', handleClickOutside)
-    }
-
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside)
-      document.removeEventListener('touchstart', handleClickOutside)
-    }
-  }, [isSearchOpen, searchQuery])
 
   return (
     <div className="min-h-screen bg-gray-50/70 relative">
@@ -187,78 +121,7 @@ function Layout({ children, activeNav, setActiveNav }) {
               <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 items-center w-full sm:w-auto">
 
                 {/* Enhanced Search Component with Mobile Support */}
-                <div ref={searchContainerRef} className="relative flex items-center h-full w-full sm:w-auto order-2 sm:order-1">
-                  {isSearchOpen ? (
-                    // Search input form with mobile optimization
-                    <form onSubmit={handleSearchSubmit} className="relative w-full sm:w-auto">
-                      <div className="flex items-center bg-white border-2 border-blue-500 rounded-xl shadow-lg overflow-hidden w-full sm:w-56 md:w-64">
-                        <input
-                          ref={searchInputRef}
-                          value={searchQuery}
-                          onChange={handleSearchChange}
-                          onBlur={handleSearchBlur}
-                          type="text"
-                          placeholder="វាយបញ្ចូលដើម្បីស្វែងរក..."
-                          className="flex-1 px-4 py-2.5 sm:py-3 focus:outline-none text-sm sm:text-base text-gray-700 placeholder-gray-400"
-                        />
-                        <div className="flex items-center">
-                          {searchQuery && (
-                            <button
-                              type="button"
-                              onClick={handleSearchClose}
-                              className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-                            >
-                              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                              </svg>
-                            </button>
-                          )}
-                          <button
-                            type="submit"
-                            className="bg-blue-500 hover:bg-blue-600 text-white p-2.5 sm:p-3 transition-colors duration-200"
-                          >
-                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                            </svg>
-                          </button>
-                        </div>
-                      </div>
-                      
-                      {/* Mobile: Show search suggestions/results dropdown */}
-                      {searchQuery && (
-                        <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-xl shadow-xl z-[60] max-h-60 overflow-y-auto">
-                          <div className="p-3 text-sm text-gray-500 border-b bg-gray-50">
-                            <div className="flex items-center space-x-2">
-                              <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                              </svg>
-                              <span>ស្វែងរក: "{searchQuery}"</span>
-                            </div>
-                          </div>
-                          <div className="p-4">
-                            <div className="text-sm text-gray-500 text-center">
-                              <div className="space-y-2">
-                                <div className="text-gray-400">មិនមានលទ្ធផលស្វែងរក</div>
-                                <div className="text-xs text-gray-300">សូមព្យាយាមជាមួយពាក្យគន្លឹះផ្សេងទៀត</div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </form>
-                  ) : (
-                    // Search button with improved mobile design
-                    <button
-                      onClick={handleSearchClick}
-                      className="flex items-center justify-center space-x-2 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white px-4 sm:px-5 py-3 rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm font-medium w-full sm:w-auto min-w-[140px]"
-                    >
-                      <svg className="w-4 h-4 sm:w-5 sm:h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                      </svg>
-                      <span className="whitespace-nowrap">ស្វែងរក</span>
-                    </button>
-                  )}
-                </div>
+                <GlobalSearch />
 
                 {/* Service Status Cards - Hidden on small mobile, visible on larger screens */}
                 <div className="hidden md:flex items-center space-x-3 order-1 sm:order-2">

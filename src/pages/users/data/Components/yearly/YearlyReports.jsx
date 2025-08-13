@@ -245,8 +245,8 @@ const YearlyReports = () => {
                                                         បោះពុម្ព: {r.publishedDate.toLocaleDateString('km-KH')}
                                                     </div>
                                                     <div className="flex gap-2">
-                                                        <Link
-                                                            to={`/data/yearly/${r.year}/report/${r.id}`}
+                                                        <a
+                                                            href={`/data/yearly/${r.year}/report/${r.id}`}
                                                             className="w-full bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-all duration-200 flex items-center justify-center space-x-2 transform hover:scale-105 hover:shadow-lg"
                                                         >
                                                             <svg className="w-4 h-4 transform group-hover:scale-110 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -254,7 +254,7 @@ const YearlyReports = () => {
                                                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                             </svg>
                                                             <span>មើល</span>
-                                                        </Link>
+                                                        </a>
                                                         <button
                                                             onClick={() => r.reportUrl && handleDownload(r.reportUrl)}
                                                             disabled={!r.reportUrl}

@@ -243,6 +243,10 @@ class ApiService {
   }
 
   async updateNews(slug, newsData) {
+    // If FormData contains _method=PUT, use POST for Laravel method spoofing
+    if (newsData instanceof FormData && newsData.has('_method')) {
+      return this.post(`/news/${slug}`, newsData)
+    }
     return this.put(`/news/${slug}`, newsData)
   }
 
@@ -609,6 +613,17 @@ class ApiService {
     if (!imagePath) return '/image/svrwsa_logo_high_quality.png'
     return `${this.storageURL}/${imagePath}`
   }
+
+  // Search API Methods
+  async globalSearch(query, limit = 10) {
+    const result = await this.get(`/search?q=${encodeURIComponent(query)}&limit=${limit}`)
+    
+    if (result.error) {
+      return result
+    }
+
+    return result
+  }
 }
 
 // Create and export a singleton instance
@@ -654,5 +669,6 @@ export const {
   getContact,
   getLaws,
   getData,
-  getImageUrl
+  getImageUrl,
+  globalSearch
 } = apiService

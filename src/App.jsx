@@ -22,6 +22,7 @@ const Contact = React.lazy(() => import('./pages/users/contact/contact'));
 const Team = React.lazy(() => import('./pages/users/about/TeamSection'));
 const Location = React.lazy(() => import('./pages/users/about/Components/LocationMap'));
 const NewsDetailsPage = React.lazy(() => import('./pages/users/news/newsDetailsPage'));
+const SearchResultsPage = React.lazy(() => import('./pages/users/search/SearchResultsPage'));
 const NotFound = React.lazy(() => import('./components/notFound'));
 
 
@@ -156,6 +157,14 @@ function App() {
             }
           />
           <Route
+            path="/search"
+            element={
+              <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
+                <SearchResultsPage />
+              </Layout>
+            }
+          />
+          <Route
             path="/laws"
             element={
               <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
@@ -221,7 +230,7 @@ function App() {
           />
 
           {/* Admin routes */}
-          <Route path="/admin-login-secret/login" element={<AdminLogin />} />
+          <Route path="/svrwu-admin-login/login" element={<AdminLogin />} />
           <Route
             path="/admin/dashboard"
             element={

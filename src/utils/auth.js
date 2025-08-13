@@ -13,7 +13,7 @@ export const getCurrentUser = () => {
   try {
     const userDataString = localStorage.getItem('admin_user')
     if (!userDataString) return null
-    
+
     const userData = JSON.parse(userDataString)
     return userData
   } catch (error) {

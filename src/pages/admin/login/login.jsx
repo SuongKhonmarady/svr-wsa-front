@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, useEffect } from 'react'
+import { useNavigate, Navigate } from 'react-router-dom'
 import config from '../../../config/api'
 
 function AdminLogin() {
@@ -10,6 +10,7 @@ function AdminLogin() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const navigate = useNavigate()
+  const isLoggedIn = localStorage.getItem('admin_token')
 
   const handleChange = (e) => {
     setFormData({
@@ -49,11 +50,11 @@ function AdminLogin() {
           setError('Access denied. Admin privileges required.')
           return
         }
-        
+
         // Store authentication data
         localStorage.setItem('admin_token', data.token)
         localStorage.setItem('admin_user', JSON.stringify(data.user))
-        
+
         // Navigate to dashboard
         navigate('/admin/dashboard')
       } else {
@@ -72,6 +73,9 @@ function AdminLogin() {
     }
   }
 
+  if (isLoggedIn) {
+    return <Navigate to="/admin/dashboard" replace />;
+  }
   return (
     <div className="min-h-screen bg-gray-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
@@ -79,16 +83,13 @@ function AdminLogin() {
           <div className="flex justify-center">
             <img
               className="h-36 w-auto"
-              src="/image/svrwsa_logo_high_quality.png"
+              src="/image/រដ្ឋាករទឹកស្វាយរៀង(remove background).png"
               alt="SVRWSA Logo"
             />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            WS Admin
+            WU Admin
           </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Sign in to access admin dashboard
-          </p>
         </div>
 
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>

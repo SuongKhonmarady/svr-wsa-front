@@ -150,9 +150,9 @@ function MonthlyYearsList() {
                             }`}>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                                     {years.map((year, index) => (
-                                        <Link
+                                        <a
                                             key={year.id}
-                                            to={`/data/monthly/${year.year_value}`}
+                                            href={`/data/monthly/${year.year_value}`}
                                             className="group"
                                         >
                                             <div
@@ -190,7 +190,7 @@ function MonthlyYearsList() {
                                                     </div>
                                                 </div>
                                             </div>
-                                        </Link>
+                                        </a>
                                     ))}
                                 </div>
                             </div>

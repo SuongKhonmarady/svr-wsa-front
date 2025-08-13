@@ -71,7 +71,7 @@ function NewsTable({ news, onEdit, onDelete, loading }) {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="w-16 h-16 bg-gray-200 rounded-lg overflow-hidden">
                       <img
-                        src={item.image ? `http://localhost:8000/storage/${item.image}` : '/image/svrwsa_logo_high_quality.png'}
+                        src={item.image || '/image/svrwsa_logo_high_quality.png'}
                         alt={item.title}
                         className="w-full h-full object-cover"
                         onError={(e) => {

@@ -608,6 +608,27 @@ class ApiService {
     return this.get('/data')
   }
 
+  // Dashboard API Methods
+  async getDashboardStats() {
+    return this.get('/admin/dashboard/stats')
+  }
+
+  async getCustomerGrowthData(year = new Date().getFullYear()) {
+    return this.get(`/admin/dashboard/customer-growth/${year}`)
+  }
+
+  async getRecentNews() {
+    return this.get(`/admin/dashboard/recent-news`)
+  }
+
+  async getRecentReports() {
+    return this.get(`/admin/dashboard/recent-reports`)
+  }
+
+  async getSystemStatus() {
+    return this.get('/admin/dashboard/system-status')
+  }
+
   // Utility method to get image URL
   getImageUrl(imagePath) {
     if (!imagePath) return '/image/svrwsa_logo_high_quality.png'
@@ -669,6 +690,11 @@ export const {
   getContact,
   getLaws,
   getData,
+  getDashboardStats,
+  getCustomerGrowthData,
+  getRecentNews,
+  getRecentReports,
+  getSystemStatus,
   getImageUrl,
   globalSearch
 } = apiService

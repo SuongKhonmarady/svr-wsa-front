@@ -1,11 +1,11 @@
 // API Configuration
 const API_CONFIG = {
   // Base API URL
-  BASE_URL: 'http://localhost:8000/api',
+  BASE_URL: 'http://44.220.150.9/api',
   
   // Storage URL for images
-  STORAGE_URL: 'http://localhost:8000/storage',
-  
+  STORAGE_URL: 'http://44.220.150.9/storage',
+
   // Request timeout in milliseconds
   TIMEOUT: 30000, // Increased to 30 seconds
   

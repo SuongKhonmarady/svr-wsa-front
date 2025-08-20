@@ -6,7 +6,7 @@ function ProtectedRoute({ children }) {
   if (!isAuthenticatedAdmin()) {
     // Clear any invalid auth data
     clearAuth()
-    return <Navigate to="*" replace />
+    return <Navigate to="/svrwu-admin-login/login" replace />
   }
   
   return children

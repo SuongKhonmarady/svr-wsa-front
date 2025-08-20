@@ -77,29 +77,35 @@ function ReportForm() {
                 // Load existing report data if editing
                 if (isEditing) {
                     const reportRes = await (initialType === 'monthly'
-                        ? apiService.getMonthlyReport(id)
-                        : apiService.getYearlyReport(id));
+                        ? apiService.getAdminMonthlyReportById(id)
+                        : apiService.getAdminYearlyReportById(id));
 
                     if (reportRes.error) {
                         throw new Error(reportRes.error);
                     }
+                    console.log('Report data loaded:', reportRes.data);
 
+                    // Handle different response structures
+                    let report = null;
                     if (reportRes.data && reportRes.data.data) {
-                        const report = reportRes.data.data;
-                        setFormData({
-                            title: report.title || '',
-                            type: initialType,
-                            status: report.status || 'draft',
-                            year_id: report.year_id ? report.year_id.toString() : '',
-                            month_id: report.month_id ? report.month_id.toString() : '',
-                            description: report.description || '',
-                            created_by: report.created_by || 'Admin User', // Default fallback
-                            file: null,
-                        });
-                        setCurrentFileUrl(report.file_url);
+                        report = reportRes.data.data;
+                    } else if (reportRes.data) {
+                        report = reportRes.data;
                     } else {
                         throw new Error('Failed to load report data');
                     }
+
+                    setFormData({
+                        title: report.title || '',
+                        type: initialType,
+                        status: report.status || 'draft',
+                        year_id: report.year_id ? report.year_id.toString() : '',
+                        month_id: report.month_id ? report.month_id.toString() : '',
+                        description: report.description || '',
+                        created_by: report.created_by || 'Admin', // Default fallback
+                        file: null,
+                    });
+                    setCurrentFileUrl(report.file_url);
                 }
             } catch (error) {
                 console.error('Failed to load form data:', error);

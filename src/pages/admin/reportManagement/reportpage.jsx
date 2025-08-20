@@ -34,17 +34,17 @@ function ReportsManagement() {
             let result;
             // Fetch data based on the selected filter
             if (activeFilter === 'monthly') {
-                let url = `/reports/monthly?page=${currentPage}`;
+                let url = `/reports/staff/monthly/all?page=${currentPage}`;
                 if (selectedYear !== 'all') url += `&year=${selectedYear}`;
                 if (selectedMonth !== 'all') url += `&month=${selectedMonth}`;
                 result = await apiService.get(url);
             } else if (activeFilter === 'yearly') {
-                let url = `/reports/yearly?page=${currentPage}`;
+                let url = `/reports/staff/yearly/all?page=${currentPage}`;
                 if (selectedYear !== 'all') url += `&year=${selectedYear}`;
                 result = await apiService.get(url);
             } else {
                 // Default to monthly
-                let url = `/reports/monthly?page=${currentPage}`;
+                let url = `/reports/staff/monthly/all?page=${currentPage}`;
                 if (selectedYear !== 'all') url += `&year=${selectedYear}`;
                 if (selectedMonth !== 'all') url += `&month=${selectedMonth}`;
                 result = await apiService.get(url);
@@ -136,6 +136,16 @@ function ReportsManagement() {
                 }, 3000);
             }
         }
+    };
+
+    const handleStatusChange = async () => {
+        setSuccess('Report status updated successfully!');
+        await loadReports(page, filter);
+        
+        // Clear success message after 3 seconds
+        setTimeout(() => {
+            setSuccess('');
+        }, 3000);
     };
     
     const handlePageChange = (newPage) => {
@@ -285,6 +295,7 @@ function ReportsManagement() {
                 key={`${filter}-${page}-${selectedYear}-${selectedMonth}`} 
                 reports={reports} 
                 onDelete={handleDelete} 
+                onStatusChange={handleStatusChange}
                 loading={loading} 
             />
 

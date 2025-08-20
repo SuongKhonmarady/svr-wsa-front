@@ -19,7 +19,7 @@ function BasicInformationStep({ formData, handleInputChange }) {
                                 • ទឹកស្អាតគុណភាពខ្ពស់តាមស្តង់ដារអន្តរជាតិ<br />
                                 • ការផ្គត់ផ្គង់ទៀងទាត់ ២៤/៧<br />
                                 • ប្រព័ន្ធបំពង់ទំនើប និងសុវត្ថិភាព<br />
-                                • ថ្លៃទឹកសមរម្យ ចាប់ពី 1199 រៀល/ម³
+                                • ថ្លៃទឹកសមរម្យ ចាប់ពី 1200 រៀល/ម³
                             </p>
                         </div>
                     </div>
@@ -89,10 +89,9 @@ function BasicInformationStep({ formData, handleInputChange }) {
                             required
                             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                         >
-                            <option value="Water Supply">ការផ្គត់ផ្គង់ទឹកស្អាត</option>
-                            <option value="Water Connection">ការតភ្ជាប់ប្រព័ន្ធទឹក</option>
+                            <option value="ស្នើសុំសេវាកម្មការតភ្ជាប់ប្រព័ន្ធទឹកថ្មី">ស្នើសុំសេវាកម្មការតភ្ជាប់ប្រព័ន្ធទឹកថ្មី</option>
                             <option value="Water Meter Installation">ការដំឡើងឧបករណ៍វាស់ទឹក</option>
-                            <option value="Water Quality Testing">ការតេស្តគុណភាពទឹក</option>
+                            <option value="ការតេស្តគុណភាពទឹក">ការតេស្តគុណភាពទឹក</option>
                         </select>
                     </div>
                 </div>

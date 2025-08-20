@@ -13,7 +13,7 @@ export function useWaterSupplyForm() {
         email: '',
         phone: '',
         address: '',
-        service_type: 'Water Supply',
+        service_type: 'ស្នើសុំសេវាកម្មការតភ្ជាប់ប្រព័ន្ធទឹកថ្មី',
         details: ''
     });
 

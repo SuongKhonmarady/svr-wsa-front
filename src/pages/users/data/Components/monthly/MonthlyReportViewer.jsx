@@ -151,61 +151,9 @@ function MonthlyReportViewer() {
                     </div>
                 )}
 
-                {/* Report Information */}
-                {!loading && !error && report && (
-                    <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div>                                <div className="space-y-3">
-                                    <div>
-                                        <span className="text-sm text-gray-600 font-medium">ចំណង់ជើង:</span>
-                                        <p className="text-gray-900 font-semibold">{report.title}</p>
-                                    </div>
-                                    {report.description && (
-                                        <div>
-                                            <span className="text-sm text-gray-600 font-medium">ខ្លឹមសារ:</span>
-                                            <p className="text-gray-700 text-sm leading-relaxed">{report.description}</p>
-                                        </div>
-                                    )}
-                                    <div>
-                                        <span className="text-sm text-gray-600 font-medium">កាលបរិច្ឆេទរបាយការណ៍:</span>
-                                        <p className="text-gray-900">{formatDate(report.report_date)}</p>
-                                    </div>
-                                    <div>
-                                        <span className="text-sm text-gray-600 font-medium">បោះពុម្ពនៅ:</span>
-                                        <p className="text-gray-900">{formatDate(report.published_at)}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            {/* <div>
-                                <h2 className="text-xl font-bold text-gray-900 mb-4">ព័ត៌មានឯកសារ</h2>
-                                <div className="space-y-3">
-                                    <div>
-                                        <span className="text-sm text-gray-600 font-medium">ឈ្មោះឯកសារ:</span>
-                                        <p className="text-gray-900 font-mono text-sm">{report.file_name || 'N/A'}</p>
-                                    </div>
-                                    <div>
-                                        <span className="text-sm text-gray-600 font-medium">ទំហំឯកសារ:</span>
-                                        <p className="text-gray-900">{formatFileSize(report.file_size)}</p>
-                                    </div>
-                                    <div>
-                                        <span className="text-sm text-gray-600 font-medium">ស្ថានភាព:</span>
-                                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                                            report.status === 'published' 
-                                                ? 'bg-green-100 text-green-800' 
-                                                : 'bg-gray-100 text-gray-800'
-                                        }`}>
-                                            {report.status === 'published' ? 'បានបោះពុម្ព' : report.status}
-                                        </span>
-                                    </div>
-                                </div>
-                            </div> */}
-                        </div>
-                    </div>
-                )}
-
-                {/* PDF Viewer */}
+                {/* PDF Viewer - SHOWN FIRST */}
                 {!loading && !error && report?.file_url && (
-                    <div className="bg-white rounded-xl shadow-lg overflow-hidden">
+                    <div className="bg-white rounded-xl shadow-lg overflow-hidden mb-8">
                         <div className="bg-gray-50 px-6 py-4 border-b border-gray-200">
                             <h3 className="text-lg font-semibold text-gray-900">មើលរបាយការណ៍</h3>
                         </div>
@@ -235,15 +183,6 @@ function MonthlyReportViewer() {
                                     </p>
                                     <div className="space-x-4">
                                         <button
-                                            onClick={handleDownload}
-                                            className="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200"
-                                        >
-                                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                            </svg>
-                                            ទាញយក PDF
-                                        </button>
-                                        <button
                                             onClick={() => window.open(report.file_url, '_blank')}
                                             className="inline-flex items-center px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors duration-200"
                                         >
@@ -255,6 +194,37 @@ function MonthlyReportViewer() {
                                     </div>
                                 </div>
                             )}
+                        </div>
+                    </div>
+                )}
+
+                {/* Report Information - SHOWN SECOND */}
+                {!loading && !error && report && (
+                    <div className="bg-white rounded-xl shadow-lg p-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h2 className="text-xl font-bold text-gray-900 mb-4">ព័ត៌មានរបាយការណ៍</h2>
+                                <div className="space-y-3">
+                                    <div>
+                                        <span className="text-sm text-gray-600 font-medium">ចំណង់ជើង:</span>
+                                        <p className="text-gray-900 font-semibold">{report.title}</p>
+                                    </div>
+                                    {report.description && (
+                                        <div>
+                                            <span className="text-sm text-gray-600 font-medium">ខ្លឹមសារ:</span>
+                                            <p className="text-gray-700 text-sm leading-relaxed">{report.description}</p>
+                                        </div>
+                                    )}
+                                    <div>
+                                        <span className="text-sm text-gray-600 font-medium">កាលបរិច្ឆេទរបាយការណ៍:</span>
+                                        <p className="text-gray-900">{formatDate(report.report_date)}</p>
+                                    </div>
+                                    <div>
+                                        <span className="text-sm text-gray-600 font-medium">បោះពុម្ពនៅ:</span>
+                                        <p className="text-gray-900">{formatDate(report.published_at)}</p>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 )}

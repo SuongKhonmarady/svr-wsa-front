@@ -118,6 +118,15 @@ function Navbar({ activeNav, setActiveNav }) {
                 location={location}
               />
             ))}
+            
+            {/* Service Request Button */}
+            <a
+              href="/services/water-supply"
+              className="ml-4 flex items-center space-x-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 border border-green-400"
+            >
+              <span className="text-yellow-300">📝</span>
+              <span className="font-semibold">ស្នើសុំសេវាកម្ម</span>
+            </a>
           </div>
         </div>
 
@@ -127,9 +136,20 @@ function Navbar({ activeNav, setActiveNav }) {
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center space-x-2 text-blue-700 font-bold">
               <span className="text-xl">🏢</span>
-              <span>Navigation</span>
+              <span>{navItems.find(item => item.id === activeNav)?.label || 'ទំព័រដើម'}</span>
             </div>
-            <button
+            
+            <div className="flex items-center space-x-2">
+              {/* Mobile Service Request Button */}
+              <a
+                href="/services/water-supply"
+                className="flex items-center space-x-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-2 py-1.5 rounded-full text-xs font-medium shadow-lg hover:shadow-xl transition-all duration-200 border border-green-400"
+              >
+                <span className="text-yellow-300 text-sm">📝</span>
+                <span className="font-semibold">ស្នើសុំសេវាកម្ម</span>
+              </a>
+              
+              <button
               onClick={toggleMobileMenu}
               className="relative w-10 h-10 rounded-lg bg-blue-50 hover:bg-blue-100 flex items-center justify-center transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
               aria-label="Toggle menu"
@@ -142,6 +162,7 @@ function Navbar({ activeNav, setActiveNav }) {
                 <span className={`block w-6 h-0.5 bg-blue-600 mt-1.5 transform transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-1.5' : ''}`} aria-hidden="true"></span>
               </div>
             </button>
+            </div>
           </div>
 
           {/* Mobile Menu */}

@@ -36,6 +36,7 @@ function News() {
                             ស្វែងយល់អំពីការអភិវឌ្ឍន៍ គម្រោងថ្មីៗ និងសកម្មភាពសហគមន៍របស់យើង
                         </p>
                     </div>
+
                 </div>
                 {/* Decorative wave */}
                 <div className="absolute bottom-0 left-0 right-0">
@@ -53,4 +54,5 @@ function News() {
 }
 
 export default News
+
 

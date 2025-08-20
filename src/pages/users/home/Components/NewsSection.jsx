@@ -4,6 +4,53 @@ import { useNews } from '../../../../hooks/useApi'
 function NewsSection() {
   const [isVisible, setIsVisible] = useState(false)
   const sectionRef = useRef(null)
+
+  // Helper function to get the most appropriate date for sorting and display
+  const getMostRecentDate = (newsItem) => {
+    const publishedDate = newsItem.published_at ? new Date(newsItem.published_at) : null;
+    const createdDate = newsItem.created_at ? new Date(newsItem.created_at) : null;
+    const now = new Date();
+    
+    if (publishedDate && createdDate) {
+      // If published date is in the future or much older than created date, use created date
+      if (publishedDate > now || (createdDate > publishedDate)) {
+        return createdDate;
+      } else {
+        return publishedDate;
+      }
+    } else {
+      return publishedDate || createdDate;
+    }
+  };
+
+  // Function to get relative time (e.g., "2h ago", "1d ago")
+  const getTimeAgo = (news) => {
+    const postDate = getMostRecentDate(news);
+    
+    if (!postDate) return '';
+    
+    const now = new Date();
+    const diffInSeconds = Math.floor((now - postDate) / 1000);
+    
+    if (diffInSeconds < 60) {
+      return 'ទើបតែ'; // Just now
+    } else if (diffInSeconds < 3600) {
+      const minutes = Math.floor(diffInSeconds / 60);
+      return `${minutes}នាទី​មុន`; // X minutes ago
+    } else if (diffInSeconds < 86400) {
+      const hours = Math.floor(diffInSeconds / 3600);
+      return `${hours}ម៉ោង​មុន`; // X hours ago
+    } else if (diffInSeconds < 2592000) {
+      const days = Math.floor(diffInSeconds / 86400);
+      return `${days}ថ្ងៃ​មុន`; // X days ago
+    } else if (diffInSeconds < 31536000) {
+      const months = Math.floor(diffInSeconds / 2592000);
+      return `${months}ខែ​មុន`; // X months ago
+    } else {
+      const years = Math.floor(diffInSeconds / 31536000);
+      return `${years}ឆ្នាំ​មុន`; // X years ago
+    }
+  };
   
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -151,11 +198,11 @@ function NewsSection() {
         {news && news.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {news
-              // Sort by published_at or created_at (most recent first)
+              // Sort by the most appropriate date (showing "just now" news first)
               .sort((a, b) => {
-                const dateA = new Date(a.published_at || a.created_at)
-                const dateB = new Date(b.published_at || b.created_at)
-                return dateB - dateA // Most recent first
+                const dateA = getMostRecentDate(a);
+                const dateB = getMostRecentDate(b);
+                return dateB - dateA; // Most recent first
               })
               // Take only the first 10 items
               .slice(0, 10)
@@ -200,16 +247,11 @@ function NewsSection() {
                 </div>
 
                 <div className="p-6">
-                  <div className="text-sm text-gray-500 mb-3">
-                    {item.published_at ? new Date(item.published_at).toLocaleDateString('km-KH', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    }) : new Date(item.created_at).toLocaleDateString('km-KH', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
+                  <div className="text-sm text-gray-500 mb-3 flex items-center">
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    {getTimeAgo(item)}
                   </div>
 
                   <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">

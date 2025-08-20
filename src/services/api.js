@@ -478,9 +478,18 @@ class ApiService {
     return this.post(`/reports/staff/monthly/${id}/unpublish`)
   }
 
+  // Publish/Unpublish yearly report
+  async publishYearlyReport(id) {
+    return this.post(`/reports/staff/yearly/${id}/publish`)
+  }
+
+  async unpublishYearlyReport(id) {
+    return this.post(`/reports/staff/yearly/${id}/unpublish`)
+  }
+
   // Admin get methods for management
   async getAdminMonthlyReports() {
-    const result = await this.get('/reports/admin/monthly')
+    const result = await this.get('/reports/staff/monthly/all')
 
     if (result.error) {
       return result
@@ -490,7 +499,22 @@ class ApiService {
   }
 
   async getAdminMonthlyReportById(id) {
-    return this.get(`/reports/admin/monthly/${id}`)
+    return this.get(`/reports/staff/monthly/${id}`)
+  }
+
+  // Admin get methods for yearly reports
+  async getAdminYearlyReports() {
+    const result = await this.get('/reports/staff/yearly/all')
+
+    if (result.error) {
+      return result
+    }
+
+    return result
+  }
+
+  async getAdminYearlyReportById(id) {
+    return this.get(`/reports/staff/yearly/${id}`)
   }
 
   // Admin Yearly Reports API Methods
@@ -511,15 +535,15 @@ class ApiService {
     return this.delete(`/reports/admin/yearly/${id}`)
   }
 
-  async getAdminYearlyReports() {
-    const result = await this.get('/reports/admin/yearly')
+  // async getAdminYearlyReports() {
+  //   const result = await this.get('/reports/admin/yearly')
 
-    if (result.error) {
-      return result
-    }
+  //   if (result.error) {
+  //     return result
+  //   }
 
-    return result
-  }
+  //   return result
+  // }
 
   async getAdminYearlyReportById(id) {
     return this.get(`/reports/admin/yearly/${id}`)
@@ -567,15 +591,15 @@ class ApiService {
     return this.delete(`/reports/admin/yearly/${id}`)
   }
 
-  async getAdminYearlyReports() {
-    const result = await this.get('/reports/admin/yearly')
+  // async getAdminYearlyReports() {
+  //   const result = await this.get('/reports/admin/yearly')
 
-    if (result.error) {
-      return result
-    }
+  //   if (result.error) {
+  //     return result
+  //   }
 
-    return result
-  }
+  //   return result
+  // }
 
   async getAdminYearlyReportById(id) {
     return this.get(`/reports/admin/yearly/${id}`)
@@ -677,14 +701,16 @@ export const {
   getMonthlyReport,
   publishMonthlyReport,
   unpublishMonthlyReport,
+  publishYearlyReport,
+  unpublishYearlyReport,
   getAdminMonthlyReports,
   getAdminMonthlyReportById,
+  getAdminYearlyReports,
+  getAdminYearlyReportById,
   createYearlyReport,
   updateYearlyReport,
   getYearlyReport,
   deleteYearlyReport,
-  getAdminYearlyReports,
-  getAdminYearlyReportById,
   getYearlyReports,
   getServices,
   getContact,

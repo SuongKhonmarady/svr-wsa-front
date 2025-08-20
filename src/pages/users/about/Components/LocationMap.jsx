@@ -1,53 +1,65 @@
-import { useState, useEffect } from 'react'
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet'
-import 'leaflet/dist/leaflet.css'
+import { useState, useEffect, useRef } from 'react'
 
-// Fix Leaflet default markers
-import L from 'leaflet'
-delete L.Icon.Default.prototype._getIconUrl
-L.Icon.Default.mergeOptions({
-    iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
-    iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
-    shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
-})
+// Custom hook for iframe zoom controls
+const useCustomZoom = (iframeRef) => {
+    useEffect(() => {
+        if (!iframeRef.current) return
 
-// Custom pin icon for SVR-WSA
-const createCustomIcon = (color, isActive = false) => {
-    const size = isActive ? [35, 45] : [25, 35]
-    return L.divIcon({
-        className: 'custom-div-icon',
-        html: `
-            <div style="
-                width: ${size[0]}px;
-                height: ${size[1]}px;
-                background-color: ${color};
-                border: 3px solid white;
-                border-radius: 50% 50% 50% 0;
-                transform: rotate(-45deg);
-                box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                position: relative;
-            ">
-                <div style="
-                    width: 8px;
-                    height: 8px;
-                    background-color: white;
-                    border-radius: 50%;
-                    transform: rotate(45deg);
-                "></div>
-            </div>
-        `,
-        iconSize: size,
-        iconAnchor: [size[0] / 2, size[1] - 5],
-        popupAnchor: [0, -size[1] + 10]
-    })
+        const iframeContainer = iframeRef.current.parentElement
+        let isZoomEnabled = false
+
+        // Handle wheel events for Ctrl+scroll zoom
+        const handleWheel = (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                e.preventDefault()
+                isZoomEnabled = true
+                
+                // Show zoom indicator
+                const indicator = document.getElementById('zoom-indicator')
+                if (indicator) {
+                    indicator.style.display = 'block'
+                    indicator.textContent = e.deltaY > 0 ? 'Zoom Out' : 'Zoom In'
+                    
+                    // Hide after 1 second
+                    setTimeout(() => {
+                        indicator.style.display = 'none'
+                    }, 1000)
+                }
+            }
+        }
+
+        // Handle keydown to enable zoom mode
+        const handleKeyDown = (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                isZoomEnabled = true
+                iframeContainer.style.pointerEvents = 'auto'
+            }
+        }
+
+        // Handle keyup to disable zoom mode
+        const handleKeyUp = (e) => {
+            if (!e.ctrlKey && !e.metaKey) {
+                isZoomEnabled = false
+            }
+        }
+
+        // Add event listeners
+        iframeContainer.addEventListener('wheel', handleWheel, { passive: false })
+        document.addEventListener('keydown', handleKeyDown)
+        document.addEventListener('keyup', handleKeyUp)
+
+        return () => {
+            iframeContainer.removeEventListener('wheel', handleWheel)
+            document.removeEventListener('keydown', handleKeyDown)
+            document.removeEventListener('keyup', handleKeyUp)
+        }
+    }, [iframeRef])
 }
 
 function LocationMap() {
     const [activeLocation, setActiveLocation] = useState(0)
     const [mapLoaded, setMapLoaded] = useState(false)
+    const iframeRef = useRef(null)
 
     // Coordinates for 11°04'58.3"N 105°48'50.0"E, Krong Svay Rieng, Cambodia
     const locations = [
@@ -56,119 +68,89 @@ function LocationMap() {
             address: "3RM7+3G8, Krong Svay Rieng, Cambodia",
             phone: "023 991 235",
             hours: "ចន្លោះម៉ោង ៧:០០-១៧:០០ (ច-អ)",
-            coordinates: [11.082861, 105.813889], // [lat, lng] for 11°04'58.3"N 105°48'50.0"E
-            description: "ការបំរុងទឹក និងការថែទាំប្រព័ន្ធ សេវាសេវាកម្ម ផ្សេងៗ"
+            coordinates: { lat: 11.082861, lng: 105.813889 },
+            description: "ការបំរុងទឹក និងការថែទាំប្រព័ន្ធ សេវាសេវាកម្ម ផ្សេងៗ",
+            placeId: "ChIJX8K8_2FK_zARFNH8L8K8_2F"
         },
         {
             name: "SVR-WSA East Branch", 
             address: "3RM7+3G8, Krong Svay Rieng, Cambodia",
             phone: "023 991 236", 
             hours: "ចន្លោះម៉ោង ៧:០០-១៧:០០ (ច-អ)",
-            coordinates: [11.080583, 105.804361], // [lat, lng] for 11°04'50.1"N 105°48'15.7"E
-            description: "ការទូទាត់បង់ប្រាក់ និងសេវាកម្មទឹកស្អាត"
+            coordinates: { lat: 11.080583, lng: 105.804361 },
+            description: "ការទូទាត់បង់ប្រាក់ និងសេវាកម្មទឹកស្អាត",
+            placeId: "ChIJX8K8_2FK_zARFNH8L8K8_2G"
         }
     ]
 
+    // Simulate map loading
     useEffect(() => {
-        // Simulate map loading
         const timer = setTimeout(() => {
             setMapLoaded(true)
         }, 1000)
         return () => clearTimeout(timer)
     }, [])
 
+    // Use custom zoom controls
+    useCustomZoom(iframeRef)
+
+    // Generate Google Maps embed URL
+    const getMapEmbedUrl = () => {
+        const { lat, lng } = locations[activeLocation].coordinates
+        const query = encodeURIComponent(`${locations[activeLocation].name}, ${locations[activeLocation].address}`)
+        
+        // Use the most reliable Google Maps embed approach
+        return `https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=15&output=embed`
+    }
+
     return (
         <div className="py-16 bg-gray-50 relative z-10">
-            <style>{`
-                .custom-div-icon {
-                    background: transparent !important;
-                    border: none !important;
-                }
-                .leaflet-popup-content {
-                    margin: 8px !important;
-                }
-                .leaflet-popup-content-wrapper {
-                    border-radius: 8px !important;
-                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
-                }
-                .leaflet-container {
-                    z-index: 10 !important;
-                }
-                .leaflet-control-container {
-                    z-index: 100 !important;
-                }
-                .leaflet-popup-pane {
-                    z-index: 200 !important;
-                }
-            `}</style>
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                         ទីតាំងរបស់យើង
                     </h2>
                     <p className="text-xl text-gray-600 max-w-3xl mx-auto">
-                        ស្វែងរកការិយាល័យ SVR-WSA នៅ ស្រុកស្វាយរៀង ក្រុងស្វាយរៀង ខេត្តស្វាយរៀង
+                        ស្វែងរកការិយាល័យទាំងពីររបស់រដ្ឋាករទឹកស្វាយរៀងនៅ ស្រុកស្វាយរៀង ក្រុងស្វាយរៀង ខេត្តស្វាយរៀង
                     </p>
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Real Map Section */}
                     <div className="bg-white rounded-xl overflow-hidden shadow-lg relative z-10">
-                        <div className="h-96 w-full relative" style={{ minHeight: '600px' }}>
+                        <div className="h-96 w-full relative" style={{ minHeight: '615px' }}>
+                            {/* Zoom Indicator */}
+                            <div 
+                                id="zoom-indicator" 
+                                className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-50 bg-black/80 text-white px-4 py-2 rounded-lg font-medium"
+                                style={{ display: 'none' }}
+                            >
+                                Zoom In
+                            </div>
+                            
                             {/* Loading overlay */}
                             {!mapLoaded && (
                                 <div className="absolute inset-0 bg-gray-100 flex items-center justify-center z-10">
                                     <div className="text-center">
                                         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-                                        <p className="text-gray-600">កំពុងផ្ទុកផែនទីពិត...</p>
+                                        <p className="text-gray-600">កំពុងផ្ទុកផែនទី Google...</p>
                                     </div>
                                 </div>
                             )}
                             
-                            {/* Leaflet Real Map */}
+                            {/* Google Maps Embed */}
                             {mapLoaded && (
-                                <MapContainer
-                                    center={[11.081722, 105.809125]} // Center between Main Office and East Branch
-                                    zoom={15}
-                                    style={{ height: '100%', width: '100%' }}
-                                    zoomControl={true}
-                                >
-                                    <TileLayer
-                                        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                                        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                                    />
-                                    
-                                    {locations.map((location, index) => (
-                                        <Marker
-                                            key={index}
-                                            position={[location.coordinates[0], location.coordinates[1]]}
-                                            icon={createCustomIcon(
-                                                index === activeLocation ? '#ef4444' : '#3b82f6',
-                                                index === activeLocation
-                                            )}
-                                            eventHandlers={{
-                                                click: () => setActiveLocation(index)
-                                            }}
-                                        >
-                                            <Popup>
-                                                <div className="text-sm p-2">
-                                                    <h3 className="font-semibold text-gray-900 mb-1">
-                                                        {location.name}
-                                                    </h3>
-                                                    <p className="text-gray-600 text-xs mb-1">
-                                                        📍 {location.address}
-                                                    </p>
-                                                    <p className="text-gray-600 text-xs mb-1">
-                                                        {location.description}
-                                                    </p>
-                                                    <p className="text-blue-600 text-xs font-medium">
-                                                        📞 {location.phone}
-                                                    </p>
-                                                </div>
-                                            </Popup>
-                                        </Marker>
-                                    ))}
-                                </MapContainer>
+                                <iframe
+                                    ref={iframeRef}
+                                    src={getMapEmbedUrl()}
+                                    width="100%"
+                                    height="100%"
+                                    style={{ border: 0, borderRadius: '12px' }}
+                                    allowFullScreen=""
+                                    loading="lazy"
+                                    referrerPolicy="no-referrer-when-downgrade"
+                                    title={`Map showing ${locations[activeLocation].name}`}
+                                ></iframe>
                             )}
                         </div>
                     </div>
@@ -246,7 +228,7 @@ function LocationMap() {
                             <div className="mt-6 flex flex-col sm:flex-row gap-3">
                                 <button 
                                     onClick={() => {
-                                        const [lat, lng] = locations[activeLocation].coordinates
+                                        const { lat, lng } = locations[activeLocation].coordinates
                                         window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank')
                                     }}
                                     className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"

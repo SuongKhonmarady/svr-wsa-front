@@ -33,14 +33,12 @@ function AdminDashboard() {
     systemStatus: null
   })
   const [error, setError] = useState(null)
+  const [customerGrowthError, setCustomerGrowthError] = useState(null)
 
   useEffect(() => {
     // Get user info using auth utility
     const userData = getCurrentUser()
     setUser(userData)
-    
-    // Temporarily set admin token for testing (remove this in production)
-    const currentToken = localStorage.getItem('admin_token')
     
     // Load all dashboard data
     loadDashboardData()
@@ -50,8 +48,9 @@ function AdminDashboard() {
     try {
       setLoading(true)
       setError(null)
+      setCustomerGrowthError(null)
 
-      // Only fetch essential data: stats and customer growth
+      // Fetch essential data: stats and customer growth (stats already includes all counts)
       const [statsResult, customerGrowthResult] = await Promise.allSettled([
         apiService.getDashboardStats(),
         apiService.getCustomerGrowthData(new Date().getFullYear())
@@ -68,6 +67,7 @@ function AdminDashboard() {
         if (statsData && statsData.data && statsData.data.published_news !== undefined) {
           statsData = statsData.data
         }
+        console.log('Dashboard stats data:', statsData);
       }
 
       if (customerGrowthResult.status === 'fulfilled' && customerGrowthResult.value) {
@@ -79,9 +79,12 @@ function AdminDashboard() {
         } else {
           customerGrowthApiData = customerGrowthResult.value
         }
+      } else {
+        // Set customer growth error if the API call failed
+        setCustomerGrowthError('Failed to load customer growth data')
       }
 
-      // Create simplified stats (4 key metrics)
+      // Create simplified stats using data from dashboard stats API
       const stats = statsData ? [
         { 
           name: 'Published News', 
@@ -91,27 +94,30 @@ function AdminDashboard() {
         },
         { 
           name: 'Monthly Reports', 
-          value: (statsData.published_monthly_reports || 0).toString(), 
+          value: `${statsData.published_monthly_reports || 0}/${statsData.total_monthly_reports || 0}`, 
           icon: '📊', 
-          color: 'from-green-500 to-green-600' 
+          color: 'from-green-500 to-green-600',
+          subtitle: `${(statsData.total_monthly_reports || 0) - (statsData.published_monthly_reports || 0)} draft, ${statsData.published_monthly_reports || 0} published`
         },
         { 
           name: 'Yearly Reports', 
-          value: (statsData.published_yearly_reports || 0).toString(), 
+          value: `${statsData.published_yearly_reports || 0}/${statsData.total_yearly_reports || 0}`, 
           icon: '📋', 
-          color: 'from-blue-500 to-blue-600' 
+          color: 'from-blue-500 to-blue-600',
+          subtitle: `${(statsData.total_yearly_reports || 0) - (statsData.published_yearly_reports || 0)} draft, ${statsData.published_yearly_reports || 0} published`
         },
         { 
           name: 'Service Requests', 
           value: (statsData.total_service_requests || 0).toString(), 
           icon: '🔧', 
-          color: 'from-orange-500 to-orange-600' 
+          color: 'from-orange-500 to-orange-600',
+          subtitle: `${statsData.pending_service_requests || 0} pending, ${statsData.completed_service_requests || 0} completed`
         },
       ] : [
         { name: 'Published News', value: '0', icon: '📰', color: 'from-purple-500 to-purple-600' },
-        { name: 'Monthly Reports', value: '0', icon: '📊', color: 'from-green-500 to-green-600' },
-        { name: 'Yearly Reports', value: '0', icon: '📋', color: 'from-blue-500 to-blue-600' },
-        { name: 'Service Requests', value: '0', icon: '🔧', color: 'from-orange-500 to-orange-600' },
+        { name: 'Monthly Reports', value: '0/0', icon: '📊', color: 'from-green-500 to-green-600', subtitle: '0 draft, 0 published' },
+        { name: 'Yearly Reports', value: '0/0', icon: '📋', color: 'from-blue-500 to-blue-600', subtitle: '0 draft, 0 published' },
+        { name: 'Service Requests', value: '0', icon: '🔧', color: 'from-orange-500 to-orange-600', subtitle: '0 pending, 0 completed' },
       ]
 
       // Process customer growth data
@@ -179,9 +185,6 @@ function AdminDashboard() {
     return apiData
   }
 
-  // Sample data structure for when loading or as fallback
-  const defaultCustomerGrowthData = [45, 52, 38, 65, 73, 58, 82, 67, 59, 71, 48, 63]
-
   // Sample data for customer growth chart
   const customerGrowthChartData = {
     labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
@@ -189,10 +192,10 @@ function AdminDashboard() {
       {
         label: 'New Customers',
         data: loading 
-          ? defaultCustomerGrowthData 
+          ? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] 
           : (dashboardData.customerGrowth.length > 0 
               ? dashboardData.customerGrowth 
-              : defaultCustomerGrowthData),
+              : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
         backgroundColor: 'rgba(59, 130, 246, 0.8)',
         borderColor: 'rgba(59, 130, 246, 1)',
         borderWidth: 1,
@@ -235,8 +238,8 @@ function AdminDashboard() {
 
   const stats = loading ? [
     { name: 'Published News', value: '...', icon: '📰', color: 'from-purple-500 to-purple-600' },
-    { name: 'Monthly Reports', value: '...', icon: '📊', color: 'from-green-500 to-green-600' },
-    { name: 'Yearly Reports', value: '...', icon: '📋', color: 'from-blue-500 to-blue-600' },
+    { name: 'Monthly Reports', value: '...', icon: '📊', color: 'from-green-500 to-green-600', subtitle: 'Loading...' },
+    { name: 'Yearly Reports', value: '...', icon: '📋', color: 'from-blue-500 to-blue-600', subtitle: 'Loading...' },
     { name: 'Service Requests', value: '...', icon: '🔧', color: 'from-orange-500 to-orange-600' },
   ] : dashboardData.stats
 
@@ -313,11 +316,14 @@ function AdminDashboard() {
           {stats.map((stat) => (
             <div key={stat.name} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md transition-shadow">
               <div className="flex items-center justify-between">
-                <div>
+                <div className="flex-1">
                   <p className="text-sm font-medium text-gray-600">{stat.name}</p>
                   <p className="text-3xl font-bold text-gray-900 mt-2">{stat.value}</p>
+                  {stat.subtitle && (
+                    <p className="text-xs text-gray-500 mt-1">{stat.subtitle}</p>
+                  )}
                 </div>
-                <div className={`w-12 h-12 bg-gradient-to-r ${stat.color} rounded-lg flex items-center justify-center text-white text-xl`}>
+                <div className={`w-12 h-12 bg-gradient-to-r ${stat.color} rounded-lg flex items-center justify-center text-white text-xl flex-shrink-0 ml-4`}>
                   {loading ? '⏳' : stat.icon}
                 </div>
               </div>
@@ -341,6 +347,20 @@ function AdminDashboard() {
                 {loading ? (
                   <div className="flex items-center justify-center h-full">
                     <div className="text-gray-500">Loading chart data...</div>
+                  </div>
+                ) : customerGrowthError ? (
+                  <div className="flex items-center justify-center h-full">
+                    <div className="text-center">
+                      <div className="text-red-500 text-lg mb-2">⚠️</div>
+                      <div className="text-red-600 font-medium">Something went wrong</div>
+                      <div className="text-gray-500 text-sm mt-1">Unable to load customer growth data</div>
+                      <button
+                        onClick={() => loadDashboardData()}
+                        className="mt-3 bg-blue-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-blue-700"
+                      >
+                        Try Again
+                      </button>
+                    </div>
                   </div>
                 ) : (
                   <Bar data={customerGrowthChartData} options={chartOptions} />

@@ -35,6 +35,7 @@ function WaterSupplyRequest() {
         formData,
         documents,
         documentPreviews,
+        categories,
         
         // Actions
         handleInputChange,
@@ -98,6 +99,7 @@ function WaterSupplyRequest() {
                     <BasicInformationStep 
                         formData={formData}
                         handleInputChange={handleInputChange}
+                        categories={categories}
                     />
                 );
             case 2:
@@ -114,6 +116,7 @@ function WaterSupplyRequest() {
                     <ReviewStep
                         formData={formData}
                         documentPreviews={documentPreviews}
+                        categories={categories}
                     />
                 );
             default:

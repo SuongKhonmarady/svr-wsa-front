@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import AdminLayout from '../components/AdminLayout'
 import NewsTable from './Components/NewsTable'
 import NewsModal from './Components/NewsModal'
-import apiService from '../../../services/api'
+import newsService from '../../../services/newsService'
 
 function NewsManagement() {
   const [news, setNews] = useState([])
@@ -22,7 +22,7 @@ function NewsManagement() {
   const fetchNews = async () => {
     try {
       setLoading(true)
-      const result = await apiService.getNews()
+      const result = await newsService.getNews()
       if (result.error) {
         setError(result.error)
       } else {
@@ -37,7 +37,7 @@ function NewsManagement() {
 
   const fetchCategories = async () => {
     try {
-      const result = await apiService.getCategories()
+      const result = await newsService.getCategories()
       if (result.error) {
         console.error('Failed to fetch categories:', result.error)
       } else {
@@ -62,7 +62,7 @@ function NewsManagement() {
     if (window.confirm('Are you sure you want to delete this news item?')) {
       try {
         setError(null)
-        const result = await apiService.deleteNews(newsItem.slug)
+        const result = await newsService.deleteNews(newsItem.slug)
         if (result.error) {
           setError('Error deleting news: ' + result.error)
         } else {
@@ -82,10 +82,10 @@ function NewsManagement() {
       let result
       if (newsId) {
         // Update existing news - use selectedNews.slug instead of newsId
-        result = await apiService.updateNews(selectedNews.slug, formData)
+        result = await newsService.updateNews(selectedNews.slug, formData)
       } else {
         // Create new news
-        result = await apiService.createNews(formData)
+        result = await newsService.createNews(formData)
       }
 
       if (result.error) {

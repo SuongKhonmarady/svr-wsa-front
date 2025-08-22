@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
+import newsService from '../../../../services/newsService';
 import apiService from '../../../../services/api';
 
 function NewsList() {
   const [newsData, setNewsData] = useState([]);
   const [categories, setCategories] = useState([]);
-  const [selectedCategory, setSelectedCategory] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [visibleItems, setVisibleItems] = useState(new Set());
@@ -13,10 +13,11 @@ function NewsList() {
   
   const observerRef = useRef(null);
   const containerRef = useRef(null);
+  const requestIdRef = useRef(0);
 
   useEffect(() => {
     fetchNewsAndCategories();
-  }, []);
+  }, []); // Empty dependency array to run only once
 
   // Intersection Observer for scroll animations
   useEffect(() => {
@@ -45,24 +46,32 @@ function NewsList() {
         observerRef.current.disconnect();
       }
     };
-  }, [newsData, selectedCategory]);
+  }, []); // Remove dependencies to prevent recreation on every data change
 
   // Trigger initial animations when data loads
   useEffect(() => {
-    if (!loading && newsData.length > 0) {
+    if (!loading && newsData.length > 0 && !animationTriggered) {
       setTimeout(() => setAnimationTriggered(true), 100);
     }
-  }, [loading, newsData]);
+  }, [loading, newsData, animationTriggered]);
 
   const fetchNewsAndCategories = async () => {
+    // Generate a unique request ID for this call
+    const currentRequestId = ++requestIdRef.current;
+    
     try {
       setLoading(true);
       
       // Fetch news and categories in parallel
       const [newsResult, categoriesResult] = await Promise.all([
-        apiService.getNews(),
-        apiService.getCategories()
+        newsService.getNews(),
+        newsService.getCategories()
       ]);
+
+      // Check if this is still the current request (prevents stale updates)
+      if (currentRequestId !== requestIdRef.current) {
+        return;
+      }
 
       if (newsResult.error) {
         setError(newsResult.error);
@@ -78,21 +87,26 @@ function NewsList() {
       }
       
     } catch (err) {
+      // Check if this is still the current request
+      if (currentRequestId !== requestIdRef.current) {
+        return;
+      }
+      
       setError('Failed to load news and categories');
       console.error('Error fetching data:', err);
     } finally {
-      setLoading(false);
+      // Only update loading state if this is still the current request
+      if (currentRequestId === requestIdRef.current) {
+        setLoading(false);
+      }
     }
   };
 
-  // Filter news by category
-  const filteredNews = selectedCategory 
-    ? newsData.filter(news => news.category?.id === selectedCategory)
-    : newsData;
-
   // Get featured news
-  const featuredNews = filteredNews.filter(news => news.featured);
-  const regularNews = filteredNews.filter(news => !news.featured);
+  const featuredNews = newsData.filter(news => news.featured).slice(0, 3);
+  
+  // Get regular news (non-featured)
+  const regularNews = newsData.filter(news => !news.featured);
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
@@ -106,47 +120,22 @@ function NewsList() {
 
   // Function to get relative time (e.g., "2h ago", "1d ago")
   const getTimeAgo = (news) => {
-    // Use the most recent date between published_at and created_at
-    const publishedDate = news.published_at ? new Date(news.published_at) : null;
-    const createdDate = news.created_at ? new Date(news.created_at) : null;
+    if (!news.published_at && !news.created_at) return '';
     
-    // Choose the most recent date, or fall back to created_at if published_at is in the future
-    let postDate;
+    const date = new Date(news.published_at || news.created_at);
     const now = new Date();
+    const diffInSeconds = Math.floor((now - date) / 1000);
     
-    if (publishedDate && createdDate) {
-      // If published date is in the future or much older than created date, use created date
-      if (publishedDate > now || (createdDate > publishedDate)) {
-        postDate = createdDate;
-      } else {
-        postDate = publishedDate;
-      }
-    } else {
-      postDate = publishedDate || createdDate;
-    }
-    
-    if (!postDate) return '';
-    
-    const diffInSeconds = Math.floor((now - postDate) / 1000);
-    
-    if (diffInSeconds < 60) {
-      return 'ទើបតែ'; // Just now
-    } else if (diffInSeconds < 3600) {
-      const minutes = Math.floor(diffInSeconds / 60);
-      return `${minutes}នាទី​មុន`; // X minutes ago
-    } else if (diffInSeconds < 86400) {
-      const hours = Math.floor(diffInSeconds / 3600);
-      return `${hours}ម៉ោង​មុន`; // X hours ago
-    } else if (diffInSeconds < 2592000) {
-      const days = Math.floor(diffInSeconds / 86400);
-      return `${days}ថ្ងៃ​មុន`; // X days ago
-    } else if (diffInSeconds < 31536000) {
-      const months = Math.floor(diffInSeconds / 2592000);
-      return `${months}ខែ​មុន`; // X months ago
-    } else {
-      const years = Math.floor(diffInSeconds / 31536000);
-      return `${years}ឆ្នាំ​មុន`; // X years ago
-    }
+    if (diffInSeconds < 60) return 'Just now';
+    if (diffInSeconds < 3600) return `${Math.floor(diffInSeconds / 60)} minutes ago`;
+    if (diffInSeconds < 86400) return `${Math.floor(diffInSeconds / 3600)} hours ago`;
+    if (diffInSeconds < 2592000) return `${Math.floor(diffInSeconds / 86400)} days ago`;
+    return `${Math.floor(diffInSeconds / 2592000)} months ago`;
+  };
+
+  const getCategoryUrl = (category) => {
+    if (!category) return '/news';
+    return `/news/category/${category.slug || category.name.toLowerCase()}`;
   };
 
   if (loading) {
@@ -266,9 +255,12 @@ function NewsList() {
                     />
                     {news.category && (
                       <div className="absolute top-4 left-4">
-                        <span className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium">
+                        <Link
+                          to={getCategoryUrl(news.category)}
+                          className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors duration-200"
+                        >
                           {news.category.name}
-                        </span>
+                        </Link>
                       </div>
                     )}
                     {news.featured && (
@@ -292,12 +284,12 @@ function NewsList() {
                     <p className="text-gray-600 mb-6 text-lg leading-relaxed">
                       {news.content ? news.content.substring(0, 200) + '...' : ''}
                     </p>
-                    <a
-                      href={`/news/${news.slug}`}
+                    <Link
+                      to={`/news/${news.slug || news.id}`}
                       className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium inline-block"
                     >
                       អានបន្ថែម
-                    </a>
+                    </Link>
                   </div>
                 </div>
               </div>
@@ -309,32 +301,24 @@ function NewsList() {
         <div className={`flex flex-wrap gap-3 mb-12 transition-all duration-1000 ${
           animationTriggered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
         }`} style={{ transitionDelay: '300ms' }}>
-          <button
-            onClick={() => setSelectedCategory(null)}
-            className={`px-6 py-2 rounded-full border category-button ${
-              selectedCategory === null
-                ? 'bg-blue-600 text-white border-blue-600 shadow-lg'
-                : 'bg-white text-gray-700 border-gray-300 hover:border-blue-500 hover:text-blue-600'
-            }`}
+          <Link
+            to="/news"
+            className="px-6 py-2 rounded-full border category-button bg-blue-600 text-white border-blue-600 shadow-lg"
           >
             ទាំងអស់
-          </button>
+          </Link>
           {categories.map((category, index) => (
-            <button
+            <Link
               key={category.id}
-              onClick={() => setSelectedCategory(category.id)}
-              className={`px-6 py-2 rounded-full border category-button ${
-                selectedCategory === category.id
-                  ? 'bg-blue-600 text-white border-blue-600 shadow-lg'
-                  : 'bg-white text-gray-700 border-gray-300 hover:border-blue-500 hover:text-blue-600'
-              }`}
+              to={getCategoryUrl(category)}
+              className="px-6 py-2 rounded-full border category-button bg-white text-gray-700 border-gray-300 hover:border-blue-500 hover:text-blue-600"
               style={{ 
                 animationDelay: `${(index + 1) * 100}ms`,
                 animation: animationTriggered ? 'fadeInUp 0.6s ease-out forwards' : 'none'
               }}
             >
               {category.name}
-            </button>
+            </Link>
           ))}
         </div>
 
@@ -343,7 +327,7 @@ function NewsList() {
           <h2 className={`text-3xl font-bold text-gray-900 mb-8 font-khmer-title transition-all duration-1000 ${
             animationTriggered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`} style={{ transitionDelay: '500ms' }}>
-            {selectedCategory ? 'ព័ត៌មានតាមប្រភេទ' : 'ព័ត៌មានថ្មីៗទាំងអស់'}
+            ព័ត៌មានថ្មីៗទាំងអស់
           </h2>
           
           {regularNews.length === 0 ? (
@@ -352,7 +336,7 @@ function NewsList() {
             }`} style={{ transitionDelay: '700ms' }}>
               <div className="text-gray-400 text-6xl mb-4 animate-bounce">📰</div>
               <p className="text-gray-600 text-lg">
-                {selectedCategory ? 'មិនមានព័ត៌មានក្នុងប្រភេទនេះទេ' : 'មិនមានព័ត៌មានទេ'}
+                មិនមានព័ត៌មានទេ
               </p>
             </div>
           ) : (
@@ -377,9 +361,12 @@ function NewsList() {
                     />
                     {news.category && (
                       <div className="absolute top-4 left-4">
-                        <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                        <Link
+                          to={getCategoryUrl(news.category)}
+                          className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-medium hover:bg-blue-700 transition-colors duration-200"
+                        >
                           {news.category.name}
-                        </span>
+                        </Link>
                       </div>
                     )}
                   </div>
@@ -400,12 +387,12 @@ function NewsList() {
                       {news.content ? news.content.substring(0, 150) + '...' : ''}
                     </p>
 
-                    <a
-                      href={`/news/${news.slug}`}
+                    <Link
+                      to={`/news/${news.slug}`}
                       className="text-blue-600 font-medium hover:text-blue-700 transition-colors duration-200"
                     >
                       អានបន្ថែម →
-                    </a>
+                    </Link>
                   </div>
                 </article>
               ))}
@@ -419,7 +406,7 @@ function NewsList() {
             animationTriggered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`} style={{ transitionDelay: '1000ms' }}>
             <p className="text-gray-600 animate-pulse">
-              បង្ហាញព័ត៌មាន {filteredNews.length} ក្នុងចំណោម {newsData.length} សរុប
+              បង្ហាញព័ត៌មាន {newsData.length} សរុប
             </p>
           </div>
         )}

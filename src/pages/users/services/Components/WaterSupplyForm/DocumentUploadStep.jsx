@@ -48,7 +48,7 @@ function DocumentUploadField({
                                     ចុចដើម្បីជ្រើសរើស{label}
                                 </span>
                                 <span className="mt-1 block text-sm text-gray-500">
-                                    PNG, JPG, JPEG តិចជាង 2MB
+                                    PNG, JPG, JPEG តិចជាង 5MB
                                 </span>
                             </label>
                             <input
@@ -103,6 +103,17 @@ function DocumentUploadStep({
                     onDocumentChange={handleDocumentChange}
                     onRemoveDocument={handleRemoveDocument}
                 />
+            </div>
+            
+            {/* Information about document requirements */}
+            <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+                <h4 className="font-semibold text-blue-800 mb-2">ព័ត៌មានអំពីឯកសារ</h4>
+                <ul className="text-sm text-blue-700 space-y-1">
+                    <li>• អត្តសញ្ញាណប័ណ្ណ: រូបថតច្បាស់លាស់ទាំងមុខ និងក្រោយ</li>
+                    <li>• សៀវភៅគ្រួសារ: រូបថតទំព័រដែលមានព័ត៌មានគ្រួសារ</li>
+                    <li>• ទម្រង់ឯកសារ: PNG, JPG, JPEG តិចជាង 5MB</li>
+                    <li>• គុណភាពរូបថត: ច្បាស់លាស់ និងអាចអានបាន</li>
+                </ul>
             </div>
         </div>
     );

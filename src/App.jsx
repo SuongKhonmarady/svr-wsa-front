@@ -22,6 +22,7 @@ const Contact = React.lazy(() => import('./pages/users/contact/contact'));
 const Team = React.lazy(() => import('./pages/users/about/TeamSection'));
 const Location = React.lazy(() => import('./pages/users/about/Components/LocationMap'));
 const NewsDetailsPage = React.lazy(() => import('./pages/users/news/newsDetailsPage'));
+const NewsCategoryPage = React.lazy(() => import('./pages/users/news/NewsCategoryPage'));
 const SearchResultsPage = React.lazy(() => import('./pages/users/search/SearchResultsPage'));
 const NotFound = React.lazy(() => import('./components/notFound'));
 
@@ -145,6 +146,14 @@ function App() {
             element={
               <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
                 <News />
+              </Layout>
+            }
+          />
+          <Route
+            path="/news/category/:categorySlug"
+            element={
+              <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
+                <NewsCategoryPage />
               </Layout>
             }
           />

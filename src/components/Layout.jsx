@@ -21,75 +21,138 @@ function Layout({ children, activeNav, setActiveNav }) {
       <div className="relative z-10">
         {/* Header */}
         <header className="bg-white shadow-xl border-b border-blue-100">
-          {/* Top bar */}
+          {/* Top bar - Enhanced UX for Desktop and Mobile */}
           <div
-            className="px-3 sm:px-6 py-3 sm:py-4 text-xs sm:text-sm w-full"
+            className="px-3 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm w-full relative overflow-hidden"
             style={{
-              background: 'linear-gradient(120deg, #4169E1 10%, #483D8B 70%, #1E90FF 100%)',
-              borderBottom: '2px solid rgba(6, 182, 212, 0.3)'
+              background: 'linear-gradient(135deg, #1e3a8a 0%, #3b82f6 25%, #06b6d4 50%, #0891b2 75%, #0e7490 100%)',
+              borderBottom: '2px solid rgba(6, 182, 212, 0.4)'
             }}
           >
-            <div className="flex justify-between items-center w-full">
-              <div className="flex items-center space-x-3 sm:space-x-8 text-white">
-                <div className="hidden sm:flex items-center space-x-2 bg-white/10 rounded-full px-3 py-1.5 backdrop-blur-sm">
-                  <span className="text-yellow-300">📍</span>
-                  <span className="font-medium">ស្រុកស្វាយរៀង ខេត្តស្វាយរៀង ព្រះរាជាណាចក្រកម្ពុជា</span>
-                </div>
-                <div className="flex items-center space-x-3 sm:space-x-6">
-                  <div className="flex items-center space-x-1 sm:space-x-2 bg-white/10 rounded-full px-2 sm:px-3 py-1 sm:py-1.5 backdrop-blur-sm">
-                    <span className="text-green-300">📞</span>
-                    <span className="font-medium">0123 456 789</span>
+            {/* Background Pattern */}
+            <div className="absolute inset-0 opacity-10">
+              <div className="absolute inset-0" style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='0.1'%3E%3Ccircle cx='30' cy='30' r='2'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                backgroundSize: '20px 20px'
+              }}></div>
+            </div>
+
+            <div className="relative z-10">
+              {/* Desktop View */}
+              <div className="hidden lg:flex justify-between items-center w-full">
+                <div className="flex items-center space-x-6 text-white">
+                  {/* Location Info */}
+                  <div className="flex items-center space-x-2 bg-white/15 rounded-full px-4 py-2 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer group">
+                    <span className="text-yellow-300 text-lg group-hover:scale-110 transition-transform duration-300">📍</span>
+                    <span className="font-medium text-sm">ស្រុកស្វាយរៀង ខេត្តស្វាយរៀង ព្រះរាជាណាចក្រកម្ពុជា</span>
                   </div>
-                  <div className="xs:flex items-center space-x-1 sm:space-x-2 bg-white/10 rounded-full px-2 sm:px-3 py-1 sm:py-1.5 backdrop-blur-sm">
-                    <span className="text-blue-300">✉️</span>
-                    <span className="hidden sm:inline font-medium">info@svayringwater.gov.kh</span>
-                    <span className="sm:hidden font-medium">Email</span>
+                  
+                  {/* Contact Info */}
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center space-x-2 bg-white/15 rounded-full px-4 py-2 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer group">
+                      <span className="text-green-300 text-lg group-hover:scale-110 transition-transform duration-300">📞</span>
+                      <span className="font-medium text-sm">0123 456 789</span>
+                    </div>
+                    <div className="flex items-center space-x-2 bg-white/15 rounded-full px-4 py-2 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer group">
+                      <span className="text-blue-300 text-lg group-hover:scale-110 transition-transform duration-300">✉️</span>
+                      <span className="font-medium text-sm">info@svayringwater.gov.kh</span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Language Selector - Desktop */}
+                <div className="flex items-center space-x-3">
+                  <div className="relative">
+                    <button
+                      onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
+                      className="flex items-center space-x-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full px-4 py-2 pr-6 text-sm text-white hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200 cursor-pointer shadow-lg min-w-[80px] hover:scale-105 transform"
+                    >
+                      <img
+                        src={currentLanguage.flag}
+                        alt={`${currentLanguage.name} flag`}
+                        className="w-5 h-4 object-cover rounded border border-white/30 shadow-sm"
+                      />
+                      <span className="font-medium">{currentLanguage.name}</span>
+                    </button>
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+                      <svg className={`w-4 h-4 text-white/80 transition-transform duration-200 ${isLanguageDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </div>
+
+                    {isLanguageDropdownOpen && (
+                      <div className="absolute right-0 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-xl z-[9999] overflow-hidden">
+                        {languages.map((language) => (
+                          <button
+                            key={language.code}
+                            onClick={() => {
+                              setSelectedLanguage(language.code)
+                              setIsLanguageDropdownOpen(false)
+                            }}
+                            className={`w-full flex items-center space-x-2 px-4 py-2 text-sm hover:bg-blue-50 transition-colors duration-150 ${selectedLanguage === language.code ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-700'}`}
+                          >
+                            <img
+                              src={language.flag}
+                              alt={`${language.name} flag`}
+                              className="w-5 h-4 object-cover rounded border border-gray-200"
+                            />
+                            <span>{language.name}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
 
-              <div className="flex items-center space-x-3">
-                {/* Language Selector */}
-                <div className="relative">
-                  <button
-                    onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
-                    className="flex items-center space-x-1 sm:space-x-2 bg-white/20 backdrop-blur-sm border border-white/30 rounded-full px-2 sm:px-3 py-1 sm:py-1.5 pr-4 sm:pr-6 text-xs sm:text-sm text-white hover:bg-white/30 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200 cursor-pointer shadow-lg min-w-[60px] sm:min-w-[80px]"
-                  >
-                    <img
-                      src={currentLanguage.flag}
-                      alt={`${currentLanguage.name} flag`}
-                      className="w-4 sm:w-5 h-3 sm:h-4 object-cover rounded border border-white/30 shadow-sm"
-                    />
-                    <span className="font-medium">{currentLanguage.name}</span>
-                  </button>
-                  <div className="absolute inset-y-0 right-0 flex items-center pr-1 sm:pr-2 pointer-events-none">
-                    <svg className={`w-3 sm:w-4 h-3 sm:h-4 text-white/80 transition-transform duration-200 ${isLanguageDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
+              {/* Mobile View - Simplified: Only Location and Language */}
+              <div className="lg:hidden">
+                <div className="flex items-center justify-between">
+                  {/* Location Only */}
+                  <div className="flex items-center space-x-2 bg-white/20 rounded-lg px-3 py-2 backdrop-blur-sm border border-white/30">
+                    <span className="text-yellow-300 text-base">📍</span>
+                    <span className="font-medium text-xs text-white">ស្រុកស្វាយរៀង ខេត្តស្វាយរៀង</span>
                   </div>
 
-                  {isLanguageDropdownOpen && (
-                    <div className="absolute right-0 mt-2 w-full bg-white border border-gray-200 rounded-lg shadow-xl z-[9999] overflow-hidden">
-                      {languages.map((language) => (
-                        <button
-                          key={language.code}
-                          onClick={() => {
-                            setSelectedLanguage(language.code)
-                            setIsLanguageDropdownOpen(false)
-                          }}
-                          className={`w-full flex items-center space-x-1 sm:space-x-2 px-3 py-2 text-xs sm:text-sm hover:bg-blue-50 transition-colors duration-150 ${selectedLanguage === language.code ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-700'
-                            }`}
-                        >
-                          <img
-                            src={language.flag}
-                            alt={`${language.name} flag`}
-                            className="w-4 sm:w-5 h-3 sm:h-4 object-cover rounded border border-gray-200"
-                          />
-                          <span>{language.name}</span>
-                        </button>
-                      ))}
-                    </div>
-                  )}
+                  {/* Language Selector */}
+                  <div className="relative">
+                    <button
+                      onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
+                      className="flex items-center space-x-2 bg-white/25 backdrop-blur-sm border border-white/40 rounded-lg px-3 py-2 text-xs text-white hover:bg-white/35 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200 cursor-pointer shadow-lg min-w-[60px]"
+                    >
+                      <img
+                        src={currentLanguage.flag}
+                        alt={`${currentLanguage.name} flag`}
+                        className="w-4 h-3 object-cover rounded border border-white/40 shadow-sm"
+                      />
+                      <span className="font-medium">{currentLanguage.name}</span>
+                      <svg className={`w-3 h-3 text-white/80 transition-transform duration-200 ${isLanguageDropdownOpen ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+
+                    {isLanguageDropdownOpen && (
+                      <div className="absolute right-0 mt-2 w-32 bg-white border border-gray-200 rounded-lg shadow-xl z-[9999] overflow-hidden">
+                        {languages.map((language) => (
+                          <button
+                            key={language.code}
+                            onClick={() => {
+                              setSelectedLanguage(language.code)
+                              setIsLanguageDropdownOpen(false)
+                            }}
+                            className={`w-full flex items-center space-x-2 px-3 py-2 text-xs hover:bg-blue-50 transition-colors duration-150 ${selectedLanguage === language.code ? 'bg-blue-50 text-blue-700 font-semibold' : 'text-gray-700'}`}
+                          >
+                            <img
+                              src={language.flag}
+                              alt={`${language.name} flag`}
+                              className="w-4 h-3 object-cover rounded border border-gray-200"
+                            />
+                            <span>{language.name}</span>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>

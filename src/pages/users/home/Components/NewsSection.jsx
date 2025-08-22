@@ -78,7 +78,7 @@ function NewsSection() {
   }, [])
 
   // Use custom hook for news fetching with auto-refresh
-  const { news, loading, error, retry, refresh, refreshing, retryCount } = useNews(true, 300000) // Auto-refresh every 5 minutes
+  const { news, loading, error, retry, refreshing, retryCount } = useNews(true, 300000) // Auto-refresh every 5 minutes
 
   // Loading state
   if (loading) {
@@ -175,17 +175,6 @@ function NewsSection() {
             </p>
           </div>
           <div className="hidden md:flex space-x-4">
-            <button 
-              onClick={refresh}
-              disabled={refreshing}
-              className="bg-gray-400 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-all duration-200 disabled:opacity-50 flex items-center space-x-2 hover:scale-105"
-            >
-              {refreshing ? (
-                <div className="animate-spin rounded-full h-4 w-4 border-2 border-white border-t-transparent"></div>
-              ) : (
-                <span>↻</span>
-              )}
-            </button>
             <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all duration-200 hover:scale-105">
               <a href="/news" className="flex items-center space-x-2">
                 <span>មើលទាំងអស់</span>

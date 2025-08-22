@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback } from 'react'
-import apiService from '../services/api'
+import { useState, useEffect, useCallback, useRef } from 'react'
+import newsService from '../services/newsService'
 
 // Custom hook for API fetching with advanced features
 export const useApi = (apiFunction, dependencies = []) => {
@@ -79,6 +79,8 @@ export const useNews = (autoRefresh = false, refreshInterval = 300000) => {
   const [error, setError] = useState(null)
   const [retryCount, setRetryCount] = useState(0)
   const [refreshing, setRefreshing] = useState(false)
+  const retryCountRef = useRef(0)
+  const hasInitialFetch = useRef(false)
 
   const fetchNews = useCallback(async (isRetry = false) => {
     try {
@@ -90,7 +92,7 @@ export const useNews = (autoRefresh = false, refreshInterval = 300000) => {
       
       setError(null)
 
-      const result = await apiService.getNews()
+      const result = await newsService.getNews()
       
       if (result.error) {
         throw new Error(result.error)
@@ -98,28 +100,33 @@ export const useNews = (autoRefresh = false, refreshInterval = 300000) => {
 
       setNews(result.data)
       setRetryCount(0)
+      retryCountRef.current = 0
       
     } catch (err) {
       console.error('News fetch error:', err)
       setError(err.message)
       
       // Only auto-retry on initial load or manual refresh, not on persistent errors
-      if (retryCount < 3 && !isRetry) {
+      if (retryCountRef.current < 3 && !isRetry) {
         setTimeout(() => {
-          setRetryCount(prev => prev + 1)
+          retryCountRef.current += 1
+          setRetryCount(retryCountRef.current)
           fetchNews(true)
-        }, 2000 * (retryCount + 1)) // Exponential backoff
+        }, 2000 * (retryCountRef.current + 1)) // Exponential backoff
       }
     } finally {
       setLoading(false)
       setRefreshing(false)
     }
-  }, [retryCount])
+  }, [])
 
-  // Initial fetch
+  // Initial fetch - only run once on mount
   useEffect(() => {
-    fetchNews()
-  }, [fetchNews])
+    if (!hasInitialFetch.current) {
+      hasInitialFetch.current = true
+      fetchNews()
+    }
+  }, [])
 
   // Auto-refresh setup - only if there's no error
   useEffect(() => {

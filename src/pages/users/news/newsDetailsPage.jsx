@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import NewsDetail from './Components/newsDetail';
-import apiService from '../../../services/api';
+import newsService from '../../../services/newsService';
 
 function NewsDetailsPage() {
     const { slug } = useParams(); // Changed from id to slug
@@ -25,7 +25,16 @@ function NewsDetailsPage() {
             setError(null);
             
             try {
-                const result = await apiService.getNewsBySlug(slug);
+                let result;
+                
+                // Check if slug is numeric (likely an ID)
+                if (/^\d+$/.test(slug)) {
+                    // Use getNewsById for numeric values
+                    result = await newsService.getNewsById(slug);
+                } else {
+                    // Use getNewsBySlug for non-numeric values
+                    result = await newsService.getNewsBySlug(slug);
+                }
                 
                 if (result.error) {
                     setError(result.error);

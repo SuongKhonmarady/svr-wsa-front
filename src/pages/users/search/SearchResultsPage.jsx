@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import apiService from '../../../services/api'
+import newsService from '../../../services/newsService'
 
 function SearchResultsPage() {
   const [searchParams] = useSearchParams()
@@ -21,7 +21,7 @@ function SearchResultsPage() {
     setError(null)
     
     try {
-      const response = await apiService.globalSearch(searchQuery, 50)
+      const response = await newsService.globalSearch(searchQuery, 50)
       
       console.log('Search API Response:', response)
       
@@ -29,7 +29,7 @@ function SearchResultsPage() {
         let searchData = {}
         
         // Handle different response structures
-        if (response.data && response.data.success) {
+        if (response.data) {
           if (response.data.data) {
             // Structure: { data: { success: true, data: { monthly_reports: [...], yearly_reports: [...] } } }
             const responseData = response.data.data
@@ -58,6 +58,10 @@ function SearchResultsPage() {
         console.log('Parsed search data:', searchData)
         
         // Additional debugging
+        if (searchData.news && searchData.news.length > 0) {
+          console.log('News count:', searchData.news.length)
+          console.log('Sample news item:', searchData.news[0])
+        }
         if (searchData.monthlyReports) {
           console.log('Monthly reports count:', searchData.monthlyReports.length)
           console.log('Sample monthly report:', searchData.monthlyReports[0])
@@ -213,7 +217,7 @@ function SearchResultsPage() {
                     {searchResults.news.map((item) => (
                       <a
                         key={`news-${item.id}`}
-                        href={item.route}
+                        href={`/news/${item.slug || item.id}`}
                         className="block p-6 hover:bg-gray-50 transition-colors"
                       >
                         <div className="flex items-start space-x-4">

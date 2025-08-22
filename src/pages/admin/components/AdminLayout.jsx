@@ -6,12 +6,32 @@ import { clearAuth, getCurrentUser } from '../../../utils/auth'
 function AdminLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [userDropdownOpen, setUserDropdownOpen] = useState(false)
+  const [pendingRequestsCount, setPendingRequestsCount] = useState(0)
   const dropdownRef = useRef(null)
   const navigate = useNavigate()
   const location = useLocation()
   
   // Get current user info
   const currentUser = getCurrentUser()
+
+  // Fetch pending requests count
+  useEffect(() => {
+    const fetchPendingCount = async () => {
+      try {
+        const response = await apiService.getAdminServiceRequests()
+        if (response.data && response.data.success) {
+          const pendingCount = response.data.data.filter(
+            request => request.status?.name?.toLowerCase() === 'pending'
+          ).length
+          setPendingRequestsCount(pendingCount)
+        }
+      } catch (error) {
+        console.error('Error fetching pending requests count:', error)
+      }
+    }
+
+    fetchPendingCount()
+  }, [])
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -44,7 +64,7 @@ function AdminLayout({ children }) {
   const navigation = [
     { name: 'Dashboard', href: '/admin/dashboard', icon: '🏠' },
     { name: 'News Management', href: '/admin/news', icon: '📰' },
-    { name: 'Service Requests', href: '/admin/service-requests', icon: '🔧' },
+    { name: 'Service Requests', href: '/admin/service-requests', icon: '🔧', badge: pendingRequestsCount > 0 ? pendingRequestsCount : null },
     { name: 'Report Management', href: '/admin/reports', icon: '📋' },
     { name: 'Laws', href: '/admin/laws', icon: '⚖️' },
     { name: 'Data', href: '/admin/data', icon: '📊' },
@@ -90,6 +110,11 @@ function AdminLayout({ children }) {
                 >
                   <span className="mr-3 text-lg">{item.icon}</span>
                   {item.name}
+                  {item.badge && (
+                    <span className="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      {item.badge}
+                    </span>
+                  )}
                 </button>
               ))}
             </nav>
@@ -147,6 +172,11 @@ function AdminLayout({ children }) {
                 >
                   <span className="mr-3 text-lg">{item.icon}</span>
                   {item.name}
+                  {item.badge && (
+                    <span className="ml-auto inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                      {item.badge}
+                    </span>
+                  )}
                 </button>
               ))}
             </nav>

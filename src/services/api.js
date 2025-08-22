@@ -1,5 +1,6 @@
 import config from '../config/api'
 import { clearAuth } from '../utils/auth'
+import newsService from './newsService'
 
 // API Service Class
 class ApiService {
@@ -67,14 +68,14 @@ class ApiService {
           // Token expired or invalid
           clearAuth()
           // Redirect to login if we're not already there
-          if (window.location.pathname !== '/admin-login-secret/login') {
-            window.location.href = '/admin-login-secret/login'
+          if (window.location.pathname !== '/svrwu-admin-login/login') {
+            window.location.href = '/svrwu-admin-login/login'
           }
         } else if (response.status === 403) {
           // Forbidden - insufficient privileges
           clearAuth()
-          if (window.location.pathname !== '/admin-login-secret/login') {
-            window.location.href = '/admin-login-secret/login'
+          if (window.location.pathname !== '/svrwu-admin-login/login') {
+            window.location.href = '/svrwu-admin-login/login'
           }
         }
         
@@ -84,8 +85,7 @@ class ApiService {
 
       const data = await response.json()
 
-      // Log the response for debugging
-      console.log(`API Response for ${url}:`, data)
+
 
       return { data, error: null }
     } catch (error) {
@@ -109,7 +109,6 @@ class ApiService {
         errorMessage = error.message
       }
 
-      console.error(`API Error for ${url}:`, error)
       return { data: null, error: errorMessage }
     }
   }
@@ -214,94 +213,189 @@ class ApiService {
     })
   }
 
-  // News API Methods
+  // News API Methods - Delegated to newsService
   async getNews() {
-    const result = await this.get('/news')
-
-    if (result.error) {
-      return result
-    }
-
-    // Validate data structure
-    if (!Array.isArray(result.data)) {
-      return { data: null, error: 'Invalid data format received from server' }
-    }
-
-    return result
+    return newsService.getNews()
   }
 
   async getNewsBySlug(slug) {
-    return this.get(`/news/${slug}`)
+    return newsService.getNewsBySlug(slug)
   }
 
   async getNewsById(id) {
-    return this.get(`/news/${id}`)
+    return newsService.getNewsById(id)
+  }
+
+  async getNewsByCategory(categorySlug) {
+    return newsService.getNewsByCategory(categorySlug)
   }
 
   async createNews(newsData) {
-    return this.post('/news', newsData)
+    return newsService.createNews(newsData)
   }
 
   async updateNews(slug, newsData) {
-    // If FormData contains _method=PUT, use POST for Laravel method spoofing
-    if (newsData instanceof FormData && newsData.has('_method')) {
-      return this.post(`/news/${slug}`, newsData)
-    }
-    return this.put(`/news/${slug}`, newsData)
+    return newsService.updateNews(slug, newsData)
   }
 
   async deleteNews(slug) {
-    return this.delete(`/news/${slug}`)
+    return newsService.deleteNews(slug)
   }
 
-  // Categories API Methods
+  // Categories API Methods - Delegated to newsService
   async getCategories() {
-    const result = await this.get('/categories')
-
-    if (result.error) {
-      return result
-    }
-
-    // Validate data structure
-    if (!Array.isArray(result.data)) {
-      return { data: null, error: 'Invalid data format received from server' }
-    }
-
-    return result
+    return newsService.getCategories()
   }
 
   async getCategoryById(id) {
-    return this.get(`/categories/${id}`)
+    return newsService.getCategoryById(id)
   }
 
   async createCategory(categoryData) {
-    return this.post('/categories', categoryData)
+    return newsService.createCategory(categoryData)
   }
 
   async updateCategory(id, categoryData) {
-    return this.put(`/categories/${id}`, categoryData)
+    return newsService.updateCategory(id, categoryData)
   }
 
   async deleteCategory(id) {
-    return this.delete(`/categories/${id}`)
+    return newsService.deleteCategory(id)
   }
 
   // Service Request API Methods
   async getServiceRequests() {
-    return this.get('/service-requests')
+    const result = await this.get('/service-requests')
+    
+    if (result.error) {
+      return result
+    }
+
+    // Handle different response structures for service requests
+    let requestsData = null
+    
+    if (result.data) {
+      if (Array.isArray(result.data)) {
+        // Direct array response
+        requestsData = result.data
+      } else if (result.data.data && Array.isArray(result.data.data)) {
+        // Nested data structure: { data: { data: [...] } }
+        requestsData = result.data.data
+      } else if (result.data.service_requests && Array.isArray(result.data.service_requests)) {
+        // Structure with service_requests property: { data: { service_requests: [...] } }
+        requestsData = result.data.service_requests
+      } else if (result.data.success && result.data.data && Array.isArray(result.data.data)) {
+        // Success wrapper structure: { data: { success: true, data: [...] } }
+        requestsData = result.data.data
+      }
+    }
+
+    if (!requestsData) {
+      return { data: null, error: 'Invalid data format received from server' }
+    }
+
+    return { data: requestsData, error: null }
   }
 
   // Admin Service Request Methods
-  async getAdminServiceRequests() {
-    return this.get('/admin/service-requests')
+  async getAdminServiceRequests(queryParams = '') {
+    const url = queryParams ? `/admin/service-requests?${queryParams}` : '/admin/service-requests';
+    const result = await this.get(url)
+    
+    if (result.error) {
+      return result
+    }
+
+    // Debug logging to help identify response structure
+    console.log('getAdminServiceRequests response:', result.data);
+
+    // Handle different response structures for admin service requests
+    let requestsData = null
+    let totalCount = 0
+    
+    if (result.data) {
+      if (Array.isArray(result.data)) {
+        // Direct array response
+        requestsData = result.data
+        totalCount = result.data.length
+      } else if (result.data.data && Array.isArray(result.data.data)) {
+        // Nested data structure: { data: { data: [...] } }
+        requestsData = result.data.data
+        totalCount = result.data.total || result.data.data.length
+      } else if (result.data.service_requests && Array.isArray(result.data.service_requests)) {
+        // Structure with service_requests property: { data: { service_requests: [...] } }
+        requestsData = result.data.service_requests
+        totalCount = result.data.total || result.data.service_requests.length
+      } else if (result.data.success && result.data.data && Array.isArray(result.data.data)) {
+        // Success wrapper structure: { data: { success: true, data: [...] } }
+        requestsData = result.data.data
+        totalCount = result.data.total || result.data.data.length
+      } else if (result.data.success && result.data.data && !Array.isArray(result.data.data)) {
+        // Single item response: { success: true, data: { id: ... } }
+        requestsData = [result.data.data]
+        totalCount = 1
+      }
+    }
+
+    if (!requestsData) {
+      return { data: null, error: 'Invalid data format received from server' }
+    }
+
+    // Return the structure expected by the parent component
+    return { 
+      data: {
+        success: true,
+        data: requestsData,
+        total: totalCount
+      }, 
+      error: null 
+    }
   }
 
   async getAdminServiceRequestById(id) {
-    return this.get(`/admin/service-requests/${id}`)
+    console.log('getAdminServiceRequestById called with id:', id);
+    const result = await this.get(`/admin/service-requests/${id}`)
+    console.log('getAdminServiceRequestById raw result:', result);
+    
+    if (result.error) {
+      console.error('getAdminServiceRequestById error:', result.error);
+      return result
+    }
+
+    // Handle different response structures for single admin service request item
+    let requestData = null
+    
+    if (result.data) {
+      if (result.data.id) {
+        // Direct object response
+        console.log('Setting requestData from direct object response');
+        requestData = result.data
+      } else if (result.data.data && result.data.data.id) {
+        // Nested data structure: { data: { data: { id: ... } } }
+        console.log('Setting requestData from nested data structure');
+        requestData = result.data.data
+      } else if (result.data.service_request && result.data.service_request.id) {
+        // Structure with service_request property: { data: { service_request: { id: ... } } }
+        console.log('Setting requestData from service_request structure');
+        requestData = result.data.service_request
+      } else if (result.data.success && result.data.data && result.data.data.id) {
+        // Success wrapper structure: { data: { success: true, data: { id: ... } } }
+        console.log('Setting requestData from success wrapper structure');
+        requestData = result.data.data
+      }
+    }
+
+    if (!requestData) {
+      console.error('No valid requestData found. Result structure:', result);
+      return { data: null, error: 'Invalid data format received from server' }
+    }
+
+    console.log('Final requestData:', requestData);
+    return { data: requestData, error: null }
   }
 
   async serveDocument(id, type, filename) {
-    console.log('serveDocument called with:', { id, type, filename });
+
     
     let routeType, actualFilename;
     
@@ -321,13 +415,10 @@ class ApiService {
     }
     
     const url = `${this.baseURL}/admin/service-requests/${id}/documents/${routeType}/${actualFilename}`;
-    console.log('Generated URL:', url);
     return url;
   }
 
   async getProtectedDocument(id, type, filename) {
-    console.log('getProtectedDocument called with:', { id, type, filename });
-    
     let routeType, actualFilename;
     
     if (filename.includes('/')) {
@@ -346,7 +437,6 @@ class ApiService {
     }
     
     const url = `${this.baseURL}/admin/service-requests/${id}/documents/${routeType}/${actualFilename}`;
-    console.log('Generated URL:', url);
     
     // Get auth token
     const token = localStorage.getItem('admin_token');
@@ -372,16 +462,80 @@ class ApiService {
   }
 
   async submitServiceRequest(requestData) {
-    return this.post('/service-requests', requestData)
+    const result = await this.post('/service-requests', requestData)
+    
+    if (result.error) {
+      return result
+    }
+
+    // The submit service request API returns a complex structure with multiple data types
+    // We don't need to validate the data format here since it's a complex object
+    return result
+  }
+
+  async getServiceRequestCategories() {
+    const result = await this.get('/service-categories')
+    
+    if (result.error) {
+      return result
+    }
+
+    // Handle different response structures for service request categories
+    let categoriesData = null
+    
+    if (result.data) {
+      if (Array.isArray(result.data)) {
+        // Direct array response
+        categoriesData = result.data
+      } else if (result.data.data && Array.isArray(result.data.data)) {
+        // Nested data structure: { data: { data: [...] } }
+        categoriesData = result.data.data
+      } else if (result.data.categories && Array.isArray(result.data.categories)) {
+        // Structure with categories property: { data: { categories: [...] } }
+        categoriesData = result.data.categories
+      } else if (result.data.service_categories && Array.isArray(result.data.service_categories)) {
+        // Structure with service_categories property: { data: { service_categories: [...] } }
+        categoriesData = result.data.service_categories
+      } else if (result.data.success && result.data.data && Array.isArray(result.data.data)) {
+        // Success wrapper structure: { data: { success: true, data: [...] } }
+        categoriesData = result.data.data
+      } else if (result.data.success && result.data.data && !Array.isArray(result.data.data)) {
+        // Success wrapper with object data: { data: { success: true, data: {...} } }
+        // This is the correct case for the current API response
+        categoriesData = result.data.data
+      }
+    }
+
+    if (!categoriesData) {
+      console.error('Categories data format not recognized:', result.data);
+      return { data: null, error: 'Invalid data format received from server' }
+    }
+
+    return { data: categoriesData, error: null }
   }
 
   async updateServiceRequestStatus(id, statusData) {
-    return this.patch(`/service-requests/${id}/status`, statusData)
+    const result = await this.patch(`/service-requests/${id}/status`, statusData)
+    
+    if (result.error) {
+      return result
+    }
+
+    // The update service request status API returns a complex structure with multiple data types
+    // We don't need to validate the data format here since it's a complex object
+    return result
   }
 
   // Authentication methods
   async logout() {
-    return this.post('/logout', {})
+    const result = await this.post('/logout', {})
+    
+    if (result.error) {
+      return result
+    }
+
+    // The logout API returns a simple response
+    return result
   }
 
   // Monthly Reports API Methods
@@ -392,6 +546,8 @@ class ApiService {
       return result
     }
 
+    // The monthly reports API returns a complex structure with multiple data types
+    // We don't need to validate the data format here since it's a complex object
     return result
   }
 
@@ -402,11 +558,21 @@ class ApiService {
       return result
     }
 
+    // The monthly reports by year API returns a complex structure with multiple data types
+    // We don't need to validate the data format here since it's a complex object
     return result
   }
 
   async getMonthlyReportById(id) {
-    return this.get(`/reports/monthly/${id}`)
+    const result = await this.get(`/reports/monthly/${id}`)
+    
+    if (result.error) {
+      return result
+    }
+
+    // The monthly report by ID API returns a complex structure with multiple data types
+    // We don't need to validate the data format here since it's a complex object
+    return result
   }
 
   async getReportMonths() {
@@ -466,25 +632,61 @@ class ApiService {
 
   // Get single monthly report
   async getMonthlyReport(id) {
-    return this.get(`/reports/monthly/${id}`)
+    const result = await this.get(`/reports/monthly/${id}`)
+    
+    if (result.error) {
+      return result
+    }
+
+    // The monthly report by ID API returns a complex structure with multiple data types
+    // We don't need to validate the data format here since it's a complex object
+    return result
   }
 
   // Publish/Unpublish monthly report
   async publishMonthlyReport(id) {
-    return this.post(`/reports/staff/monthly/${id}/publish`)
+    const result = await this.post(`/reports/staff/monthly/${id}/publish`)
+    
+    if (result.error) {
+      return result
+    }
+
+    // The publish monthly report API returns a simple response
+    return result
   }
 
   async unpublishMonthlyReport(id) {
-    return this.post(`/reports/staff/monthly/${id}/unpublish`)
+    const result = await this.post(`/reports/staff/monthly/${id}/unpublish`)
+    
+    if (result.error) {
+      return result
+    }
+
+    // The unpublish monthly report API returns a simple response
+    return result
   }
 
   // Publish/Unpublish yearly report
   async publishYearlyReport(id) {
-    return this.post(`/reports/staff/yearly/${id}/publish`)
+    const result = await this.post(`/reports/staff/yearly/${id}/publish`)
+    
+    if (result.error) {
+      return result
+    }
+
+    // The publish yearly report API returns a simple response
+    return result
   }
 
   async unpublishYearlyReport(id) {
-    return this.post(`/reports/staff/yearly/${id}/unpublish`)
+    const result = await this.post(`/reports/staff/yearly/${id}/unpublish`)
+    
+    if (result.error) {
+      return result
+    }
+
+    // The unpublish yearly report API returns a simple response
+    return result
   }
 
   // Admin get methods for management
@@ -499,7 +701,15 @@ class ApiService {
   }
 
   async getAdminMonthlyReportById(id) {
-    return this.get(`/reports/staff/monthly/${id}`)
+    const result = await this.get(`/reports/staff/monthly/${id}`)
+    
+    if (result.error) {
+      return result
+    }
+
+    // The admin monthly report by ID API returns a complex structure with multiple data types
+    // We don't need to validate the data format here since it's a complex object
+    return result
   }
 
   // Admin get methods for yearly reports
@@ -514,25 +724,64 @@ class ApiService {
   }
 
   async getAdminYearlyReportById(id) {
-    return this.get(`/reports/staff/yearly/${id}`)
+    const result = await this.get(`/reports/staff/yearly/${id}`)
+    
+    if (result.error) {
+      return result
+    }
+
+    // The admin yearly report by ID API returns a complex structure with multiple data types
+    // We don't need to validate the data format here since it's a complex object
+    return result
   }
 
   // Admin Yearly Reports API Methods
   async createYearlyReport(reportData) {
-    return this.post('/reports/admin/yearly', reportData)
+    const result = await this.post('/reports/admin/yearly', reportData)
+    
+    if (result.error) {
+      return result
+    }
+
+    // The create yearly report API returns a complex structure with multiple data types
+    // We don't need to validate the data format here since it's a complex object
+    return result
   }
 
   async updateYearlyReport(id, reportData) {
-    return this.put(`/reports/admin/yearly/${id}`, reportData)
+    const result = await this.put(`/reports/admin/yearly/${id}`, reportData)
+    
+    if (result.error) {
+      return result
+    }
+
+    // The update yearly report API returns a complex structure with multiple data types
+    // We don't need to validate the data format here since it's a complex object
+    return result
   }
 
   // Get single yearly report
   async getYearlyReport(id) {
-    return this.get(`/reports/yearly/${id}`)
+    const result = await this.get(`/reports/yearly/${id}`)
+    
+    if (result.error) {
+      return result
+    }
+
+    // The yearly report by ID API returns a complex structure with multiple data types
+    // We don't need to validate the data format here since it's a complex object
+    return result
   }
 
   async deleteYearlyReport(id) {
-    return this.delete(`/reports/admin/yearly/${id}`)
+    const result = await this.delete(`/reports/admin/yearly/${id}`)
+    
+    if (result.error) {
+      return result
+    }
+
+    // The delete yearly report API returns a simple response
+    return result
   }
 
   // async getAdminYearlyReports() {
@@ -557,6 +806,8 @@ class ApiService {
       return result
     }
 
+    // The yearly reports API returns a complex structure with multiple data types
+    // We don't need to validate the data format here since it's a complex object
     return result
   }
 
@@ -570,104 +821,214 @@ class ApiService {
       return { data: null, error: 'Failed to fetch all reports' };
     }
 
+    // Handle different response structures for reports
+    let monthlyReports = []
+    let yearlyReports = []
+    
+    if (monthly.data) {
+      if (Array.isArray(monthly.data)) {
+        monthlyReports = monthly.data
+      } else if (monthly.data.data && Array.isArray(monthly.data.data)) {
+        monthlyReports = monthly.data.data
+      } else if (monthly.data.monthly_reports && Array.isArray(monthly.data.monthly_reports)) {
+        monthlyReports = monthly.data.monthly_reports
+      }
+    }
+    
+    if (yearly.data) {
+      if (Array.isArray(yearly.data)) {
+        yearlyReports = yearly.data
+      } else if (yearly.data.data && Array.isArray(yearly.data.data)) {
+        yearlyReports = yearly.data.data
+      } else if (yearly.data.yearly_reports && Array.isArray(yearly.data.yearly_reports)) {
+        yearlyReports = yearly.data.yearly_reports
+      }
+    }
+
     const allReports = [
-      ...(monthly.data.data || []).map(r => ({ ...r, type: 'monthly' })),
-      ...(yearly.data.data || []).map(r => ({ ...r, type: 'yearly' }))
+      ...monthlyReports.map(r => ({ ...r, type: 'monthly' })),
+      ...yearlyReports.map(r => ({ ...r, type: 'yearly' }))
     ];
 
     return { data: allReports, error: null };
   }
 
-  // Admin Yearly Reports API Methods (placeholder for future implementation)
-  async createYearlyReport(reportData) {
-    return this.post('/reports/admin/yearly', reportData)
-  }
-
-  async updateYearlyReport(id, reportData) {
-    return this.put(`/reports/admin/yearly/${id}`, reportData)
-  }
-
-  async deleteYearlyReport(id) {
-    return this.delete(`/reports/admin/yearly/${id}`)
-  }
-
-  // async getAdminYearlyReports() {
-  //   const result = await this.get('/reports/admin/yearly')
-
-  //   if (result.error) {
-  //     return result
-  //   }
-
-  //   return result
-  // }
-
-  async getAdminYearlyReportById(id) {
-    return this.get(`/reports/admin/yearly/${id}`)
-  }
-
-  async getYearlyReports() {
-    const result = await this.get('/reports/yearly')
-
-    if (result.error) {
-      return result
-    }
-
-    return result
-  }
-
   // Other API Methods (extend as needed)
   async getServices() {
-    return this.get('/services')
-  }
-
-  async getContact() {
-    return this.get('/contact')
-  }
-
-  async getLaws() {
-    return this.get('/laws')
-  }
-
-  async getData() {
-    return this.get('/data')
-  }
-
-  // Dashboard API Methods
-  async getDashboardStats() {
-    return this.get('/admin/dashboard/stats')
-  }
-
-  async getCustomerGrowthData(year = new Date().getFullYear()) {
-    return this.get(`/admin/dashboard/customer-growth/${year}`)
-  }
-
-  async getRecentNews() {
-    return this.get(`/admin/dashboard/recent-news`)
-  }
-
-  async getRecentReports() {
-    return this.get(`/admin/dashboard/recent-reports`)
-  }
-
-  async getSystemStatus() {
-    return this.get('/admin/dashboard/system-status')
-  }
-
-  // Utility method to get image URL
-  getImageUrl(imagePath) {
-    if (!imagePath) return '/image/svrwsa_logo_high_quality.png'
-    return `${this.storageURL}/${imagePath}`
-  }
-
-  // Search API Methods
-  async globalSearch(query, limit = 10) {
-    const result = await this.get(`/search?q=${encodeURIComponent(query)}&limit=${limit}`)
+    const result = await this.get('/services')
     
     if (result.error) {
       return result
     }
 
+    // Handle different response structures for services
+    let servicesData = null
+    
+    if (result.data) {
+      if (Array.isArray(result.data)) {
+        // Direct array response
+        servicesData = result.data
+      } else if (result.data.data && Array.isArray(result.data.data)) {
+        // Nested data structure: { data: { data: [...] } }
+        servicesData = result.data.data
+      } else if (result.data.services && Array.isArray(result.data.services)) {
+        // Structure with services property: { data: { services: [...] } }
+        servicesData = result.data.services
+      } else if (result.data.success && result.data.data && Array.isArray(result.data.data)) {
+        // Success wrapper structure: { data: { success: true, data: [...] } }
+        servicesData = result.data.data
+      }
+    }
+
+    if (!servicesData) {
+      return { data: null, error: 'Invalid data format received from server' }
+    }
+
+    return { data: servicesData, error: null }
+  }
+
+  async getContact() {
+    const result = await this.get('/contact')
+    
+    if (result.error) {
+      return result
+    }
+
+    // The contact API returns a complex structure with multiple data types
+    // We don't need to validate the data format here since it's a complex object
     return result
+  }
+
+  async getLaws() {
+    const result = await this.get('/laws')
+    
+    if (result.error) {
+      return result
+    }
+
+    // Handle different response structures for laws
+    let lawsData = null
+    
+    if (result.data) {
+      if (Array.isArray(result.data)) {
+        // Direct array response
+        lawsData = result.data
+      } else if (result.data.data && Array.isArray(result.data.data)) {
+        // Nested data structure: { data: { data: [...] } }
+        lawsData = result.data.data
+      } else if (result.data.laws && Array.isArray(result.data.laws)) {
+        // Structure with laws property: { data: { laws: [...] } }
+        lawsData = result.data.laws
+      } else if (result.data.success && result.data.data && Array.isArray(result.data.data)) {
+        // Success wrapper structure: { data: { success: true, data: [...] } }
+        lawsData = result.data.data
+      }
+    }
+
+    if (!lawsData) {
+      return { data: null, error: 'Invalid data format received from server' }
+    }
+
+    return { data: lawsData, error: null }
+  }
+
+  async getData() {
+    const result = await this.get('/data')
+    
+    if (result.error) {
+      return result
+    }
+
+    // The data API returns a complex structure with multiple data types
+    // We don't need to validate the data format here since it's a complex object
+    return result
+  }
+
+  // Dashboard API Methods
+  async getDashboardStats() {
+    const result = await this.get('/admin/dashboard/stats')
+    
+    if (result.error) {
+      return result
+    }
+
+    // The dashboard stats API returns a complex structure with multiple data types
+    // We don't need to validate the data format here since it's a complex object
+    return result
+  }
+
+  async getCustomerGrowthData(year = new Date().getFullYear()) {
+    const result = await this.get(`/admin/dashboard/customer-growth/${year}`)
+    
+    if (result.error) {
+      return result
+    }
+
+    // The customer growth API returns a complex structure with multiple data types
+    // We don't need to validate the data format here since it's a complex object
+    return result
+  }
+
+  async getRecentNews() {
+    return newsService.getRecentNews()
+  }
+
+  async getRecentReports() {
+    const result = await this.get(`/admin/dashboard/recent-reports`)
+    
+    if (result.error) {
+      return result
+    }
+
+    // Handle different response structures for recent reports
+    let reportsData = null
+    
+    if (result.data) {
+      if (Array.isArray(result.data)) {
+        // Direct array response
+        reportsData = result.data
+      } else if (result.data.data && Array.isArray(result.data.data)) {
+        // Nested data structure: { data: { data: [...] } }
+        reportsData = result.data.data
+      } else if (result.data.reports && Array.isArray(result.data.reports)) {
+        // Structure with reports property: { data: { reports: [...] } }
+        reportsData = result.data.reports
+      } else if (result.data.recent_reports && Array.isArray(result.data.recent_reports)) {
+        // Structure with recent_reports property: { data: { recent_reports: [...] } }
+        reportsData = result.data.recent_reports
+      } else if (result.data.success && result.data.data && Array.isArray(result.data.data)) {
+        // Success wrapper structure: { data: { success: true, data: [...] } }
+        reportsData = result.data.data
+      }
+    }
+
+    if (!reportsData) {
+      return { data: null, error: 'Invalid data format received from server' }
+    }
+
+    return { data: reportsData, error: null }
+  }
+
+  async getSystemStatus() {
+    const result = await this.get('/admin/dashboard/system-status')
+    
+    if (result.error) {
+      return result
+    }
+
+    // The system status API returns a complex structure with multiple data types
+    // We don't need to validate the data format here since it's a complex object
+    return result
+  }
+
+  // Utility method to get image URL - Delegated to newsService
+  getImageUrl(imagePath) {
+    return newsService.getImageUrl(imagePath)
+  }
+
+  // Search API Methods - Delegated to newsService
+  async globalSearch(query, limit = 10) {
+    return newsService.globalSearch(query, limit)
   }
 }
 

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import apiService from '../../../../../services/api';
 
 export function useWaterSupplyForm() {
@@ -7,14 +7,27 @@ export function useWaterSupplyForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitMessage, setSubmitMessage] = useState({ type: '', text: '' });
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [categories, setCategories] = useState({
+        provinces: [],
+        districts: [],
+        communes: [],
+        occupations: [],
+        usage_types: []
+    });
 
     const [formData, setFormData] = useState({
         name: '',
-        email: '',
         phone: '',
-        address: '',
-        service_type: 'ស្នើសុំសេវាកម្មការតភ្ជាប់ប្រព័ន្ធទឹកថ្មី',
-        details: ''
+        service_type: '',
+        details: '',
+        family_members: '',
+        female_members: '',
+        village: '',
+        commune_id: '',
+        district_id: '',
+        province_id: '',
+        occupation_id: '',
+        usage_type_id: ''
     });
 
     const [documents, setDocuments] = useState({
@@ -28,6 +41,34 @@ export function useWaterSupplyForm() {
         id_card_back: null,
         family_books: null
     });
+
+    // Fetch categories on component mount
+    useEffect(() => {
+        const fetchCategories = async () => {
+            try {
+                const response = await apiService.getServiceRequestCategories();
+                
+                if (response.data) {
+                    // The API service has already processed the response and extracted the categories
+                    // response.data should contain the actual categories data
+                    setCategories(response.data);
+                } else if (response.error) {
+                    console.error('API returned error:', response.error);
+                }
+            } catch (error) {
+                console.error('Failed to fetch categories:', error);
+            }
+        };
+
+        fetchCategories();
+    }, []);
+
+    // Monitor categories state changes
+    useEffect(() => {
+        if (categories && typeof categories === 'object') {
+            // console.log('Categories loaded successfully');
+        }
+    }, [categories]);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -99,10 +140,28 @@ export function useWaterSupplyForm() {
 
     const validateCurrentStep = () => {
         if (currentStep === 1) {
-            if (!formData.name || !formData.service_type) {
+            // Validate all required fields for step 1
+            const requiredFields = [
+                'name', 'phone', 'service_type', 'family_members', 
+                'female_members', 'village', 'commune_id', 'district_id', 
+                'province_id', 'occupation_id', 'usage_type_id'
+            ];
+            
+            const missingFields = requiredFields.filter(field => !formData[field]);
+            
+            if (missingFields.length > 0) {
                 setSubmitMessage({
                     type: 'error',
                     text: 'សូមបំពេញព័ត៌មានចាំបាច់ទាំងអស់'
+                });
+                return false;
+            }
+
+            // Validate family members count
+            if (parseInt(formData.female_members) > parseInt(formData.family_members)) {
+                setSubmitMessage({
+                    type: 'error',
+                    text: 'ចំនួនសមាជិកស្រីមិនអាចច្រើនជាងចំនួនសមាជិកគ្រួសារបានទេ'
                 });
                 return false;
             }
@@ -146,11 +205,17 @@ export function useWaterSupplyForm() {
     const resetForm = () => {
         setFormData({
             name: '',
-            email: '',
             phone: '',
-            address: '',
-            service_type: 'Water Supply',
-            details: ''
+            service_type: '',
+            details: '',
+            family_members: '',
+            female_members: '',
+            village: '',
+            commune_id: '',
+            district_id: '',
+            province_id: '',
+            occupation_id: '',
+            usage_type_id: ''
         });
         setDocuments({
             id_card_front: null,
@@ -170,21 +235,8 @@ export function useWaterSupplyForm() {
         setIsSubmitting(true);
         setSubmitMessage({ type: '', text: '' });
 
-        // Additional validation before submission
-        if (!formData.name || !formData.service_type) {
-            setSubmitMessage({
-                type: 'error',
-                text: 'សូមបំពេញព័ត៌មានចាំបាច់ទាំងអស់ (ឈ្មោះ និង ប្រភេទសេវាកម្ម)'
-            });
-            setIsSubmitting(false);
-            return;
-        }
-
-        if (!documents.id_card_front || !documents.id_card_back || !documents.family_books) {
-            setSubmitMessage({
-                type: 'error',
-                text: 'សូមអាប់ឡូតឯកសារអត្តសញ្ញាណប័ណ្ណ (មុខ និង ក្រោយ) និងសៀវភៅគ្រួសារ'
-            });
+        // Final validation before submission
+        if (!validateCurrentStep()) {
             setIsSubmitting(false);
             return;
         }
@@ -193,7 +245,7 @@ export function useWaterSupplyForm() {
             // Create FormData for file upload
             const submitData = new FormData();
 
-            // Add form data - include all fields (even empty ones as Laravel expects them)
+            // Add form data
             Object.keys(formData).forEach(key => {
                 const value = formData[key] || '';
                 submitData.append(key, value);
@@ -255,6 +307,7 @@ export function useWaterSupplyForm() {
         formData,
         documents,
         documentPreviews,
+        categories,
         
         // Actions
         handleInputChange,

@@ -1,6 +1,6 @@
 import React from 'react';
 
-function BasicInformationStep({ formData, handleInputChange }) {
+function BasicInformationStep({ formData, handleInputChange, categories }) {
     return (
         <div>
             {/* Service Information */}
@@ -10,27 +10,30 @@ function BasicInformationStep({ formData, handleInputChange }) {
                     <div className="flex items-start space-x-3">
                         <div className="flex-shrink-0">
                             <svg className="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
                             </svg>
                         </div>
-                        <div>
-                            <h4 className="font-semibold text-blue-800">សេវាកម្មផ្គត់ផ្គង់ទឹកស្អាត</h4>
-                            <p className="text-blue-700 text-sm mt-1">
-                                • ទឹកស្អាតគុណភាពខ្ពស់តាមស្តង់ដារអន្តរជាតិ<br />
-                                • ការផ្គត់ផ្គង់ទៀងទាត់ ២៤/៧<br />
-                                • ប្រព័ន្ធបំពង់ទំនើប និងសុវត្ថិភាព<br />
-                                • ថ្លៃទឹកសមរម្យ ចាប់ពី 1200 រៀល/ម³
-                            </p>
+                        <div className="text-sm text-blue-800">
+                            <p className="font-medium mb-1">សេវាកម្មដែលយើងផ្តល់ឱ្យ:</p>
+                            <ul className="space-y-1">
+                                <li>• ការតភ្ជាប់ប្រព័ន្ធទឹកថ្មី</li>
+                                <li>• ការដំឡើងឧបករណ៍វាស់ទឹក</li>
+                                <li>• ការតេស្តគុណភាពទឹក</li>
+                                <li>• ថ្លៃទឹកសមរម្យ ចាប់ពី 1200 រៀល/ម³</li>
+                            </ul>
                         </div>
                     </div>
                 </div>
             </div>
-            <form className="space-y-6">
+
+            {/* Personal Information */}
+            <div className="mb-8">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">ព័ត៌មានផ្ទាល់ខ្លួន</h3>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Name */}
                     <div>
                         <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
-                            ឈ្មោះជាភាសាខ្មែរ <span className="text-red-500">*</span>
+                            ឈ្មោះ <span className="text-red-500">*</span>
                         </label>
                         <input
                             type="text"
@@ -38,32 +41,16 @@ function BasicInformationStep({ formData, handleInputChange }) {
                             name="name"
                             value={formData.name}
                             onChange={handleInputChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="សូមបញ្ចូលឈ្មោះពេញ"
                             required
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                            placeholder="បញ្ចូលឈ្មោះពេញរបស់អ្នក"
-                        />
-                    </div>
-
-                    {/* Email */}
-                    <div>
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
-                            អ៊ីម៉ែល (បំពេញប្រសិនមាន - បើអត់អាចរំលងបាន)
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleInputChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                            placeholder="example@email.com"
                         />
                     </div>
 
                     {/* Phone */}
                     <div>
                         <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-2">
-                            លេខទូរស័ព្ទ
+                            លេខទូរស័ព្ទ <span className="text-red-500">*</span>
                         </label>
                         <input
                             type="tel"
@@ -71,8 +58,9 @@ function BasicInformationStep({ formData, handleInputChange }) {
                             name="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                            placeholder="010 123 456"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="012 345 678"
+                            required
                         />
                     </div>
 
@@ -86,49 +74,213 @@ function BasicInformationStep({ formData, handleInputChange }) {
                             name="service_type"
                             value={formData.service_type}
                             onChange={handleInputChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                             required
-                            className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
                         >
-                            <option value="ស្នើសុំសេវាកម្មការតភ្ជាប់ប្រព័ន្ធទឹកថ្មី">ស្នើសុំសេវាកម្មការតភ្ជាប់ប្រព័ន្ធទឹកថ្មី</option>
-                            <option value="Water Meter Installation">ការដំឡើងឧបករណ៍វាស់ទឹក</option>
+                            <option value="">សូមជ្រើសរើសប្រភេទសេវាកម្ម</option>
+                            <option value="ការតភ្ជាប់ប្រព័ន្ធទឹកថ្មី">ការតភ្ជាប់ប្រព័ន្ធទឹកថ្មី</option>
+                            <option value="ការដំឡើងឧបករណ៍វាស់ទឹក">ការដំឡើងឧបករណ៍វាស់ទឹក</option>
                             <option value="ការតេស្តគុណភាពទឹក">ការតេស្តគុណភាពទឹក</option>
                         </select>
                     </div>
-                </div>
 
-                {/* Address */}
-                <div>
-                    <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
-                        អាសយដ្ឋាន
-                    </label>
-                    <input
-                        type="text"
-                        id="address"
-                        name="address"
-                        value={formData.address}
-                        onChange={handleInputChange}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors"
-                        placeholder="បញ្ចូលអាសយដ្ឋានពេញលេញ"
-                    />
-                </div>
+                    {/* Family Members */}
+                    <div>
+                        <label htmlFor="family_members" className="block text-sm font-medium text-gray-700 mb-2">
+                            ចំនួនសមាជិកគ្រួសារ <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="number"
+                            id="family_members"
+                            name="family_members"
+                            value={formData.family_members}
+                            onChange={handleInputChange}
+                            min="1"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="ចំនួនសមាជិក"
+                            required
+                        />
+                    </div>
 
-                {/* Details */}
-                <div>
-                    <label htmlFor="details" className="block text-sm font-medium text-gray-700 mb-2">
-                        ព័ត៌មានលម្អិត
-                    </label>
-                    <textarea
-                        id="details"
-                        name="details"
-                        value={formData.details}
-                        onChange={handleInputChange}
-                        rows={4}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-colors resize-none"
-                        placeholder="បញ្ចូលព័ត៌មានលម្អិតអំពីការស្នើសុំរបស់អ្នក..."
-                    />
+                    {/* Female Members */}
+                    <div>
+                        <label htmlFor="female_members" className="block text-sm font-medium text-gray-700 mb-2">
+                            ចំនួនសមាជិកស្រី <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="number"
+                            id="female_members"
+                            name="female_members"
+                            value={formData.female_members}
+                            onChange={handleInputChange}
+                            min="0"
+                            max={formData.family_members || 999}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="ចំនួនសមាជិកស្រី"
+                            required
+                        />
+                    </div>
+
+                    {/* Village */}
+                    <div>
+                        <label htmlFor="village" className="block text-sm font-medium text-gray-700 mb-2">
+                            ភូមិ <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                            type="text"
+                            id="village"
+                            name="village"
+                            value={formData.village}
+                            onChange={handleInputChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="ឈ្មោះភូមិ"
+                            required
+                        />
+                    </div>
                 </div>
-            </form>
-            
+            </div>
+
+            {/* Location Information */}
+            <div className="mb-8">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">ព័ត៌មានទីតាំង</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    {/* Province */}
+                    <div>
+                        <label htmlFor="province_id" className="block text-sm font-medium text-gray-700 mb-2">
+                            ខេត្ត <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                            id="province_id"
+                            name="province_id"
+                            value={formData.province_id}
+                            onChange={handleInputChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            required
+                        >
+                            <option value="">សូមជ្រើសរើសខេត្ត</option>
+                            {categories.provinces && categories.provinces.map(province => (
+                                <option key={province.id} value={province.id}>
+                                    {province.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* District */}
+                    <div>
+                        <label htmlFor="district_id" className="block text-sm font-medium text-gray-700 mb-2">
+                            ស្រុក <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                            id="district_id"
+                            name="district_id"
+                            value={formData.district_id}
+                            onChange={handleInputChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            required
+                        >
+                            <option value="">សូមជ្រើសរើសស្រុក</option>
+                            {categories.districts && categories.districts.map(district => (
+                                <option key={district.id} value={district.id}>
+                                    {district.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Commune */}
+                    <div>
+                        <label htmlFor="commune_id" className="block text-sm font-medium text-gray-700 mb-2">
+                            ឃុំ <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                            id="commune_id"
+                            name="commune_id"
+                            value={formData.commune_id}
+                            onChange={handleInputChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            required
+                        >
+                            <option value="">សូមជ្រើសរើសឃុំ</option>
+                            {categories.communes && categories.communes.map(commune => (
+                                <option key={commune.id} value={commune.id}>
+                                    {commune.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            {/* Additional Information */}
+            <div className="mb-8">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">ព័ត៌មានបន្ថែម</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    {/* Occupation */}
+                    <div>
+                        <label htmlFor="occupation_id" className="block text-sm font-medium text-gray-700 mb-2">
+                            មុខរបរ <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                            id="occupation_id"
+                            name="occupation_id"
+                            value={formData.occupation_id}
+                            onChange={handleInputChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            required
+                        >
+                            <option value="">សូមជ្រើសរើសមុខរបរ</option>
+                            {categories.occupations && categories.occupations.map(occupation => (
+                                <option key={occupation.id} value={occupation.id}>
+                                    {occupation.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    {/* Usage Type */}
+                    <div>
+                        <label htmlFor="usage_type_id" className="block text-sm font-medium text-gray-700 mb-2">
+                            ប្រភេទការប្រើប្រាស់ <span className="text-red-500">*</span>
+                        </label>
+                        <select
+                            id="usage_type_id"
+                            name="usage_type_id"
+                            value={formData.usage_type_id}
+                            onChange={handleInputChange}
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            required
+                        >
+                            <option value="">សូមជ្រើសរើសប្រភេទការប្រើប្រាស់</option>
+                            {categories?.usage_types && categories.usage_types.length > 0 ? (
+                                categories.usage_types.map(usageType => (
+                                    <option key={usageType.id} value={usageType.id}>
+                                        {usageType.name}
+                                    </option>
+                                ))
+                            ) : (
+                                <option value="" disabled>No usage types available</option>
+                            )}
+                        </select>
+                    </div>
+
+                    {/* Details */}
+                    <div className="md:col-span-2">
+                        <label htmlFor="details" className="block text-sm font-medium text-gray-700 mb-2">
+                            ព័ត៌មានលម្អិត (ជម្រើស)
+                        </label>
+                        <textarea
+                            id="details"
+                            name="details"
+                            value={formData.details}
+                            onChange={handleInputChange}
+                            rows="4"
+                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            placeholder="សូមបញ្ជាក់ព័ត៌មានបន្ថែមដែលចាំបាច់..."
+                        />
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }

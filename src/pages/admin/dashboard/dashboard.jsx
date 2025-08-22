@@ -67,7 +67,7 @@ function AdminDashboard() {
         if (statsData && statsData.data && statsData.data.published_news !== undefined) {
           statsData = statsData.data
         }
-        console.log('Dashboard stats data:', statsData);
+
       }
 
       if (customerGrowthResult.status === 'fulfilled' && customerGrowthResult.value) {
@@ -134,7 +134,6 @@ function AdminDashboard() {
       })
 
     } catch (err) {
-      console.error('Error loading dashboard data:', err)
       setError('Failed to load dashboard data. Please try again.')
     } finally {
       setLoading(false)

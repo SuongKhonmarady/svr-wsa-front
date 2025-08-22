@@ -39,11 +39,9 @@ const ServiceRequestsList = ({
     // Validate that each request has the required structure
     const validRequests = serviceRequests.filter(request => {
         if (!request || typeof request !== 'object') {
-            console.warn('Invalid request object:', request);
             return false;
         }
         if (!request.id) {
-            console.warn('Request missing ID:', request);
             return false;
         }
         return true;

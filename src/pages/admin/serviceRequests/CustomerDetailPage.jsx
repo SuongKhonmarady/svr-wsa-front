@@ -22,14 +22,9 @@ function CustomerDetailPage() {
         if (requestId) {
             // Check authentication first
             if (!isAuthenticatedAdmin()) {
-                console.error('User not authenticated as admin');
                 setError('Authentication required. Please log in as admin.');
                 return;
             }
-            
-            console.log('Auth token:', getAuthToken());
-            console.log('LocalStorage admin_token:', localStorage.getItem('admin_token'));
-            console.log('LocalStorage admin_user:', localStorage.getItem('admin_user'));
             
             // Test API connectivity first
             testApiConnection();
@@ -41,21 +36,18 @@ function CustomerDetailPage() {
 
     const testApiConnection = async () => {
         try {
-            console.log('Testing API connection...');
             const response = await fetch(`${config.BASE_URL}/admin/service-requests`, {
                 headers: {
                     'Authorization': `Bearer ${getAuthToken()}`,
                     'Accept': 'application/json'
                 }
             });
-            console.log('API test response status:', response.status);
-            console.log('API test response ok:', response.ok);
             
             if (!response.ok) {
-                console.error('API test failed with status:', response.status);
+                // API test failed silently
             }
         } catch (err) {
-            console.error('API test error:', err);
+            // API test error handled silently
         }
     };
 
@@ -63,27 +55,18 @@ function CustomerDetailPage() {
         try {
             setLoading(true);
             setError('');
-            console.log('Fetching customer detail for request ID:', requestId);
-            console.log('API Base URL:', config.BASE_URL);
-            console.log('Full endpoint:', `${config.BASE_URL}/admin/service-requests/${requestId}`);
             const response = await apiService.getAdminServiceRequestById(requestId);
-            console.log('Customer detail response:', response);
             
             if (response.data && response.data.success) {
-                console.log('Setting customer detail from success response:', response.data.data);
                 setCustomerDetail(response.data.data);
             } else if (response.data && response.data.id) {
-                console.log('Setting customer detail from direct data:', response.data);
                 setCustomerDetail(response.data);
             } else if (response.error) {
-                console.error('API returned error:', response.error);
                 setError(response.error);
             } else {
-                console.error('Unexpected response format:', response);
                 setError('Failed to load customer details - unexpected response format');
             }
         } catch (err) {
-            console.error('Exception in fetchCustomerDetail:', err);
             setError('Failed to fetch customer details');
         } finally {
             setLoading(false);
@@ -92,26 +75,19 @@ function CustomerDetailPage() {
 
     const fetchCategories = async () => {
         try {
-            console.log('Fetching categories...');
             const response = await apiService.getServiceRequestCategories();
-            console.log('Categories response:', response);
             
             if (response.data && response.data.success) {
-                console.log('Setting categories from success response:', response.data.data);
                 setCategories(response.data.data);
             } else if (response.data) {
-                console.log('Setting categories from direct data:', response.data);
                 setCategories(response.data);
             } else if (response.error) {
-                console.error('Error fetching categories:', response.error);
                 // Set empty categories to prevent further errors
                 setCategories({});
             } else {
-                console.error('Unexpected response format for categories:', response);
                 setCategories({});
             }
         } catch (err) {
-            console.error('Error fetching categories:', err);
             // Set empty categories to prevent further errors
             setCategories({});
         } finally {
@@ -187,10 +163,6 @@ function CustomerDetailPage() {
         const categoryArray = categories[categoryType];
         
         const category = categoryArray.find(cat => cat.id === parseInt(id));
-        
-        if (!category) {
-            console.warn(`CustomerDetailPage Category not found for ${categoryType} with id ${id}. Available categories:`, categoryArray);
-        }
         
         return category ? category.name : id;
     };
@@ -314,31 +286,7 @@ function CustomerDetailPage() {
                                 <h3 className="text-xl font-semibold text-slate-900 mb-2">Error Loading Customer Details</h3>
                                 <p className="text-slate-600 mb-6">{error}</p>
                                 
-                                {/* Debug Information */}
-                                <div className="bg-slate-50 rounded-lg p-4 text-left text-sm mb-6">
-                                    <h4 className="font-medium mb-3 text-slate-700">Debug Information:</h4>
-                                    <div className="space-y-2">
-                                        <p><strong>Request ID:</strong> <span className="font-mono text-slate-600">{requestId}</span></p>
-                                        <p><strong>Auth Token:</strong> <span className={getAuthToken() ? 'text-green-600' : 'text-red-600'}>{getAuthToken() ? 'Present' : 'Missing'}</span></p>
-                                        <p><strong>Admin User:</strong> <span className={localStorage.getItem('admin_user') ? 'text-green-600' : 'text-red-600'}>{localStorage.getItem('admin_user') ? 'Present' : 'Missing'}</span></p>
-                                        <p><strong>Is Authenticated Admin:</strong> <span className={isAuthenticatedAdmin() ? 'text-green-600' : 'text-red-600'}>{isAuthenticatedAdmin() ? 'Yes' : 'No'}</span></p>
-                                        <p><strong>API Base URL:</strong> <span className="font-mono text-slate-600">{config.BASE_URL}</span></p>
-                                    </div>
-                                </div>
-                                
                                 <div className="flex flex-col sm:flex-row gap-3 justify-center">
-                                    <button
-                                        onClick={() => {
-                                            console.log('Current localStorage:', {
-                                                admin_token: localStorage.getItem('admin_token'),
-                                                admin_user: localStorage.getItem('admin_user')
-                                            });
-                                            console.log('Auth check:', isAuthenticatedAdmin());
-                                        }}
-                                        className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium"
-                                    >
-                                        Debug Auth Status
-                                    </button>
                                     <button
                                         onClick={() => navigate('/admin/service-requests')}
                                         className="bg-slate-600 text-white px-6 py-3 rounded-lg hover:bg-slate-700 transition-colors font-medium"

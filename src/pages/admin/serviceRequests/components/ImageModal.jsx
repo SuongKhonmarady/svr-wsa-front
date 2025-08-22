@@ -32,7 +32,6 @@ const ImageModal = ({ isOpen, onClose, document: documentProp, title }) => {
                     setImageLoaded(true);
                 })
                 .catch(error => {
-                    console.error('Failed to load modal image:', error);
                     setImageError(true);
                 });
             } else {

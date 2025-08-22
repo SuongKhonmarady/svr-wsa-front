@@ -78,7 +78,6 @@ function ServiceRequestsManagement() {
                 setError('Unexpected response format from server');
             }
         } catch (err) {
-            console.error('Error fetching service requests:', err);
             setError('Failed to fetch service requests: ' + (err.message || 'Unknown error'));
         } finally {
             setLoading(false);
@@ -115,10 +114,7 @@ function ServiceRequestsManagement() {
         fetchServiceRequests();
     }, [selectedStatus, selectedMonth, fetchServiceRequests]);
 
-    // Debug logging for service requests state
-    useEffect(() => {
-        console.log('ServiceRequests state updated:', serviceRequests);
-    }, [serviceRequests]);
+
 
     
 

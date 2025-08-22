@@ -190,7 +190,6 @@ function NewsModal({ isOpen, onClose, news, categories = [], onSave }) {
       setImagePreview(null)
       setRemoveImage(false)
     } catch (error) {
-      console.error('Error saving news:', error)
       // Set error message for display
       setError(error.message || 'Failed to save news. Please try again.')
     } finally {

@@ -76,7 +76,6 @@ function ReportsManagement() {
                 }
             }
         } catch (error) {
-            console.error('Error loading reports:', error);
             setError('Failed to load reports. Please try again.');
             setReports([]);
             setPagination({});

@@ -39,12 +39,12 @@ function NewsManagement() {
     try {
       const result = await newsService.getCategories()
       if (result.error) {
-        console.error('Failed to fetch categories:', result.error)
+        // Failed to fetch categories
       } else {
         setCategories(result.data)
       }
     } catch (err) {
-      console.error('Failed to fetch categories:', err)
+      // Failed to fetch categories
     }
   }
 

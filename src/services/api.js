@@ -306,8 +306,7 @@ class ApiService {
       return result
     }
 
-    // Debug logging to help identify response structure
-    console.log('getAdminServiceRequests response:', result.data);
+    // Handle different response structures for admin service requests
 
     // Handle different response structures for admin service requests
     let requestsData = null
@@ -353,12 +352,9 @@ class ApiService {
   }
 
   async getAdminServiceRequestById(id) {
-    console.log('getAdminServiceRequestById called with id:', id);
     const result = await this.get(`/admin/service-requests/${id}`)
-    console.log('getAdminServiceRequestById raw result:', result);
     
     if (result.error) {
-      console.error('getAdminServiceRequestById error:', result.error);
       return result
     }
 
@@ -368,29 +364,23 @@ class ApiService {
     if (result.data) {
       if (result.data.id) {
         // Direct object response
-        console.log('Setting requestData from direct object response');
         requestData = result.data
       } else if (result.data.data && result.data.data.id) {
         // Nested data structure: { data: { data: { id: ... } } }
-        console.log('Setting requestData from nested data structure');
         requestData = result.data.data
       } else if (result.data.service_request && result.data.service_request.id) {
         // Structure with service_request property: { data: { service_request: { id: ... } } }
-        console.log('Setting requestData from service_request structure');
         requestData = result.data.service_request
       } else if (result.data.success && result.data.data && result.data.data.id) {
         // Success wrapper structure: { data: { success: true, data: { id: ... } } }
-        console.log('Setting requestData from success wrapper structure');
         requestData = result.data.data
       }
     }
 
     if (!requestData) {
-      console.error('No valid requestData found. Result structure:', result);
       return { data: null, error: 'Invalid data format received from server' }
     }
 
-    console.log('Final requestData:', requestData);
     return { data: requestData, error: null }
   }
 
@@ -456,7 +446,6 @@ class ApiService {
       const blob = await response.blob();
       return URL.createObjectURL(blob);
     } catch (error) {
-      console.error('Error fetching protected document:', error);
       throw error;
     }
   }
@@ -507,7 +496,6 @@ class ApiService {
     }
 
     if (!categoriesData) {
-      console.error('Categories data format not recognized:', result.data);
       return { data: null, error: 'Invalid data format received from server' }
     }
 

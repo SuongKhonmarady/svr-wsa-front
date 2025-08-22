@@ -26,7 +26,7 @@ function AdminLayout({ children }) {
           setPendingRequestsCount(pendingCount)
         }
       } catch (error) {
-        console.error('Error fetching pending requests count:', error)
+        // Error fetching pending requests count
       }
     }
 
@@ -52,7 +52,6 @@ function AdminLayout({ children }) {
       // Call logout API to invalidate token on server
       await apiService.logout()
     } catch (error) {
-      console.error('Logout API error:', error)
       // Continue with local logout even if API call fails
     } finally {
       // Clear all auth data and redirect

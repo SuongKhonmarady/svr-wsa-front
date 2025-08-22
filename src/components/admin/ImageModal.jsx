@@ -13,8 +13,6 @@ const ImageModal = ({ isOpen, onClose, document, title }) => {
             
             const token = localStorage.getItem('admin_token');
             if (token) {
-                console.log('Loading modal image:', document.url);
-                
                 fetch(document.url, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -37,7 +35,6 @@ const ImageModal = ({ isOpen, onClose, document, title }) => {
                     return () => URL.revokeObjectURL(blobUrl);
                 })
                 .catch(error => {
-                    console.error('Failed to load modal image:', error);
                     setImageError(true);
                 });
             } else {

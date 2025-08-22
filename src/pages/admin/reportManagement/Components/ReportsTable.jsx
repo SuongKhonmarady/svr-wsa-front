@@ -34,7 +34,6 @@ function ReportsTable({ reports, onDelete, loading, onStatusChange }) {
                 }
             }
         } catch (error) {
-            console.error('Status change error:', error);
             alert('Failed to change status. Please try again.');
         } finally {
             setPublishingStatus(prev => ({ ...prev, [reportKey]: false }));

@@ -62,14 +62,10 @@ function ReportForm() {
 
                 if (yearsRes.data && yearsRes.data.data) {
                     setYears(yearsRes.data.data);
-                } else {
-                    console.warn('No years data received');
                 }
                 
                 if (monthsRes.data && monthsRes.data.data) {
                     setMonths(monthsRes.data.data);
-                } else {
-                    console.warn('No months data received');
                 }
                 
                 setIsDataReady(true);
@@ -83,7 +79,6 @@ function ReportForm() {
                     if (reportRes.error) {
                         throw new Error(reportRes.error);
                     }
-                    console.log('Report data loaded:', reportRes.data);
 
                     // Handle different response structures
                     let report = null;
@@ -108,7 +103,6 @@ function ReportForm() {
                     setCurrentFileUrl(report.file_url);
                 }
             } catch (error) {
-                console.error('Failed to load form data:', error);
                 setGeneralError(error.message || 'Failed to load form data. Please refresh the page and try again.');
                 setIsDataReady(false);
             } finally {
@@ -316,12 +310,6 @@ function ReportForm() {
         }
         
         try {
-            // Frontend validation - check required fields before building FormData
-            console.log('Pre-submission validation check:');
-            console.log('- year_id:', formData.year_id, 'Type:', typeof formData.year_id);
-            console.log('- month_id:', formData.month_id, 'Type:', typeof formData.month_id, 'Report type:', formData.type);
-            console.log('- created_by:', formData.created_by, 'Type:', typeof formData.created_by);
-            
             // Build FormData properly - different structure for monthly vs yearly
             const data = new FormData();
             
@@ -351,18 +339,7 @@ function ReportForm() {
                 data.append('file', formData.file);
             }
 
-            // Debug: Log what we're sending
-            console.log('=== FORM SUBMISSION DEBUG ===');
-            console.log('isEditing:', isEditing);
-            console.log('Report ID:', id);
-            console.log('Form Data State:', formData);
-            console.log('FormData contents:');
-            for (let pair of data.entries()) {
-                console.log(`${pair[0]}:`, pair[1]);
-            }
-            console.log('=== END DEBUG ===');
 
-            console.log('Making API call...');
             
             // Set uploading state if there's a file
             if (formData.file && formData.file instanceof File) {
@@ -409,8 +386,6 @@ function ReportForm() {
             }
 
             if (response.error) {
-                console.error('API Error:', response.error, '| Report type:', formData.type);
-                
                 // Parse the error response data to extract validation errors
                 let errorData = null;
                 try {
@@ -422,7 +397,7 @@ function ReportForm() {
                         }
                     }
                 } catch (parseError) {
-                    console.warn('Could not parse error JSON:', parseError);
+                    // Could not parse error JSON
                 }
                 
                 // Handle different types of error responses
@@ -461,11 +436,9 @@ function ReportForm() {
                     } 
                 });
             } else {
-                console.warn('Unexpected response format:', response);
                 setGeneralError('An unexpected error occurred during submission.');
             }
         } catch (error) {
-            console.error('Form submission error:', error);
             setGeneralError('An unexpected error occurred during submission.');
         } finally {
             setSubmitLoading(false);

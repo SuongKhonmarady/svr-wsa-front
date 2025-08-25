@@ -1,6 +1,6 @@
 import React from 'react';
 
-function ReviewStep({ formData, documentPreviews, categories }) {
+function ReviewStep({ formData, documentPreviews, categories, privacyAccepted, onPrivacyChange }) {
     // Helper function to get display names from IDs
     const getDisplayName = (id, categoryType) => {
         if (!id || !categories[categoryType]) return '';
@@ -124,6 +124,52 @@ function ReviewStep({ formData, documentPreviews, categories }) {
                     </div>
                 </div>
             </div>
+
+            {/* Privacy Policy Checkbox */}
+            <div className="bg-blue-50 rounded-lg p-6 mt-6 border border-blue-200">
+                <div className="flex items-start space-x-3">
+                    <input
+                        type="checkbox"
+                        id="privacy-policy"
+                        checked={privacyAccepted}
+                        onChange={onPrivacyChange}
+                        className="mt-1 h-5 w-5 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                        required
+                    />
+                    <div className="flex-1">
+                        <label htmlFor="privacy-policy" className="text-sm text-gray-700 leading-relaxed">
+                            <span className="font-medium text-gray-900">ខ្ញុំបានអាន និងយល់ស្រប</span> នឹង{' '}
+                            <a 
+                                href="/privacy" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 underline font-medium"
+                            >
+                                គោលនយោបាយឯកជនភាព
+                            </a>{' '}
+                            <span className="text-red-600 font-medium">*</span>
+                            របស់រដ្ឋករទឹកស្វាយរៀង។ ខ្ញុំផ្តល់ការអនុញ្ញាតឱ្យរដ្ឋករទឹកស្វាយរៀងប្រមូល ប្រើប្រាស់ និងរក្សាទុកព័ត៌មានផ្ទាល់ខ្លួនរបស់ខ្ញុំដើម្បីផ្តល់សេវាកម្មទឹក។
+                        </label>
+                        <p className="text-xs text-gray-500 mt-2">
+                            I have read and agree to the{' '}
+                            <a 
+                                href="/privacy" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                className="text-blue-600 hover:text-blue-800 underline"
+                            >
+                                Privacy Policy
+                            </a>{' '}
+                            <span className="text-red-600">*</span>
+                            of Svay Rieng Water Utility. I consent to Svay Rieng Water Utility collecting, using, and storing my personal information for water service provision.
+                        </p>
+                        <p className="text-sm text-red-600 mt-1 font-medium">
+                            * ចំណាំ: ត្រូវបំពេញគោលនយោបាយឯកជនភាព ដើម្បីស្នើសុំសេវាកម្ម
+                        </p>
+                    </div>
+                </div>
+            </div>
+
         </div>
     );
 }

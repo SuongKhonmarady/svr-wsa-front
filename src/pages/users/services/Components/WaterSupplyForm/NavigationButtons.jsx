@@ -5,7 +5,8 @@ function NavigationButtons({
     isSubmitting, 
     onPrevStep, 
     onNextStep, 
-    onSubmit 
+    onSubmit,
+    privacyAccepted
 }) {
     return (
         <div className="flex justify-between pt-6">
@@ -32,8 +33,8 @@ function NavigationButtons({
                     <button
                         type="submit"
                         onClick={onSubmit}
-                        disabled={isSubmitting}
-                        className={`px-8 py-3 rounded-lg font-semibold text-white transition-all duration-200 ${isSubmitting
+                        disabled={isSubmitting || !privacyAccepted}
+                        className={`px-8 py-3 rounded-lg font-semibold text-white transition-all duration-200 ${(isSubmitting || !privacyAccepted)
                             ? 'bg-gray-400 cursor-not-allowed'
                             : 'bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 hover:shadow-lg transform hover:-translate-y-0.5'
                             }`}

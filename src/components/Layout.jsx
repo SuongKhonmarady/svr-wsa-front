@@ -1,5 +1,5 @@
 import { useLocation } from 'react-router-dom'
-import { useState } from 'react' 
+import { useState } from 'react'
 import Navbar from './Navbar'
 import GlobalSearch from './GlobalSearch'
 
@@ -46,7 +46,7 @@ function Layout({ children, activeNav, setActiveNav }) {
                     <span className="text-yellow-300 text-lg group-hover:scale-110 transition-transform duration-300">📍</span>
                     <span className="font-medium text-sm">ស្រុកស្វាយរៀង ខេត្តស្វាយរៀង ព្រះរាជាណាចក្រកម្ពុជា</span>
                   </div>
-                  
+
                   {/* Contact Info */}
                   <div className="flex items-center space-x-4">
                     <div className="flex items-center space-x-2 bg-white/15 rounded-full px-4 py-2 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer group">
@@ -164,11 +164,13 @@ function Layout({ children, activeNav, setActiveNav }) {
               <div className="flex items-center space-x-3 sm:space-x-8 w-full sm:w-auto">
                 <div className="relative group flex-shrink-0">
                   <div className="absolute -inset-1 bg-gradient-to-r from-blue-300 to-cyan-400 rounded-full blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
-                  <img
-                    src="/image/រដ្ឋាករទឹកស្វាយរៀង (4).png"
-                    alt="SVR Water Utility Logo"
-                    className="relative h-14 w-14 sm:h-20 sm:w-20 lg:h-24 lg:w-24 rounded-full border-3 sm:border-4 border-white object-cover shadow-xl group-hover:scale-105 transition-transform duration-300"
-                  />
+                  <a href="/">
+                    <img
+                      src="/image/រដ្ឋាករទឹកស្វាយរៀង (4).png"
+                      alt="SVR Water Utility Logo"
+                      className="relative h-14 w-14 sm:h-20 sm:w-20 lg:h-30 lg:w-30 rounded-full border-2 sm:border-4 border-blue-300 object-cover shadow-xl group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </a>
                 </div>
 
                 <div className="space-y-1 sm:space-y-2 min-w-0 flex-1">
@@ -176,7 +178,7 @@ function Layout({ children, activeNav, setActiveNav }) {
                     រដ្ឋាករទឹកស្វាយរៀង
                   </h1>
                   <div className="flex items-center space-x-2 sm:space-x-3">
-                    <p className="text-xs sm:text-sm md:text-base lg:text-lg text-blue-800 font-semibold leading-tight">Svay Rieng Water Utility</p>
+                    <p className="text-xs sm:text-sm md:text-base lg:text-3xl text-blue-800 font-semibold leading-tight">SVAY RIENG WATER UTILITY</p>
                   </div>
                 </div>
               </div>
@@ -230,20 +232,7 @@ function Layout({ children, activeNav, setActiveNav }) {
                 <p className="text-gray-400 text-sm leading-relaxed mb-4">
                   រដ្ឋករទឹកស្វាយរៀងជាស្ថាប័នឈានមុខក្នុងការផ្គត់ផ្គង់ទឹកស្អាត និងលើកកម្ពស់សុខុមាលក្នុងភាពសហគមន៍។
                 </p>
-                <div className="flex flex-col space-y-2 text-sm text-gray-400">
-                  <div className="flex items-center space-x-2">
-                    <span className="text-blue-400">📍</span>
-                    <span>ស្រុកស្វាយរៀង ខេត្តស្វាយរៀង</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-blue-400">📞</span>
-                    <span>0123 456 789</span>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <span className="text-blue-400">✉️</span>
-                    <span>info@svayringwater.gov.kh</span>
-                  </div>
-                </div>
+
               </div>
 
               {/* Quick Links */}
@@ -260,18 +249,72 @@ function Layout({ children, activeNav, setActiveNav }) {
 
               {/* External Links */}
               <div className="md:col-span-1">
-                <h4 className="font-semibold text-lg mb-6 text-white">តំណភ្ជាប់ខាងក្រៅ</h4>
-                <ul className="space-y-3 mb-6">
-                  <li><a href="#" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors duration-200 text-sm">ក្រសួងមហាផ្ទៃ</a></li>
-                  <li><a href="#" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors duration-200 text-sm">ក្រុមប្រឹក្សាខេត្ត</a></li>
-                  <li><a href="#" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors duration-200 text-sm">រាជរដ្ឋាភិបាលកម្ពុជា</a></li>
-                </ul>
-
                 <div>
                   <h5 className="font-medium text-white mb-3">ការងារសេវាកម្ម</h5>
-                  <div className="bg-gradient-to-r from-blue-600 to-green-600 text-white px-4 py-3 rounded-lg text-sm">
+                  <div className="bg-gradient-to-r from-blue-600 to-green-600 text-white px-4 py-3 rounded-lg text-sm mb-6">
                     <div className="font-semibold">សេវាកម្ម ២៤/៧</div>
                     <div className="text-blue-100 text-xs">តែងតែបម្រើដល់អ្នក</div>
+                  </div>
+                </div>
+                <div className="flex flex-col space-y-3 text-sm text-gray-400">
+                  <div className="flex items-center space-x-3">
+                    <img
+                      src="/image/location_icon.png"
+                      alt="Location"
+                      className="w-5 h-5 text-blue-400"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'inline';
+                      }}
+                    />
+                    <span style={{ display: 'none' }} className="text-blue-400">📍</span>
+                    <span>ស្រុកស្វាយរៀង ខេត្តស្វាយរៀង</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <img
+                      src="/image/phone_icon.png"
+                      alt="Phone"
+                      className="w-5 h-5 text-blue-400"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'inline';
+                      }}
+                    />
+                    <span style={{ display: 'none' }} className="text-blue-400">📞</span>
+                    <span>0123 456 789</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <img
+                      src="/image/gmail_icon.png"
+                      alt="Gmail"
+                      className="w-5 h-5 text-blue-400"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'inline';
+                      }}
+                    />
+                    <span style={{ display: 'none' }} className="text-blue-400">✉️</span>
+                    <span>info@svayringwater.gov.kh</span>
+                  </div>
+                  <div className="flex items-center space-x-3">
+                    <img
+                      src="/image/facebook_icon.png"
+                      alt="Facebook"
+                      className="w-5 h-5 text-blue-400"
+                      onError={(e) => {
+                        e.target.style.display = 'none';
+                        e.target.nextSibling.style.display = 'inline';
+                      }}
+                    />
+                    <span style={{ display: 'none' }} className="text-blue-400">fb</span>
+                    <a
+                      href="https://www.facebook.com/profile.php?id=61554779397494"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors duration-200 cursor-pointer"
+                    >
+                      រដ្ឋករទឹកស្វាយរៀង ស.រ.ស
+                    </a>
                   </div>
                 </div>
               </div>
@@ -283,9 +326,7 @@ function Layout({ children, activeNav, setActiveNav }) {
                   &copy; 2025 រដ្ឋករទឹកស្វាយរៀង។ រក្សាសិទ្ធិគ្រប់យ៉ាង។
                 </p>
                 <div className="flex space-x-6 text-sm text-gray-400">
-                  <a href="#" className="hover:text-white transition-colors">គោលនយោបាយឯកជនភាព</a>
-                  <a href="#" className="hover:text-white transition-colors">លក្ខខណ្ឌប្រើប្រាស់</a>
-                  <a href="#" className="hover:text-white transition-colors">ផែនទីគេហទំព័រ</a>
+                  <a href="/privacy" className="hover:text-white transition-colors">គោលនយោបាយឯកជនភាព</a>
                 </div>
               </div>
             </div>

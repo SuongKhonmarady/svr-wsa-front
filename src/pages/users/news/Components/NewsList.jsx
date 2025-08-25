@@ -284,12 +284,12 @@ function NewsList() {
                     <p className="text-gray-600 mb-6 text-lg leading-relaxed">
                       {news.content ? news.content.substring(0, 200) + '...' : ''}
                     </p>
-                    <Link
-                      to={`/news/${news.slug || news.id}`}
+                    <a
+                      href={`/news/${news.slug || news.id}`}
                       className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium inline-block"
                     >
                       អានបន្ថែម
-                    </Link>
+                    </a>
                   </div>
                 </div>
               </div>
@@ -308,9 +308,9 @@ function NewsList() {
             ទាំងអស់
           </Link>
           {categories.map((category, index) => (
-            <Link
+            <a
               key={category.id}
-              to={getCategoryUrl(category)}
+              href={getCategoryUrl(category)}
               className="px-6 py-2 rounded-full border category-button bg-white text-gray-700 border-gray-300 hover:border-blue-500 hover:text-blue-600"
               style={{ 
                 animationDelay: `${(index + 1) * 100}ms`,
@@ -318,7 +318,7 @@ function NewsList() {
               }}
             >
               {category.name}
-            </Link>
+            </a>
           ))}
         </div>
 

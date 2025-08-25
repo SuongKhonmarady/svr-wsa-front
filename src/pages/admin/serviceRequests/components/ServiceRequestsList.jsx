@@ -171,7 +171,7 @@ const ServiceRequestsList = ({
                                                     <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
                                                     </svg>
-                                                    <span className="text-gray-900">{request.village}</span>
+                                                    <span className="text-gray-900">ភូមិ {request.village}</span>
                                                 </div>
                                             )}
                                             {request.province && request.province.name && (
@@ -180,7 +180,7 @@ const ServiceRequestsList = ({
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 0 16 0z" />
                                                     </svg>
-                                                    <span className="text-gray-900">{request.province.name}</span>
+                                                    <span className="text-gray-900">ខេត្ត {request.province.name}</span>
                                                 </div>
                                             )}
                                             {request.district && request.district.name && (
@@ -189,7 +189,7 @@ const ServiceRequestsList = ({
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 0 16 0z" />
                                                     </svg>
-                                                    <span className="text-gray-900">{request.district.name}</span>
+                                                    <span className="text-gray-900">ស្រុក {request.district.name}</span>
                                                 </div>
                                             )}
                                             {request.commune && request.commune.name && (
@@ -198,7 +198,7 @@ const ServiceRequestsList = ({
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 0 16 0z" />
                                                     </svg>
-                                                    <span className="text-gray-900">{request.commune.name}</span>
+                                                    <span className="text-gray-900">ឃុំ/សង្កាត់ {request.commune.name}</span>
                                                 </div>
                                             )}
                                         </div>

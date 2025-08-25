@@ -36,6 +36,7 @@ function WaterSupplyRequest() {
         documents,
         documentPreviews,
         categories,
+        privacyAccepted,
         
         // Actions
         handleInputChange,
@@ -44,7 +45,8 @@ function WaterSupplyRequest() {
         handleNextStep,
         handlePrevStep,
         handleSubmit,
-        setIsModalOpen
+        setIsModalOpen,
+        handlePrivacyChange
     } = useWaterSupplyForm();
 
     useEffect(() => {
@@ -117,6 +119,8 @@ function WaterSupplyRequest() {
                         formData={formData}
                         documentPreviews={documentPreviews}
                         categories={categories}
+                        privacyAccepted={privacyAccepted}
+                        onPrivacyChange={handlePrivacyChange}
                     />
                 );
             default:
@@ -170,6 +174,7 @@ function WaterSupplyRequest() {
                                 onPrevStep={handlePrevStep}
                                 onNextStep={handleNextStep}
                                 onSubmit={handleSubmit}
+                                privacyAccepted={privacyAccepted}
                             />
                         </div>
                     </div>

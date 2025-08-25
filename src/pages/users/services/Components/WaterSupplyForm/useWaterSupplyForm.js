@@ -30,6 +30,8 @@ export function useWaterSupplyForm() {
         usage_type_id: ''
     });
 
+    const [privacyAccepted, setPrivacyAccepted] = useState(false);
+
     const [documents, setDocuments] = useState({
         id_card_front: null,
         id_card_back: null,
@@ -76,6 +78,10 @@ export function useWaterSupplyForm() {
             ...prev,
             [name]: value
         }));
+    };
+
+    const handlePrivacyChange = (e) => {
+        setPrivacyAccepted(e.target.checked);
     };
 
     const handleDocumentChange = (e) => {
@@ -177,6 +183,16 @@ export function useWaterSupplyForm() {
             }
         }
 
+        if (currentStep === 3) {
+            if (!privacyAccepted) {
+                setSubmitMessage({
+                    type: 'error',
+                    text: 'សូមអាន និងយល់ស្របនឹងគោលនយោបាយឯកជនភាពជាមុនសិន។'
+                });
+                return false;
+            }
+        }
+
         return true;
     };
 
@@ -228,6 +244,7 @@ export function useWaterSupplyForm() {
             family_books: null
         });
         setCurrentStep(1);
+        setPrivacyAccepted(false);
     };
 
     const handleSubmit = async (e) => {
@@ -237,6 +254,16 @@ export function useWaterSupplyForm() {
 
         // Final validation before submission
         if (!validateCurrentStep()) {
+            setIsSubmitting(false);
+            return;
+        }
+
+        // Check if privacy policy is accepted
+        if (!privacyAccepted) {
+            setSubmitMessage({
+                type: 'error',
+                text: 'សូមអាន និងយល់ស្របនឹងគោលនយោបាយឯកជនភាពជាមុនសិន។'
+            });
             setIsSubmitting(false);
             return;
         }
@@ -308,6 +335,7 @@ export function useWaterSupplyForm() {
         documents,
         documentPreviews,
         categories,
+        privacyAccepted,
         
         // Actions
         handleInputChange,
@@ -316,6 +344,7 @@ export function useWaterSupplyForm() {
         handleNextStep,
         handlePrevStep,
         handleSubmit,
-        setIsModalOpen
+        setIsModalOpen,
+        handlePrivacyChange
     };
 }

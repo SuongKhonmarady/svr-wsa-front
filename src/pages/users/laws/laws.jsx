@@ -1,4 +1,5 @@
-import LawsRegulations from './Components/LawsRegulations'
+import ComingSoonPage from '../../../components/ComingSoonPage';
+
 
 function Laws() {
     return (
@@ -31,8 +32,13 @@ function Laws() {
                 </div>
             </div>
 
-            {/* Laws Content */}
-            <LawsRegulations />
+            {/* Coming Soon Content */}
+                <ComingSoonPage
+                    title="ទំព័រនេះកំពុងស្ថិតក្នុងការកែសម្រួល"
+                    subtitle="ច្បាប់ បទបញ្ញត្តិ និងគោលការណ៍ណែនាំ"
+                    description="ស្វែងយល់អំពីច្បាប់ បទបញ្ញត្តិ និងនីតិវិធីទាក់ទងនឹងសេវាកម្មទឹកស្អាត"
+                    englishDescription="Learn about laws, regulations, and policies related to water supply services"
+                />
         </div>
     )
 }

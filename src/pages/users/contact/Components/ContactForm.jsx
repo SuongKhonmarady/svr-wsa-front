@@ -90,7 +90,7 @@ function ContactForm() {
               ref={contactsRef}
               className={`space-y-6 transition-all duration-700 ${visibleSections.contacts ? 'animate-slide-in-right opacity-100 translate-x-0' : 'opacity-0 translate-x-10'}`}
             >
-              <div className="flex items-start space-x-6 bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+              <a href='/about/location' className="flex items-start space-x-6 bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300">
                 <div className="bg-green-100 p-4 rounded-full animate-pulse">
                   <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
@@ -101,7 +101,7 @@ function ContactForm() {
                   <h4 className="font-semibold text-gray-900 mb-2 text-xl">អាសយដ្ឋាន</h4>
                   <p className="text-gray-600 text-lg">ស្រុកស្វាយរៀង ខេត្តស្វាយរៀង ព្រះរាជាណាចក្រកម្ពុជា</p>
                 </div>
-              </div>
+              </a>
 
               <div className="flex items-start space-x-6 bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300">
                 <div className="bg-blue-100 p-4 rounded-full animate-pulse">
@@ -126,6 +126,25 @@ function ContactForm() {
                   <h4 className="font-semibold text-gray-900 mb-2 text-xl">អ៊ីមែល</h4>
                   <p className="text-gray-600 text-lg">info@svayringwater.gov.kh</p>
                   <p className="text-gray-600 text-lg">support@svayringwater.gov.kh</p>
+                </div>
+              </div>
+
+              <div className="flex items-start space-x-6 bg-white p-6 rounded-2xl shadow-md hover:shadow-lg transform hover:scale-105 transition-all duration-300">
+                <div className="bg-blue-100 p-4 rounded-full animate-pulse">
+                  <svg className="w-8 h-8 text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-gray-900 mb-2 text-xl">គេហទំព័រ Facebook</h4>
+                  <a 
+                    href="https://www.facebook.com/profile.php?id=61554779397494" 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800 transition-colors duration-200 text-lg font-medium hover:underline"
+                  >
+                    រដ្ឋករទឹកស្វាយរៀង ស.រ.ស
+                  </a>
                 </div>
               </div>
             </div>

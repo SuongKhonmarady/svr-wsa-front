@@ -191,7 +191,7 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                     {/* Commune */}
                     <div>
                         <label htmlFor="commune_id" className="block text-sm font-medium text-gray-700 mb-2">
-                            ឃុំ <span className="text-red-500">*</span>
+                            ឃុំ/សង្កាត់ <span className="text-red-500">*</span>
                         </label>
                         <select
                             id="commune_id"
@@ -201,7 +201,7 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
                             required
                         >
-                            <option value="">សូមជ្រើសរើសឃុំ</option>
+                            <option value="">សូមជ្រើសរើសឃុំ/សង្កាត់</option>
                             {categories.communes && categories.communes.map(commune => (
                                 <option key={commune.id} value={commune.id}>
                                     {commune.name}

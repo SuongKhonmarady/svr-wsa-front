@@ -25,6 +25,7 @@ const NewsDetailsPage = React.lazy(() => import('./pages/users/news/newsDetailsP
 const NewsCategoryPage = React.lazy(() => import('./pages/users/news/NewsCategoryPage'));
 const SearchResultsPage = React.lazy(() => import('./pages/users/search/SearchResultsPage'));
 const NotFound = React.lazy(() => import('./components/notFound'));
+const Privacy = React.lazy(() => import('./pages/users/privacy/privacy'));
 
 
 // -------------------------------------------------------------------------
@@ -57,6 +58,14 @@ function App() {
             element={
               <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
                 <Home />
+              </Layout>
+            }
+          />
+          <Route
+            path="/privacy"
+            element={
+              <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
+                <Privacy />
               </Layout>
             }
           />

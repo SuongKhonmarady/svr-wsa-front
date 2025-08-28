@@ -3,6 +3,7 @@ import React from 'react';
 function FormHeader({ currentStep, steps }) {
     return (
         <div className="bg-gradient-to-r from-blue-600 to-blue-700 px-8 py-6">
+            <h2 className="text-2xl font-bold text-white">សំណើសេវាកម្មផ្គត់ផ្គង់ទឹកស្អាត</h2>
             <p className="text-blue-100 mt-2">
                 សូមបំពេញព័ត៌មានខាងក្រោម ដើម្បីដាក់ពាក្យសុំសេវាកម្មផ្គត់ផ្គង់ទឹកស្អាត
             </p>

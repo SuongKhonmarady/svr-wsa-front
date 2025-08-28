@@ -205,6 +205,8 @@ export function useWaterSupplyForm() {
         setTimeout(() => {
             setCurrentStep(prev => prev + 1);
             setIsStepTransitioning(false);
+            // Scroll to top when moving to next step (including step 3)
+            scrollToTop();
         }, 300);
     };
 
@@ -215,7 +217,9 @@ export function useWaterSupplyForm() {
         setTimeout(() => {
             setCurrentStep(prev => prev - 1);
             setIsStepTransitioning(false);
-        }, 300);
+            // Scroll to top when moving to previous step
+            scrollToTop();
+        }, 400);
     };
 
     const resetForm = () => {
@@ -324,6 +328,25 @@ export function useWaterSupplyForm() {
         }
     };
 
+    // Function to scroll to top of the form
+    const scrollToTop = () => {
+        // Simple and natural scroll to top
+        const formContainer = document.querySelector('.bg-white.py-16');
+        
+        if (formContainer) {
+            formContainer.scrollIntoView({ 
+                behavior: 'smooth', 
+                block: 'start' 
+            });
+        } else {
+            // Simple fallback to window scroll
+            window.scrollTo({ 
+                top: 0, 
+                behavior: 'smooth' 
+            });
+        }
+    };
+
     return {
         // State
         currentStep,
@@ -345,6 +368,7 @@ export function useWaterSupplyForm() {
         handlePrevStep,
         handleSubmit,
         setIsModalOpen,
-        handlePrivacyChange
+        handlePrivacyChange,
+        scrollToTop
     };
 }

@@ -46,7 +46,8 @@ function WaterSupplyRequest() {
         handlePrevStep,
         handleSubmit,
         setIsModalOpen,
-        handlePrivacyChange
+        handlePrivacyChange,
+        scrollToTop
     } = useWaterSupplyForm();
 
     useEffect(() => {
@@ -54,6 +55,9 @@ function WaterSupplyRequest() {
         const timer = setTimeout(() => {
             setIsFormVisible(true);
         }, 500);
+
+        // Scroll to top when form loads
+        scrollToTop();
 
         const observerOptions = {
             threshold: 0.1,
@@ -143,7 +147,7 @@ function WaterSupplyRequest() {
             /> */}
 
             {/* Service Request Form */}
-            <div ref={sectionRef} className="bg-white py-16">
+            <div ref={sectionRef} className="bg-white py-16" data-section="form">
                 <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className={`bg-white rounded-2xl shadow-2xl overflow-hidden transition-all duration-700 ease-out ${
                         isFormVisible 

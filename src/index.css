@@ -15,7 +15,7 @@ p, span, div, li, a, button, input, textarea, select, label {
 
 /* Keep Khmer OS Muol Light for specific titles */
 .khmer-title {
-  font-family: 'Khmer OS Muol Light', serif;
+  font-family: 'Khmer OS Muol Light', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
 }
 
 /* Line clamp utilities for text truncation */

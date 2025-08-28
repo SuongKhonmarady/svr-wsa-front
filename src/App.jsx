@@ -18,6 +18,7 @@ const Monthly = React.lazy(() => import('./pages/users/data/monthlyReport/monthl
 const MonthlyYear = React.lazy(() => import('./pages/users/data/monthlyReport/monthlyYear'));
 const MonthlyReportViewerPage = React.lazy(() => import('./pages/users/data/monthlyReport/monthlyReportViewer'));
 const Yearly = React.lazy(() => import('./pages/users/data/yearlyReport/yearly'));
+const FinancialReports = React.lazy(() => import('./pages/users/data/financialReports'));
 const Contact = React.lazy(() => import('./pages/users/contact/contact'));
 const Team = React.lazy(() => import('./pages/users/about/TeamSection'));
 const Location = React.lazy(() => import('./pages/users/about/Components/LocationMap'));
@@ -235,6 +236,14 @@ function App() {
             element={
               <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
                 <YearlyReportViewer />
+              </Layout>
+            }
+          />
+          <Route
+            path="/data/financial-reports"
+            element={
+              <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
+                <FinancialReports />
               </Layout>
             }
           />

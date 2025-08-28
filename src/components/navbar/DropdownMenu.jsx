@@ -39,23 +39,7 @@ function DropdownMenu({
       role="menu"
     >
       <div className={contentClasses}>
-        {/* Main Category Link */}
-        <a
-          href={item.href}
-          onClick={(e) => {
-            e.preventDefault();
-            onItemClick(item.href, item.label, item.id);
-          }}
-          className={`flex items-center space-x-3 w-full p-3 rounded-lg text-blue-600 font-semibold hover:bg-blue-50 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-            isMobile ? 'mt-2' : 'border-b border-gray-100 mb-2'
-          }`}
-          role="menuitem"
-          onKeyDown={(e) => handleKeyDown(e, 0)}
-        >
-          <span className="text-xl">📋</span>
-          <span>ទាំងអស់ - View All</span>
-        </a>
-        
+
         {/* Dropdown Items */}
         <div className="space-y-1">
           {item.dropdownItems.map((dropdownItem, index) => (

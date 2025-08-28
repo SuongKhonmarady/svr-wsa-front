@@ -40,9 +40,60 @@ function ReportsTable({ reports, onDelete, loading, onStatusChange }) {
         }
     };
 
-    // 1. Show a loading message while data is being fetched
+    // 1. Show a loading skeleton while data is being fetched
     if (loading) {
-        return <p className="text-center py-8 text-gray-500">Loading reports...</p>;
+        return (
+            <div className="overflow-x-auto bg-white rounded-lg shadow">
+                <table className="min-w-full divide-y divide-gray-200">
+                    {/* Table Headers Skeleton */}
+                    <thead className="bg-gray-50">
+                        <tr>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Period</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Created Date</th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                        </tr>
+                    </thead>
+                    {/* Table Body Skeleton */}
+                    <tbody className="bg-white divide-y divide-gray-200">
+                        {[1, 2, 3, 4, 5].map((i) => (
+                            <tr key={i}>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="animate-pulse">
+                                        <div className="h-4 bg-gray-200 rounded w-32"></div>
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="animate-pulse">
+                                        <div className="h-4 bg-gray-200 rounded w-20"></div>
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="animate-pulse">
+                                        <div className="h-5 bg-gray-200 rounded-full w-16"></div>
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="animate-pulse">
+                                        <div className="h-4 bg-gray-200 rounded w-24"></div>
+                                    </div>
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap">
+                                    <div className="animate-pulse">
+                                        <div className="flex items-center space-x-2">
+                                            <div className="h-6 bg-gray-200 rounded w-16"></div>
+                                            <div className="h-6 bg-gray-200 rounded w-12"></div>
+                                            <div className="h-6 bg-gray-200 rounded w-16"></div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        );
     }
 
     // 2. Show a message if there are no reports to display

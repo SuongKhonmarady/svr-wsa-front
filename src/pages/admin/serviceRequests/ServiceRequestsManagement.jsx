@@ -9,7 +9,7 @@ import { saveAs } from 'file-saver';
 function ServiceRequestsManagement() {
     const navigate = useNavigate();
     const [serviceRequests, setServiceRequests] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const [selectedRequest, setSelectedRequest] = useState(null);
     const [showModal, setShowModal] = useState(false);
@@ -17,13 +17,13 @@ function ServiceRequestsManagement() {
     const [deletingRequest, setDeletingRequest] = useState(false);
     const [statuses, setStatuses] = useState([]);
     const [updatingStatus, setUpdatingStatus] = useState(false);
-    const [exportLoading, setExportLoading] = useState(false);
-    const [selectedStatus, setSelectedStatus] = useState('all');
-    const [selectedMonth, setSelectedMonth] = useState('all');
-    
-    
-    // Simple state for all requests
-    const [totalRequests, setTotalRequests] = useState(0);
+         const [exportLoading, setExportLoading] = useState(false);
+     const [selectedStatus, setSelectedStatus] = useState('all');
+     const [dataFetched, setDataFetched] = useState(false); // Flag to prevent multiple fetches
+     
+     
+     // Simple state for all requests
+     const [totalRequests, setTotalRequests] = useState(0);
 
     // Status color mapping
     const getStatusColor = useCallback((statusName) => {
@@ -42,77 +42,145 @@ function ServiceRequestsManagement() {
         }
     }, []);
 
-    // Memoize fetchServiceRequests to prevent infinite loops
-    const fetchServiceRequests = useCallback(async () => {
-        try {
-            setLoading(true);
-            setError('');
-            
-            // Build query parameters for filtering (no pagination)
-            const queryParams = new URLSearchParams();
-            
-            if (selectedStatus !== 'all') {
-                queryParams.append('status_id', selectedStatus);
-            }
-            
-            if (selectedMonth !== 'all') {
-                queryParams.append('month', selectedMonth);
-            }
-            
-            const response = await apiService.getAdminServiceRequests(queryParams);
-            
-            if (response.data && response.data.success) {
-                const requests = response.data.data || [];
-                // Ensure requests is always an array
-                if (Array.isArray(requests)) {
-                    setServiceRequests(requests);
-                    setTotalRequests(response.data.total || requests.length);
-                } else {
-                    // If it's a single object, wrap it in an array
-                    setServiceRequests([requests]);
-                    setTotalRequests(1);
-                }
-            } else if (response.error) {
-                setError(response.error);
-            } else {
-                setError('Unexpected response format from server');
-            }
-        } catch (err) {
-            setError('Failed to fetch service requests: ' + (err.message || 'Unknown error'));
-        } finally {
-            setLoading(false);
-        }
-    }, [selectedStatus, selectedMonth]);
+         // Fetch both statuses and service requests simultaneously
+     const fetchAllData = useCallback(async () => {
+         // Prevent multiple fetches
+         if (dataFetched || loading) {
+             return;
+         }
+         
+         try {
+             setLoading(true);
+             setError('');
+             
+             // Fetch both APIs simultaneously
+             const [statusesResponse, serviceRequestsResponse] = await Promise.all([
+                 apiService.get('/statuses'),
+                 apiService.getAdminServiceRequests()
+             ]);
+             
+             // Handle statuses response
+             if (statusesResponse.data) {
+                 setStatuses(statusesResponse.data);
+             }
+             
+             // Handle service requests response
+             if (serviceRequestsResponse.data && serviceRequestsResponse.data.success) {
+                 const requests = serviceRequestsResponse.data.data || [];
+                 
+                 // Ensure requests is always an array
+                 if (Array.isArray(requests)) {
+                     // Sort requests by creation date (most recent first)
+                     const sortedRequests = requests.sort((a, b) => {
+                         const dateA = new Date(a.created_at);
+                         const dateB = new Date(b.created_at);
+                         return dateB - dateA; // Most recent first
+                     });
+                     setServiceRequests(sortedRequests);
+                     setTotalRequests(serviceRequestsResponse.data.total || requests.length);
+                 } else {
+                     // If it's a single object, wrap it in an array
+                     setServiceRequests([requests]);
+                     setTotalRequests(1);
+                 }
+             } else if (serviceRequestsResponse.error) {
+                 setError(serviceRequestsResponse.error);
+             } else {
+                 setError('Unexpected response format from server');
+             }
+             
+             // Mark data as fetched to prevent future fetches
+             setDataFetched(true);
+         } catch (err) {
+             setError('Failed to fetch data: ' + (err.message || 'Unknown error'));
+         } finally {
+             setLoading(false);
+         }
+     }, [dataFetched, loading]); // Include dataFetched to prevent multiple calls
+     
+     // Fetch service requests with status filter (for filtering only)
+     const fetchServiceRequests = useCallback(async (statusFilter = null) => {
+         // Prevent multiple simultaneous calls
+         if (loading) {
+             return;
+         }
+         
+         try {
+             setLoading(true);
+             setError('');
+             
+             // Build query parameters for filtering (no pagination)
+             const queryParams = new URLSearchParams();
+             
+             // Use the passed statusFilter or fall back to current selectedStatus
+             const currentStatus = statusFilter !== null ? statusFilter : selectedStatus;
+             
+             if (currentStatus !== 'all') {
+                 // Get the status name from the selected status ID
+                 const selectedStatusObj = statuses.find(s => s.id == currentStatus);
+                 if (selectedStatusObj) {
+                     queryParams.append('status', selectedStatusObj.name);
+                 }
+             }
+             
+             const response = await apiService.getAdminServiceRequests(queryParams);
+             
+             if (response.data && response.data.success) {
+                 const requests = response.data.data || [];
+                 
+                 // Ensure requests is always an array
+                 if (Array.isArray(requests)) {
+                     // Sort requests by creation date (most recent first)
+                     const sortedRequests = requests.sort((a, b) => {
+                         const dateA = new Date(a.created_at);
+                         const dateB = new Date(b.created_at);
+                         return dateB - dateA; // Most recent first
+                     });
+                     setServiceRequests(sortedRequests);
+                     setTotalRequests(response.data.total || requests.length);
+                 } else {
+                     // If it's a single object, wrap it in an array
+                     setServiceRequests([requests]);
+                     setTotalRequests(1);
+                 }
+             } else if (response.error) {
+                 setError(response.error);
+             } else {
+                 setError('Unexpected response format from server');
+             }
+         } catch (err) {
+             setError('Failed to fetch service requests: ' + (err.message || 'Unknown error'));
+         } finally {
+             setLoading(false);
+         }
+     }, [statuses, selectedStatus, loading]);
 
 
-
-    // Memoize fetchStatuses
-    const fetchStatuses = useCallback(async () => {
-        try {
-            const response = await apiService.get('/statuses');
-            if (response.data) {
-                setStatuses(response.data);
-            }
-        } catch (err) {
-            // Error fetching statuses
-        }
-    }, []);
 
     
 
-         // Initial data fetch - only run once on mount
+    
+
+                        // Initial data fetch - only run once on mount
      useEffect(() => {
-         fetchServiceRequests();
-         fetchStatuses();
-     }, []); // Empty dependency array - only run once
+         fetchAllData();
+     }, []); // Only run once on mount
+     
+     // Manual refresh function (for user-triggered refreshes)
+     const refreshData = useCallback(() => {
+         setDataFetched(false); // Reset flag to allow fetching
+         fetchAllData();
+     }, [fetchAllData]);
+     
+     // Filter effect - only run when filters change
+     useEffect(() => {
+         // Only refetch if we have statuses loaded and selectedStatus is not 'all'
+         if (statuses.length > 0 && selectedStatus !== 'all') {
+             fetchServiceRequests(selectedStatus);
+         }
+     }, [selectedStatus, statuses.length]); // fetchServiceRequests is stable now
+     
 
-
-
-                    // Filter effect - only run when filters change
-    useEffect(() => {
-        // Refetch data with new filters
-        fetchServiceRequests();
-    }, [selectedStatus, selectedMonth, fetchServiceRequests]);
 
 
 
@@ -127,13 +195,20 @@ function ServiceRequestsManagement() {
             
             if (response.data && response.data.success) {
                 // Update the local state with the full updated service request
-                setServiceRequests(prev => 
-                    prev.map(request => 
+                setServiceRequests(prev => {
+                    const updatedRequests = prev.map(request => 
                         request.id === requestId 
                             ? response.data.data // Use the full updated object from backend
                             : request
-                    )
-                );
+                    );
+                    
+                    // Re-sort to maintain most recent first order
+                    return updatedRequests.sort((a, b) => {
+                        const dateA = new Date(a.created_at);
+                        const dateB = new Date(b.created_at);
+                        return dateB - dateA; // Most recent first
+                    });
+                });
                 setShowModal(false);
                 setSelectedRequest(null);
                 
@@ -172,9 +247,16 @@ function ServiceRequestsManagement() {
             
             if (response.data && response.data.success) {
                 // Remove the deleted request from local state
-                setServiceRequests(prev => 
-                    prev.filter(request => request.id !== selectedRequest.id)
-                );
+                setServiceRequests(prev => {
+                    const filteredRequests = prev.filter(request => request.id !== selectedRequest.id);
+                    
+                    // Re-sort to maintain most recent first order
+                    return filteredRequests.sort((a, b) => {
+                        const dateA = new Date(a.created_at);
+                        const dateB = new Date(b.created_at);
+                        return dateB - dateA; // Most recent first
+                    });
+                });
                 setShowDeleteModal(false);
                 setSelectedRequest(null);
                 
@@ -289,96 +371,114 @@ function ServiceRequestsManagement() {
                             <h1 className="text-3xl font-bold text-gray-900">Service Requests Management</h1>
                             <p className="mt-2 text-gray-600">Manage customer service requests and update their status</p>
                         </div>
-                        {/* Export Button */}
-                        <button
-                            onClick={exportToExcel}
-                            disabled={exportLoading || loading || serviceRequests.length === 0}
-                            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {exportLoading ? (
-                                <>
-                                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                                    </svg>
-                                    Exporting...
-                                </>
-                            ) : (
-                                <>
-                                    <svg className="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                    Export to Excel
-                                </>
-                            )}
-                        </button>
+                                                 {/* Action Buttons */}
+                         <div className="flex gap-3">
+                             {/* Refresh Button */}
+                             <button
+                                 onClick={refreshData}
+                                 disabled={loading}
+                                 className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                             >
+                                 {loading ? (
+                                     <>
+                                         <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                         </svg>
+                                         Refreshing...
+                                     </>
+                                 ) : (
+                                     <>
+                                         <svg className="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                         </svg>
+                                         Refresh
+                                     </>
+                                 )}
+                             </button>
+                             
+                             {/* Export Button */}
+                             <button
+                                 onClick={exportToExcel}
+                                 disabled={exportLoading || loading || serviceRequests.length === 0}
+                                 className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                             >
+                                 {exportLoading ? (
+                                     <>
+                                         <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                             <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                         </svg>
+                                         Exporting...
+                                     </>
+                                 ) : (
+                                     <>
+                                         <svg className="-ml-1 mr-2 h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                         </svg>
+                                         Export to Excel
+                                     </>
+                                 )}
+                             </button>
+                         </div>
                     </div>
                 </div>
 
-                {/* Filters */}
-                <div className="mb-6 p-4 bg-white rounded-lg shadow">
-                    <div className="flex items-center gap-4 flex-wrap">
-                        <span className="text-sm font-medium text-gray-700">Filter by:</span>
-                        
-                        {/* Status Filter */}
-                        <div className="flex items-center gap-2">
-                            <label className="text-sm text-gray-600">Status:</label>
-                            <select
-                                value={selectedStatus}
-                                onChange={(e) => setSelectedStatus(e.target.value)}
-                                className="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                            >
-                                <option value="all">All Statuses</option>
-                                {statuses.map((status) => (
-                                    <option key={status.id} value={status.id}>
-                                        {status.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                                 {/* Filters */}
+                 <div className="mb-6 p-4 bg-white rounded-lg shadow">
+                     {loading ? (
+                         <div className="animate-pulse">
+                             <div className="flex items-center gap-4 flex-wrap">
+                                 <div className="h-4 bg-gray-200 rounded w-20"></div>
+                                 <div className="flex items-center gap-2">
+                                     <div className="h-4 bg-gray-200 rounded w-16"></div>
+                                     <div className="h-8 bg-gray-200 rounded w-32"></div>
+                                 </div>
+                                 <div className="h-8 bg-gray-200 rounded w-28"></div>
+                             </div>
+                         </div>
+                     ) : (
+                         <div className="flex items-center gap-4 flex-wrap">
+                             <span className="text-sm font-medium text-gray-700">Filter by:</span>
+                             
+                             {/* Status Filter */}
+                             <div className="flex items-center gap-2">
+                                 <label className="text-sm text-gray-600">Status:</label>
+                                 <select
+                                     value={selectedStatus}
+                                     onChange={(e) => setSelectedStatus(e.target.value)}
+                                     className="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                 >
+                                     <option value="all">All Statuses</option>
+                                     {statuses.map((status) => (
+                                         <option key={status.id} value={status.id}>
+                                             {status.name}
+                                         </option>
+                                     ))}
+                                 </select>
+                             </div>
 
-                        {/* Month Filter */}
-                        <div className="flex items-center gap-2">
-                            <label className="text-sm text-gray-600">Month:</label>
-                            <select
-                                value={selectedMonth}
-                                onChange={(e) => setSelectedMonth(e.target.value)}
-                                className="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                            >
-                                <option value="all">All Months</option>
-                                {Array.from({ length: 12 }, (_, i) => {
-                                    const monthNumber = i + 1;
-                                    const monthName = new Date(0, i).toLocaleString('default', { month: 'long' });
-                                    return (
-                                        <option key={monthNumber} value={monthNumber}>
-                                            {monthName}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        </div>
+                             {/* Clear Filters Button */}
+                             <button
+                                 onClick={() => {
+                                     setSelectedStatus('all');
+                                     // Refetch data
+                                     fetchServiceRequests('all');
+                                 }}
+                                 className="px-3 py-2 text-sm bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors"
+                             >
+                                 Clear All Filters
+                             </button>
 
-                        {/* Clear Filters Button */}
-                        <button
-                            onClick={() => {
-                                setSelectedStatus('all');
-                                setSelectedMonth('all');
-                                // Refetch data
-                                fetchServiceRequests();
-                            }}
-                            className="px-3 py-2 text-sm bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors"
-                        >
-                            Clear All Filters
-                        </button>
-
-                        {/* Filter Results Info */}
-                        {(selectedStatus !== 'all' || selectedMonth !== 'all') && (
-                            <div className="text-sm text-blue-600 bg-blue-50 px-3 py-1 rounded-md">
-                                Showing {serviceRequests.length} requests
-                            </div>
-                        )}
-                    </div>
-                </div>
+                             {/* Filter Results Info */}
+                             {selectedStatus !== 'all' && (
+                                 <div className="text-sm text-blue-600 bg-blue-50 px-3 py-1 rounded-md">
+                                     Showing {serviceRequests.length} requests
+                                 </div>
+                             )}
+                         </div>
+                     )}
+                 </div>
 
                 {/* Error Message */}
                 {error && (
@@ -388,27 +488,44 @@ function ServiceRequestsManagement() {
                 )}
                 
 
-                {/* Statistics Cards */}
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                    {['Pending', 'In Progress', 'Completed', 'Rejected'].map((status) => {
-                        const count = serviceRequests.filter(req => 
-                            req.status?.name?.toLowerCase() === status.toLowerCase() ||
-                            req.status?.name?.toLowerCase() === status.toLowerCase().replace(' ', '-')
-                        ).length;
-                        
-                        return (
-                            <div key={status} className="bg-white rounded-lg shadow p-6">
-                                <div className="flex items-center">
-                                    <div className="flex-1">
-                                        <p className="text-sm font-medium text-gray-600">{status}</p>
-                                        <p className="text-2xl font-bold text-gray-900">{count}</p>
-                                    </div>
-                                    <div className={`w-3 h-3 rounded-full ${getStatusColor(status).split(' ')[0]}`}></div>
-                                </div>
-                            </div>
-                        );
-                    })}
-                </div>
+                
+                 
+                                   {/* Statistics Cards */}
+                  {loading ? (
+                      // Loading skeleton for statistics cards
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                          {[1, 2, 3, 4].map((i) => (
+                              <div key={i} className="bg-white rounded-lg shadow p-6">
+                                  <div className="animate-pulse">
+                                      <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+                                      <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+                                  </div>
+                              </div>
+                          ))}
+                      </div>
+                  ) : (
+                      // Actual statistics cards when data is loaded
+                      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+                          {['Pending', 'In Progress', 'Completed', 'Rejected'].map((status) => {
+                              const count = serviceRequests.filter(req => 
+                                  req.status?.name?.toLowerCase() === status.toLowerCase() ||
+                                  req.status?.name?.toLowerCase() === status.toLowerCase().replace(' ', '-')
+                              ).length;
+                              
+                              return (
+                                  <div key={status} className="bg-white rounded-lg shadow p-6">
+                                      <div className="flex items-center">
+                                          <div className="flex-1">
+                                              <p className="text-sm font-medium text-gray-600">{status}</p>
+                                              <p className="text-2xl font-bold text-gray-900">{count}</p>
+                                          </div>
+                                          <div className={`w-3 h-3 rounded-full ${getStatusColor(status).split(' ')[0]}`}></div>
+                                      </div>
+                                  </div>
+                              );
+                          })}
+                      </div>
+                  )}
 
                 {/* Error Display */}
                 {error && (
@@ -425,10 +542,10 @@ function ServiceRequestsManagement() {
                                     <p>{error}</p>
                                 </div>
                                 <div className="mt-4">
-                                    <button
-                                        onClick={fetchServiceRequests}
-                                        className="bg-red-100 text-red-800 px-3 py-1 rounded text-sm hover:bg-red-200"
-                                    >
+                                                                         <button
+                                         onClick={() => fetchServiceRequests(selectedStatus)}
+                                         className="bg-red-100 text-red-800 px-3 py-1 rounded text-sm hover:bg-red-200"
+                                     >
                                         Retry
                                     </button>
                                 </div>
@@ -466,32 +583,7 @@ function ServiceRequestsManagement() {
                                 Update Status for {selectedRequest.name}
                             </h3>
                             
-                            <div className="mb-4 space-y-2">
-                                <p className="text-sm text-gray-600">Service Type: {selectedRequest.service_type}</p>
-                                {selectedRequest.family_members && (
-                                    <p className="text-sm text-gray-600">Family: {selectedRequest.family_members} members</p>
-                                )}
-                                {selectedRequest.village && (
-                                    <p className="text-sm text-gray-600">Village: {selectedRequest.village}</p>
-                                )}
-                                                                 {selectedRequest.province && (
-                                     <p className="text-sm text-gray-600">Province: {selectedRequest.province.name}</p>
-                                 )}
-                                 {selectedRequest.district && (
-                                     <p className="text-sm text-gray-600">District: {selectedRequest.district.name}</p>
-                                 )}
-                                 {selectedRequest.commune && (
-                                     <p className="text-sm text-gray-600">Commune: {selectedRequest.commune.name}</p>
-                                 )}
-                                 {selectedRequest.occupation && (
-                                     <p className="text-sm text-gray-600">Occupation: {selectedRequest.occupation.name}</p>
-                                 )}
-                                 {selectedRequest.usage_type && (
-                                     <p className="text-sm text-gray-600">Usage Type: {selectedRequest.usage_type.name}</p>
-                                 )}
-                                <p className="text-sm text-gray-600">Current Status: {selectedRequest.status?.name || 'Pending'}</p>
-                            </div>
-
+                    
                             <div className="mb-6">
                                 <label className="block text-sm font-medium text-gray-700 mb-2">
                                     Select New Status:

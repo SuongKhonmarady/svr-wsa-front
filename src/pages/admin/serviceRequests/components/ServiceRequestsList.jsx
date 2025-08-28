@@ -13,9 +13,79 @@ const ServiceRequestsList = ({
     // Handle loading state first
     if (loading) {
         return (
-            <div className="mb-6">
-                <div className="flex justify-center items-center py-12">
-                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+            <div className="px-6 py-4">
+                <div className="animate-pulse space-y-4">
+                    {[1, 2, 3, 4, 5].map((i) => (
+                        <div key={i} className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                            {/* Header Row Skeleton */}
+                            <div className="flex items-start justify-between mb-4">
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <div className="h-6 bg-gray-200 rounded w-32"></div>
+                                        <div className="h-6 bg-gray-200 rounded w-20"></div>
+                                    </div>
+                                    <div className="h-4 bg-gray-200 rounded w-24"></div>
+                                </div>
+                                <div className="text-right">
+                                    <div className="h-4 bg-gray-200 rounded w-16 mb-1"></div>
+                                    <div className="h-4 bg-gray-200 rounded w-24"></div>
+                                </div>
+                            </div>
+
+                            {/* Main Content Grid Skeleton */}
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                                {/* Customer & Service Info Skeleton */}
+                                <div className="space-y-4">
+                                    <div>
+                                        <div className="h-4 bg-gray-200 rounded w-32 mb-2"></div>
+                                        <div className="space-y-2">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-4 h-4 bg-gray-200 rounded"></div>
+                                                <div className="h-4 bg-gray-200 rounded w-24"></div>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-4 h-4 bg-gray-200 rounded"></div>
+                                                <div className="h-4 bg-gray-200 rounded w-32"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Location Info Skeleton */}
+                                <div className="space-y-4">
+                                    <div>
+                                        <div className="h-4 bg-gray-200 rounded w-24 mb-2"></div>
+                                        <div className="space-y-2">
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-4 h-4 bg-gray-200 rounded"></div>
+                                                <div className="h-4 bg-gray-200 rounded w-28"></div>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-4 h-4 bg-gray-200 rounded"></div>
+                                                <div className="h-4 bg-gray-200 rounded w-24"></div>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <div className="w-4 h-4 bg-gray-200 rounded"></div>
+                                                <div className="h-4 bg-gray-200 rounded w-32"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                {/* Action Buttons Skeleton */}
+                                <div className="space-y-4">
+                                    <div>
+                                        <div className="h-4 bg-gray-200 rounded w-20 mb-2"></div>
+                                        <div className="flex space-x-2">
+                                            <div className="w-20 h-8 bg-gray-200 rounded"></div>
+                                            <div className="w-20 h-8 bg-gray-200 rounded"></div>
+                                            <div className="w-20 h-8 bg-gray-200 rounded"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ))}
                 </div>
             </div>
         );
@@ -110,7 +180,7 @@ const ServiceRequestsList = ({
                                             {request.occupation && request.occupation.name && (
                                                 <div className="flex items-center gap-2 text-sm">
                                                     <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 0 18 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                                     </svg>
                                                     <span className="text-gray-900">{request.occupation.name}</span>
                                                 </div>
@@ -147,7 +217,7 @@ const ServiceRequestsList = ({
                                             {request.family_members && (
                                                 <div className="flex items-center gap-2 text-sm">
                                                     <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 0 16 0zm6 3a2 2 0 11-4 0 2 2 0 0 14 0zM7 10a2 2 0 11-4 0 2 2 0 0 14 0z" />
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                                     </svg>
                                                     <span className="text-gray-900">{request.family_members} members</span>
                                                 </div>
@@ -155,7 +225,7 @@ const ServiceRequestsList = ({
                                             {request.female_members && (
                                                 <div className="flex items-center gap-2 text-sm">
                                                     <svg className="w-4 h-4 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 0 18 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                                     </svg>
                                                     <span className="text-gray-900">{request.female_members} female members</span>
                                                 </div>
@@ -178,7 +248,7 @@ const ServiceRequestsList = ({
                                                 <div className="flex items-center gap-2 text-sm">
                                                     <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 0 16 0z" />
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                     </svg>
                                                     <span className="text-gray-900">ខេត្ត {request.province.name}</span>
                                                 </div>
@@ -187,7 +257,7 @@ const ServiceRequestsList = ({
                                                 <div className="flex items-center gap-2 text-sm">
                                                     <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 0 16 0z" />
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                     </svg>
                                                     <span className="text-gray-900">ស្រុក {request.district.name}</span>
                                                 </div>
@@ -196,7 +266,7 @@ const ServiceRequestsList = ({
                                                 <div className="flex items-center gap-2 text-sm">
                                                     <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 0 16 0z" />
+                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                                                     </svg>
                                                     <span className="text-gray-900">ឃុំ/សង្កាត់ {request.commune.name}</span>
                                                 </div>

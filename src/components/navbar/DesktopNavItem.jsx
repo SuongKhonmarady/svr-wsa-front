@@ -88,7 +88,7 @@ function DesktopNavItem({
         </button>
 
         {/* Desktop Dropdown Menu */}
-        <div className={`absolute top-full left-0 mt-1 w-72 bg-white rounded-xl shadow-xl border border-gray-200 transition-all duration-200 transform z-50 ${
+        <div className={`absolute top-full left-0 mt-0 w-60 bg-white rounded-xl shadow-xl border border-gray-200 transition-all duration-200 transform z-50 ${
           isDropdownOpen 
             ? 'opacity-100 visible scale-100' 
             : 'opacity-0 invisible scale-95 pointer-events-none'

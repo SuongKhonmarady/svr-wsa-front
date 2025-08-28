@@ -150,7 +150,7 @@ function GlobalSearch() {
               )}
               <button
                 type="submit"
-                className="bg-blue-500 hover:bg-blue-600 text-white p-2 m-1 rounded transition-colors duration-200"
+                className="bg-blue-500 hover:bg-blue-600 text-white p-2 m-1 rounded-full transition-colors duration-200"
                 disabled={isLoading}
               >
                 {isLoading ? (

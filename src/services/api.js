@@ -297,13 +297,51 @@ class ApiService {
     return { data: requestsData, error: null }
   }
 
+  // Request deduplication cache
+  static requestCache = new Map();
+  
   // Admin Service Request Methods
   async getAdminServiceRequests(queryParams = '') {
-    const url = queryParams ? `/admin/service-requests?${queryParams}` : '/admin/service-requests';
-    const result = await this.get(url)
+    // Check if we're filtering by status
+    const statusParam = queryParams.get ? queryParams.get('status') : null;
+    
+    let url;
+    if (statusParam) {
+      // Use the status-specific endpoint
+      url = `/admin/service-requests/by-status?status=${statusParam}`;
+    } else {
+      // Use the general endpoint for all requests
+      url = '/admin/service-requests';
+    }
+    
+    // Check if we have a pending request for this URL
+    const cacheKey = url;
+    if (ApiService.requestCache.has(cacheKey)) {
+      const cachedRequest = ApiService.requestCache.get(cacheKey);
+      if (cachedRequest.pending) {
+        // Return the existing pending request
+        return cachedRequest.promise;
+      }
+    }
+    
+    // Create new request
+    const requestPromise = this.get(url);
+    
+    // Cache the request
+    ApiService.requestCache.set(cacheKey, {
+      pending: true,
+      promise: requestPromise
+    });
+    
+    // Clear cache when request completes
+    requestPromise.finally(() => {
+      ApiService.requestCache.delete(cacheKey);
+    });
+    
+        const result = await requestPromise;
     
     if (result.error) {
-      return result
+        return result
     }
 
     // Handle different response structures for admin service requests
@@ -320,15 +358,15 @@ class ApiService {
       } else if (result.data.data && Array.isArray(result.data.data)) {
         // Nested data structure: { data: { data: [...] } }
         requestsData = result.data.data
-        totalCount = result.data.total || result.data.data.length
+        totalCount = result.data.count || result.data.total || result.data.data.length
       } else if (result.data.service_requests && Array.isArray(result.data.service_requests)) {
         // Structure with service_requests property: { data: { service_requests: [...] } }
         requestsData = result.data.service_requests
-        totalCount = result.data.total || result.data.service_requests.length
+        totalCount = result.data.count || result.data.total || result.data.service_requests.length
       } else if (result.data.success && result.data.data && Array.isArray(result.data.data)) {
         // Success wrapper structure: { data: { success: true, data: [...] } }
         requestsData = result.data.data
-        totalCount = result.data.total || result.data.data.length
+        totalCount = result.data.count || result.data.total || result.data.data.length
       } else if (result.data.success && result.data.data && !Array.isArray(result.data.data)) {
         // Single item response: { success: true, data: { id: ... } }
         requestsData = [result.data.data]

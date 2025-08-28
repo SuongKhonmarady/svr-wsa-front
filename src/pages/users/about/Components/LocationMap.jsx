@@ -100,7 +100,7 @@ function LocationMap() {
         const query = encodeURIComponent(`${locations[activeLocation].name}, ${locations[activeLocation].address}`)
         
         // Use the most reliable Google Maps embed approach
-        return `https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=15&output=embed`
+        return `https://maps.google.com/maps?q=${lat},${lng}&hl=en&z=14&output=embed`
     }
 
     return (

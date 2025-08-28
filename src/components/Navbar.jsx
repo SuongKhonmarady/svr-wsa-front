@@ -11,21 +11,24 @@ function Navbar({ activeNav, setActiveNav }) {
   const navRef = useRef(null) // for click outside detection
 
   const servicesItems = [
-    { id: 'water-supply', label: 'ការផ្គត់ផ្គង់ទឹកស្អាត', href: '/services/water-supply', icon: '💧' },
-    { id: 'water-treatment', label: 'ការចម្រាញ់ទឹក', href: '/services/water-treatment', icon: '🔧' },
-    { id: 'maintenance', label: 'ការថែទាំ', href: '/services/maintenance', icon: '🛠️' },
-    { id: 'billing', label: 'ការបង់ប្រាក់', href: '/services/billing', icon: '💳' },
-    { id: 'customer-service', label: 'សេវាកម្មអតិថិជន', href: '/services/customer-service', icon: '👥' },
+    { id: 'services', label: 'សេវវាកម្ម', href: '/services'},
+    { id: 'water-supply', label: 'ការផ្គត់ផ្គង់ទឹកស្អាត', href: '/services/water-supply'},
+    { id: 'water-treatment', label: 'ការចម្រាញ់ទឹក', href: '/services/water-treatment'},
+    { id: 'maintenance', label: 'ការថែទាំ', href: '/services/maintenance'},
+    { id: 'billing', label: 'ការបង់ប្រាក់', href: '/services/billing'},
+    { id: 'customer-service', label: 'សេវាកម្មអតិថិជន', href: '/services/customer-service'},
   ]
 
   const aboutDropdownItems = [
-    { id: 'team', label: 'ក្រុមការងារ', href: '/about/team', icon: '👨‍💼' },
-    { id: 'location-map', label: 'ផែនទីទីតាំង', href: '/about/location', icon: '📍' }
+    { id: 'about', label: 'អំពី រ.ស.រ', href: '/about'},
+    { id: 'team', label: 'ក្រុមការងារ', href: '/about/team'},
+    { id: 'location-map', label: 'ផែនទីទីតាំង', href: '/about/location'}
   ]
 
   const dataItems = [
-    { id: 'monthly', label: 'របាយការណ៍ប្រចាំខែ', href: '/data/monthly', icon: '📊' },
-    { id: 'yearly', label: 'របាយការណ៍ប្រចាំឆ្នាំ', href: '/data/yearly', icon: '📈' }
+    { id: 'data', label: 'ទិន្នន័យ', href: '/data'},
+    { id: 'monthly', label: 'របាយការណ៍ប្រចាំខែ', href: '/data/monthly'},
+    { id: 'yearly', label: 'របាយការណ៍ប្រចាំឆ្នាំ', href: '/data/yearly'}
   ]
 
   const navItems = [
@@ -67,6 +70,9 @@ function Navbar({ activeNav, setActiveNav }) {
 
     // Navigate
     navigate(href);
+    
+    // Scroll to top of the new page
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   const toggleDropdown = (itemId) => {
@@ -134,8 +140,7 @@ function Navbar({ activeNav, setActiveNav }) {
           {/* Mobile Header */}
           <div className="flex items-center justify-between py-4">
             <div className="flex items-center space-x-2 text-blue-700 font-bold">
-              <span className="text-xl">🏢</span>
-              <span>{navItems.find(item => item.id === activeNav)?.label || 'ទំព័រដើម'}</span>
+              <span>{navItems.find(item => item.id === activeNav)?.label}</span>
             </div>
             
             <div className="flex items-center space-x-2">
@@ -144,7 +149,6 @@ function Navbar({ activeNav, setActiveNav }) {
                 href="/services/water-supply"
                 className="flex items-center space-x-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-2 py-1.5 rounded-full text-xs font-medium shadow-lg hover:shadow-xl transition-all duration-200 border border-green-400"
               >
-                <span className="text-yellow-300 text-sm">📝</span>
                 <span className="font-semibold">ស្នើសុំសេវាកម្ម</span>
               </a>
               

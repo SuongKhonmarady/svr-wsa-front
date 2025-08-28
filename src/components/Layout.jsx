@@ -2,11 +2,15 @@ import { useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import Navbar from './Navbar'
 import GlobalSearch from './GlobalSearch'
+import useScrollToTop from '../hooks/useScrollToTop'
 
 function Layout({ children, activeNav, setActiveNav }) {
   const location = useLocation()
   const [selectedLanguage, setSelectedLanguage] = useState('kh')
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false)
+  
+  // Auto-scroll to top on route change
+  useScrollToTop()
 
   const languages = [
     { code: 'kh', name: 'ខ្មែរ', flag: '/image/kh-flag.jpg' },
@@ -61,7 +65,7 @@ function Layout({ children, activeNav, setActiveNav }) {
                 </div>
 
                 {/* Language Selector - Desktop */}
-                <div className="flex items-center space-x-3">
+                {/* <div className="flex items-center space-x-3">
                   <div className="relative">
                     <button
                       onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
@@ -102,7 +106,7 @@ function Layout({ children, activeNav, setActiveNav }) {
                       </div>
                     )}
                   </div>
-                </div>
+                </div> */}
               </div>
 
               {/* Mobile View - Simplified: Only Location and Language */}
@@ -115,7 +119,7 @@ function Layout({ children, activeNav, setActiveNav }) {
                   </div>
 
                   {/* Language Selector */}
-                  <div className="relative">
+                  {/* <div className="relative">
                     <button
                       onClick={() => setIsLanguageDropdownOpen(!isLanguageDropdownOpen)}
                       className="flex items-center space-x-2 bg-white/25 backdrop-blur-sm border border-white/40 rounded-lg px-3 py-2 text-xs text-white hover:bg-white/35 focus:outline-none focus:ring-2 focus:ring-white/50 transition-all duration-200 cursor-pointer shadow-lg min-w-[60px]"
@@ -152,7 +156,7 @@ function Layout({ children, activeNav, setActiveNav }) {
                         ))}
                       </div>
                     )}
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

@@ -1,6 +1,5 @@
 {
     "rewrites": [
-      { "source": "/api/(.*)", "destination": "https://api-scholar.site/api/:path*" },
-      { "source": "/storage/(.*)", "destination": "https://api-scholar.site/storage/:path*" }
+      { "source": "/api/(.*)", "destination": "" }
     ]
 }

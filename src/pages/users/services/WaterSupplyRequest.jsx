@@ -136,11 +136,11 @@ function WaterSupplyRequest() {
             }}
         >
             {/* Page Header */}
-            <PageHeader 
+            {/* <PageHeader 
                 titleRef={titleRef}
                 subtitleRef={subtitleRef}
                 visibleSections={visibleSections}
-            />
+            /> */}
 
             {/* Service Request Form */}
             <div ref={sectionRef} className="bg-white py-16">

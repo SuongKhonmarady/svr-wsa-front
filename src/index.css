@@ -9,20 +9,6 @@
   .xs\:px-0 { padding-left: 0; padding-right: 0; }
 }
 
-/* Fix bg-fixed issues on mobile/iOS devices */
-@media (max-width: 768px) {
-  .bg-fixed {
-    background-attachment: scroll !important;
-  }
-}
-
-/* iOS Safari specific fixes */
-@supports (-webkit-touch-callout: none) {
-  .bg-fixed {
-    background-attachment: scroll !important;
-  }
-}
-
 /* Default font settings */
 body {
   font-family: 'Battambang', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;

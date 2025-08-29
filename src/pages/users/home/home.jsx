@@ -6,10 +6,10 @@ import NewsSection from './Components/NewsSection'
 function Home() {
     return (
         <div 
-            className="min-h-screen bg-cover bg-center bg-no-repeat bg-fixed"
-            style={{
-                backgroundImage: "url('/image/fd78805f8ce862135726b6fc7f51aafc.jpg')",
-            }}
+            className="min-h-screen bg-cover bg-center bg-no-repeat bg-[url('/image/fd78805f8ce862135726b6fc7f51aafc.jpg')] bg-fixed"
+            // style={{
+            //     backgroundImage: "url('/image/fd78805f8ce862135726b6fc7f51aafc.jpg')",
+            // }}
         >
             <HeroSection />
             <ServicesOverview />

@@ -157,9 +157,9 @@ function SearchResultsPage() {
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Search Header */}
           <div className="mb-8">
-            <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
+            <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">
               ព័ត៌មានដែរអ្នកស្វែងរក 
-            </h1>
+            </h2>
             <div className="flex items-center space-x-2 text-gray-600">
               <span className="font-semibold text-blue-600">"{query}"</span>
               {!isLoading && (

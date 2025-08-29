@@ -121,7 +121,7 @@ function NewsSection() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h3 className="text-2xl font-semibold text-gray-900 mb-4">
+            <h3 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 sm:mb-6 md:mb-8 font-semibold text-gray-900 mb-4">
               មានបញ្ហាក្នុងការផ្ទុកព័ត៌មាន
             </h3>
             <div className="bg-red-50 border border-red-200 rounded-lg p-4 max-w-md mx-auto mb-6">
@@ -167,18 +167,21 @@ function NewsSection() {
             : 'opacity-0 transform translate-y-8'
         }`}>
           <div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-4 font-khmer-title">
+            <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl sm:mb-6 md:mb-8 font-bold text-gray-900 mb-4 font-khmer-title">
               ព័ត៌មានថ្មីៗ
             </h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 md:mb-12 text-gray-600">
               ព័ត៌មាន និងការប្រកាសចុងក្រោយបំផុត ១០ ដំបូង
             </p>
           </div>
-          <div className="hidden md:flex space-x-4">
-            <button className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-all duration-200 hover:scale-105">
-              <a href="/news" className="flex items-center space-x-2">
+          <div className="flex space-x-4">
+            <button 
+              onClick={() => window.location.href = '/news'}
+              className="bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-blue-700 transition-all duration-200 hover:scale-105 text-sm sm:text-base font-medium"
+            >
+              <span className="flex items-center space-x-2">
                 <span>មើលទាំងអស់</span>
-              </a>
+              </span>
             </button>
           </div>
         </div>
@@ -277,7 +280,10 @@ function NewsSection() {
         )}
 
         <div className="text-center mt-12 md:hidden">
-          <button className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200">
+          <button 
+            onClick={() => window.location.href = '/news'}
+            className="bg-blue-600 text-white px-6 sm:px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm sm:text-base font-medium"
+          >
             មើលព័ត៌មានទាំងអស់
           </button>
         </div>

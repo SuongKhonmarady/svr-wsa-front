@@ -39,7 +39,7 @@ function AdminDashboard() {
     // Get user info using auth utility
     const userData = getCurrentUser()
     setUser(userData)
-    
+
     // Load all dashboard data
     loadDashboardData()
   }, [])
@@ -62,7 +62,7 @@ function AdminDashboard() {
 
       if (statsResult.status === 'fulfilled' && statsResult.value) {
         statsData = processStatsData(statsResult.value)
-        
+
         // Extract nested data if needed
         if (statsData && statsData.data && statsData.data.published_news !== undefined) {
           statsData = statsData.data
@@ -86,38 +86,95 @@ function AdminDashboard() {
 
       // Create simplified stats using data from dashboard stats API
       const stats = statsData ? [
-        { 
-          name: 'Published News', 
-          value: (statsData.published_news || 0).toString(), 
-          icon: '📰', 
-          color: 'from-purple-500 to-purple-600' 
+        {
+          name: 'Published News',
+          value: (statsData.published_news || 0).toString(),
+          icon: (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+            </svg>
+          ),
+          color: 'from-purple-500 to-purple-600'
         },
-        { 
-          name: 'Monthly Reports', 
-          value: `${statsData.published_monthly_reports || 0}/${statsData.total_monthly_reports || 0}`, 
-          icon: '📊', 
+        {
+          name: 'Monthly Reports',
+          value: `${statsData.published_monthly_reports || 0}/${statsData.total_monthly_reports || 0}`,
+          icon: (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          ),
           color: 'from-green-500 to-green-600',
           subtitle: `${(statsData.total_monthly_reports || 0) - (statsData.published_monthly_reports || 0)} draft, ${statsData.published_monthly_reports || 0} published`
         },
-        { 
-          name: 'Yearly Reports', 
-          value: `${statsData.published_yearly_reports || 0}/${statsData.total_yearly_reports || 0}`, 
-          icon: '📋', 
+        {
+          name: 'Yearly Reports',
+          value: `${statsData.published_yearly_reports || 0}/${statsData.total_yearly_reports || 0}`,
+          icon: (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          ),
           color: 'from-blue-500 to-blue-600',
           subtitle: `${(statsData.total_yearly_reports || 0) - (statsData.published_yearly_reports || 0)} draft, ${statsData.published_yearly_reports || 0} published`
         },
-        { 
-          name: 'Service Requests', 
-          value: (statsData.total_service_requests || 0).toString(), 
-          icon: '🔧', 
+        {
+          name: 'Service Requests',
+          value: (statsData.total_service_requests || 0).toString(),
+          icon: (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          ),
           color: 'from-orange-500 to-orange-600',
           subtitle: `${statsData.pending_service_requests || 0} pending, ${statsData.completed_service_requests || 0} completed`
         },
       ] : [
-        { name: 'Published News', value: '0', icon: '📰', color: 'from-purple-500 to-purple-600' },
-        { name: 'Monthly Reports', value: '0/0', icon: '📊', color: 'from-green-500 to-green-600', subtitle: '0 draft, 0 published' },
-        { name: 'Yearly Reports', value: '0/0', icon: '📋', color: 'from-blue-500 to-blue-600', subtitle: '0 draft, 0 published' },
-        { name: 'Service Requests', value: '0', icon: '🔧', color: 'from-orange-500 to-orange-600', subtitle: '0 pending, 0 completed' },
+        {
+          name: 'Published News',
+          value: '0',
+          icon: (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+            </svg>
+          ),
+          color: 'from-purple-500 to-purple-600'
+        },
+        {
+          name: 'Monthly Reports',
+          value: '0/0',
+          icon: (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+            </svg>
+          ),
+          color: 'from-green-500 to-green-600',
+          subtitle: '0 draft, 0 published'
+        },
+        {
+          name: 'Yearly Reports',
+          value: '0/0',
+          icon: (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          ),
+          color: 'from-blue-500 to-blue-600',
+          subtitle: '0 draft, 0 published'
+        },
+        {
+          name: 'Service Requests',
+          value: '0',
+          icon: (
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+            </svg>
+          ),
+          color: 'from-orange-500 to-orange-600',
+          subtitle: '0 pending, 0 completed'
+        },
       ]
 
       // Process customer growth data
@@ -145,22 +202,22 @@ function AdminDashboard() {
     if (apiData && apiData.data && apiData.data.monthly_data && Array.isArray(apiData.data.monthly_data)) {
       return apiData.data.monthly_data.map(monthData => monthData.count || 0)
     }
-    
+
     // If we have API data directly, process it
     if (apiData && apiData.monthly_data && Array.isArray(apiData.monthly_data)) {
       return apiData.monthly_data.map(monthData => monthData.count || 0)
     }
-    
+
     // Check for alternative data structures
     if (apiData && Array.isArray(apiData)) {
       return apiData
     }
-    
+
     // Check if data is wrapped in a data property as array
     if (apiData && apiData.data && Array.isArray(apiData.data)) {
       return apiData.data
     }
-    
+
     // Fallback to empty array if no API data
     return []
   }
@@ -174,12 +231,12 @@ function AdminDashboard() {
     if (apiData.success && apiData.data) {
       return apiData.data  // Return the actual data, not the wrapper
     }
-    
+
     // Check if data is wrapped in data property
     if (apiData.data && !apiData.success) {
       return apiData.data
     }
-    
+
     // Use direct data (fallback)
     return apiData
   }
@@ -190,11 +247,11 @@ function AdminDashboard() {
     datasets: [
       {
         label: 'New Customers',
-        data: loading 
-          ? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] 
-          : (dashboardData.customerGrowth.length > 0 
-              ? dashboardData.customerGrowth 
-              : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
+        data: loading
+          ? [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+          : (dashboardData.customerGrowth.length > 0
+            ? dashboardData.customerGrowth
+            : [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]),
         backgroundColor: 'rgba(59, 130, 246, 0.8)',
         borderColor: 'rgba(59, 130, 246, 1)',
         borderWidth: 1,
@@ -236,16 +293,60 @@ function AdminDashboard() {
   }
 
   const stats = loading ? [
-    { name: 'Published News', value: '...', icon: '📰', color: 'from-purple-500 to-purple-600' },
-    { name: 'Monthly Reports', value: '...', icon: '📊', color: 'from-green-500 to-green-600', subtitle: 'Loading...' },
-    { name: 'Yearly Reports', value: '...', icon: '📋', color: 'from-blue-500 to-blue-600', subtitle: 'Loading...' },
-    { name: 'Service Requests', value: '...', icon: '🔧', color: 'from-orange-500 to-orange-600' },
+    {
+      name: 'Published News', value: '...', icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
+        </svg>
+      ), color: 'from-purple-500 to-purple-600'
+    },
+    {
+      name: 'Monthly Reports', value: '...', icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+        </svg>
+      ), color: 'from-green-500 to-green-600', subtitle: 'Loading...'
+    },
+    {
+      name: 'Yearly Reports', value: '...', icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      ), color: 'from-blue-500 to-blue-600', subtitle: 'Loading...'
+    },
+    {
+      name: 'Service Requests', value: '...', icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      ), color: 'from-orange-500 to-orange-600'
+    },
   ] : dashboardData.stats
 
   const quickActions = [
-    { name: 'Create News', icon: '📝', color: 'bg-blue-500 hover:bg-blue-600', action: () => navigate('/admin/news') },
-    { name: 'View Reports', icon: '📊', color: 'bg-green-500 hover:bg-green-600', action: () => navigate('/admin/reports') },
-    { name: 'Service Requests', icon: '🔧', color: 'bg-orange-500 hover:bg-orange-600', action: () => navigate('/admin/service-requests') },
+    {
+      name: 'Create News', icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+        </svg>
+      ), color: 'bg-blue-500 hover:bg-blue-600', action: () => navigate('/admin/news')
+    },
+    {
+      name: 'View Reports', icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+        </svg>
+      ), color: 'bg-green-500 hover:bg-green-600', action: () => navigate('/admin/reports')
+    },
+    {
+      name: 'Service Requests', icon: (
+        <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+        </svg>
+      ), color: 'bg-orange-500 hover:bg-orange-600', action: () => navigate('/admin/service-requests')
+    },
   ]
 
   if (error) {
@@ -281,32 +382,44 @@ function AdminDashboard() {
         {/* Welcome Header */}
         <div className="mb-8">
           <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-3xl font-bold text-gray-900">Welcome back!</h1>
-              <p className="text-gray-600 mt-1">
-                {user ? `Hello ${user.name}, here's what's happening today.` : 'Here\'s what\'s happening today.'}
-              </p>
-            </div>
-            <div className="text-right">
+             
+            <div className="text-left">
               <div className="flex items-center space-x-4">
-                <button
-                  onClick={() => loadDashboardData()}
-                  disabled={loading}
-                  className={`bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
-                >
-                  {loading ? '🔄 Loading...' : '🔄 Refresh'}
-                </button>
+                
                 <div>
                   <p className="text-sm text-gray-500">Today</p>
-                  <p className="text-lg font-semibold text-gray-900">{new Date().toLocaleDateString('en-US', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
+                  <p className="text-lg font-semibold text-gray-900">{new Date().toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
                   })}</p>
                 </div>
+                
               </div>
             </div>
+            <button
+                  onClick={() => loadDashboardData()}
+                  disabled={loading}
+                  className={`inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                >
+                  {loading ? (
+                    <>
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Refreshing...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="-ml-1 mr-2 h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                      </svg>
+                      Refresh
+                    </>
+                  )}
+                </button>
           </div>
         </div>
 
@@ -332,7 +445,7 @@ function AdminDashboard() {
 
         {/* Main Content Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
+
           {/* Customer Growth Chart */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
@@ -350,7 +463,11 @@ function AdminDashboard() {
                 ) : customerGrowthError ? (
                   <div className="flex items-center justify-center h-full">
                     <div className="text-center">
-                      <div className="text-red-500 text-lg mb-2">⚠️</div>
+                      <div className="text-red-500 text-lg mb-2">
+                        <svg className="w-8 h-8 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.34 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                        </svg>
+                      </div>
                       <div className="text-red-600 font-medium">Something went wrong</div>
                       <div className="text-gray-500 text-sm mt-1">Unable to load customer growth data</div>
                       <button
@@ -370,7 +487,7 @@ function AdminDashboard() {
 
           {/* Quick Actions & System Status */}
           <div className="space-y-6">
-            
+
             {/* Quick Actions Card */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
               <h3 className="text-xl font-semibold text-gray-900 mb-4">Quick Actions</h3>

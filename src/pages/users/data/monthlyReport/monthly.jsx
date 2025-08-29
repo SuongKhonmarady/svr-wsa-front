@@ -18,23 +18,17 @@ function Monthly() {
                 <div className="relative bg-gradient-to-r from-blue-800/40 via-blue-700/80 to-blue-800/40 text-white py-16 lg:py-20 overflow-hidden">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center">
-                            <h1 className={`text-5xl sm:text-6xl lg:text-7x mb-8 font-khmer-title transition-all duration-1000 ${isLoaded
+                            <h1 className={`text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 sm:mb-6 md:mb-8 transition-all duration-1000 ${isLoaded
                                     ? 'opacity-100 transform translate-y-0'
                                     : 'opacity-0 transform -translate-y-8'
                                 }`}>
                                 របាយការណ៍ប្រចាំខែ
                             </h1>
-                            <p className={`text-xl sm:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto transition-all duration-1500 ${isLoaded
+                            <p className={`text-sm xs:text-base sm:text-lg text-blue-200 md:text-xl lg:text-2xl mb-6 sm:mb-8 md:mb-12 transition-all duration-1500 ${isLoaded
                                     ? 'opacity-100 transform translate-y-0'
                                     : 'opacity-0 transform translate-y-8'
                                 }`}>
                                 របាយការណ៍ទិន្នន័យប្រចាំខែនៃការផ្គត់ផ្គង់ទឹកស្អាត
-                            </p>
-                            <p className={`text-lg text-blue-200 max-w-4xl mx-auto leading-relaxed transition-all duration-2000 ${isLoaded
-                                    ? 'opacity-100 transform translate-y-0'
-                                    : 'opacity-0 transform translate-y-8'
-                                }`}>
-                                ជ្រើសរើសឆ្នាំដើម្បីមើលរបាយការណ៍ប្រចាំខែទាំងអស់
                             </p>
                         </div>
                     </div>

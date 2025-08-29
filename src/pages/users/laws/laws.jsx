@@ -5,7 +5,7 @@ function Laws() {
     return (
         <div className="min-h-screen relative">
             {/* Fixed background */}
-            <div className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat bg-[url('https://images.unsplash.com/photo-1577495508048-b635879837f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80')]" />
+            <div className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat bg-[url('image/fd78805f8ce862135726b6fc7f51aafc.jpg')]" />
             
             {/* Content */}
             <div className="relative z-10">
@@ -13,7 +13,7 @@ function Laws() {
                 <div className="relative bg-gradient-to-r from-indigo-800/40 via-indigo-700/80 to-indigo-800/40 text-white py-16 lg:py-20 overflow-hidden">
                     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                         <div className="text-center">
-                            <h1 className="text-4xl sm:text-5xl lg:text-6xl mb-6 font-khmer-title">
+                            <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 sm:mb-6 md:mb-8 font-khmer-title">
                                 ច្បាប់ និងបទបញ្ញត្តិ
                             </h1>
                             <p className="text-xl sm:text-2xl text-indigo-100 mb-8 max-w-3xl mx-auto">

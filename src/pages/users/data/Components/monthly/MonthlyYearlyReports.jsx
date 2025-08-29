@@ -241,9 +241,9 @@ function MonthlyYearlyReports() {
                     <div className="bg-white rounded-xl shadow-lg p-6 border border-gray-100">
                         <div className="flex items-center justify-between">
                             <div>
-                                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                                <h2 className="text-3xl font-bold text-gray-900 mb-2">
                                     របាយការណ៍ប្រចាំខែឆ្នាំ {year}
-                                </h1>
+                                </h2>
                                 <p className="text-gray-600">
                                     របាយការណ៍ប្រចាំខែទាំងអស់សម្រាប់ឆ្នាំ {year}
                                 </p>

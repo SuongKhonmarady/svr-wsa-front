@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Battambang:wght@100;300;400;700;900&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Khmer+Muol:wght@700&display=swap');
 @import "tailwindcss";
 
 /* Default font settings */
@@ -17,7 +17,7 @@ p, span, div, li, a, button, input, textarea, select, label {
 
 /* Keep Khmer OS Muol Light for specific titles */
 h1 {
-  font-family: 'Kantumruy Pro', 'Khmer Muol', sans-serif;
+  font-family:'Khmer Muol', sans-serif;
 }
 
 /* Line clamp utilities for text truncation */

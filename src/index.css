@@ -16,13 +16,14 @@ p, span, div, li, a, button, input, textarea, select, label {
 
 @font-face {
   font-family: 'Khmer OS Muol Light';
-  src: url('/fonts/Khmer OS Muol Light.ttf') format('truetype');
+  src: url('/fonts/Khmer OS Muol Light Regular.ttf') format('truetype');
   font-weight: normal;
   font-style: normal;
+  font-display: swap; /* Add this for better performance */
 }
 /* Keep Khmer OS Muol Light for specific titles */
 h1 {
-  font-family: 'Khmer OS Muol Light', 'Battambang', sans-serif;
+  font-family: 'Khmer OS Muol Light', sans-serif;
 }
 
 /* Line clamp utilities for text truncation */

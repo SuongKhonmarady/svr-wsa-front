@@ -151,11 +151,11 @@ const NewsDetail = ({ news, formatDate }) => {
                     </div>
 
                     {/* Title */}
-                    <h1 className={`text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight font-khmer-title transition-all duration-1000 delay-600 ${
+                    <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight font-khmer-title transition-all duration-1000 delay-600 ${
                         isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-6'
                     }`}>
                         {news.title}
-                    </h1>
+                    </h2>
                 </div>
             </div>
 

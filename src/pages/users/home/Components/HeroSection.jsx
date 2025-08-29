@@ -68,7 +68,12 @@ function HeroSection() {
           >
             ស្វាគមន៍មកកាន់
           </h1>
-          <h1 className='text-5xl sm:text-6xl lg:text-6xl mb-8 font-khmer-title transition-all duration-1200'>
+          <h1 ref={titleRef}
+            className={`text-5xl sm:text-6xl lg:text-6xl  mb-6 font-khmer-title transition-all duration-1400 ${
+            visibleSections.title 
+              ? 'opacity-100 transform translate-y-0 animate-fade-in-up' 
+              : 'opacity-0 transform translate-y-10'
+          }`}>
           រដ្ឋាករទឹកស្វាយរៀង
           </h1>
           <p 

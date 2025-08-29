@@ -60,13 +60,16 @@ function HeroSection() {
         <div className="text-center">
           <h1 
             ref={titleRef}
-            className={`text-5xl sm:text-6xl lg:text-7xl font-bold mb-8 font-khmer-title transition-all duration-1200 ${
+            className={`text-5xl sm:text-6xl lg:text-6xl  mb-6 font-khmer-title transition-all duration-1200 ${
             visibleSections.title 
               ? 'opacity-100 transform translate-y-0 animate-fade-in-up' 
               : 'opacity-0 transform translate-y-10'
           }`}
           >
-            ស្វាគមន៍មកកាន់<br/>រដ្ឋាករទឹកស្វាយរៀង
+            ស្វាគមន៍មកកាន់
+          </h1>
+          <h1 className='text-5xl sm:text-6xl lg:text-6xl mb-8 font-khmer-title transition-all duration-1200'>
+          រដ្ឋាករទឹកស្វាយរៀង
           </h1>
           <p 
             ref={subtitleRef}

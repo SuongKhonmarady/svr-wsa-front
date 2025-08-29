@@ -17,7 +17,7 @@ function Contact() {
             <div className="relative bg-gradient-to-r from-purple-800/40 via-purple-700/80 to-purple-800/40 text-white py-16 lg:py-20 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center">
-                        <h1 className={`text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 font-khmer-title transition-all duration-1000 ${isLoaded
+                        <h1 className={`text-4xl sm:text-5xl lg:text-6xl mb-6 font-khmer-title transition-all duration-1000 ${isLoaded
                             ? 'opacity-100 transform translate-y-0'
                             : 'opacity-0 transform -translate-y-8'
                             }`}>

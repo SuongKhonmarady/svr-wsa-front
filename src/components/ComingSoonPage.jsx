@@ -31,9 +31,9 @@ function ComingSoonPage({
         </div>
 
         {/* Main Heading */}
-        <h1 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6 font-khmer-title">
+        <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-6 font-khmer-title">
           {title}
-        </h1>
+        </h2>
         
         <h2 className="text-3xl sm:text-4xl font-bold text-blue-600 mb-6">
           {subtitle}
@@ -49,7 +49,7 @@ function ComingSoonPage({
         </p>
 
         {/* Progress Bar */}
-        <div className="mb-12">
+        {/* <div className="mb-12">
           <div className="bg-gray-200 rounded-full h-3 max-w-md mx-auto">
             <div 
               className="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full animate-pulse"
@@ -57,10 +57,10 @@ function ComingSoonPage({
             ></div>
           </div>
           <p className="text-sm text-gray-500 mt-2">{progress}% Complete</p>
-        </div>
+        </div> */}
 
         {/* Features Coming Soon */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        {/* <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
           {features.map((feature, index) => (
             <div key={index} className="bg-gray-50 p-6 rounded-xl">
               <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mx-auto mb-4 text-2xl">
@@ -70,7 +70,7 @@ function ComingSoonPage({
               <p className="text-sm text-gray-600">{feature.subtitle}</p>
             </div>
           ))}
-        </div>
+        </div> */}
 
         {/* Contact Information */}
         {showContact && (

@@ -94,12 +94,12 @@ function MonthlyYearsList() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
                 <div className="text-center mb-12">
-                    <h1 className={`text-4xl font-bold text-gray-900 mb-4 transition-all duration-1000 ${isVisible
+                    <h2 className={`text-4xl text-gray-900 mb-4 transition-all duration-1000 ${isVisible
                             ? 'opacity-100 transform translate-y-0'
                             : 'opacity-0 transform translate-y-8'
                         }`}>
                         របាយការណ៍ប្រចាំខែ
-                    </h1>
+                    </h2>
                     <p className={`text-xl text-gray-600 max-w-3xl mx-auto transition-all duration-2000 ${isVisible
                             ? 'opacity-100 transform translate-y-0'
                             : 'opacity-0 transform translate-y-8'

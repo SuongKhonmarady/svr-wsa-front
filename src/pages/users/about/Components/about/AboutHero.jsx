@@ -54,7 +54,7 @@ function AboutHero() {
         <div className="text-center">
           <h1 
             ref={titleRef}
-            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 lg:mb-8 font-khmer-title transition-all duration-1000 ${visibleSections.title
+            className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl mb-4 sm:mb-6 lg:mb-8 font-khmer-title transition-all duration-1000 ${visibleSections.title
             ? 'opacity-100 transform translate-y-0 animate-fade-in-up'
             : 'opacity-0 transform translate-y-10'
             }`}

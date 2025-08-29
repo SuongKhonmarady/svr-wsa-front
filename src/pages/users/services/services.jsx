@@ -11,7 +11,7 @@ function Services() {
             <div className="relative bg-gradient-to-r from-blue-600/30 via-blue-800/80 to-blue-800/50 text-white py-16 lg:py-20 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center">
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 font-khmer-title">
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl mb-6 font-khmer-title">
                             សេវាកម្មរបស់យើង
                         </h1>
                         <p className="text-xl sm:text-2xl text-blue-100 mb-8 max-w-3xl mx-auto">

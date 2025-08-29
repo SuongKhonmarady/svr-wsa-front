@@ -162,9 +162,9 @@ const YearlyReports = () => {
                         ? 'opacity-100 transform translate-y-0' 
                         : 'opacity-0 transform translate-y-8'
                 }`}>
-                    <h1 className="text-4xl font-bold text-gray-900 mb-4 ">
+                    <h2 className="text-4xl text-gray-900 mb-4 ">
                         របាយការណ៍ប្រចាំឆ្នាំ
-                    </h1>
+                    </h2>
                     <select
                         value={sortBy}
                         onChange={(e) => setSortBy(e.target.value)}

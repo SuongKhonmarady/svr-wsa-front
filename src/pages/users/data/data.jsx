@@ -11,7 +11,7 @@ function Data() {
             <div className="relative bg-gradient-to-r from-teal-800/40 via-teal-700/80 to-teal-800/40 text-white py-16 lg:py-20 overflow-hidden">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="text-center">
-                        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 font-khmer-title">
+                        <h1 className="text-4xl sm:text-5xl lg:text-6xl mb-6 font-khmer-title">
                             ទិន្នន័យ និងស្ថិតិ
                         </h1>
                         <p className="text-xl sm:text-2xl text-teal-100 mb-8 max-w-3xl mx-auto">

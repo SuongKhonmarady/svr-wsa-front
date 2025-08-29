@@ -10,7 +10,7 @@ function Privacy() {
   return (
     <div className="min-h-screen relative">
       {/* Fixed background */}
-      <div className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat bg-[url('https://images.unsplash.com/photo-1577495508048-b635879837f1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2074&q=80')]" />
+      <div className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat bg-[url('/image/fd78805f8ce862135726b6fc7f51aafc.jpg')]" />
       
       {/* Content */}
       <div className="relative z-10">

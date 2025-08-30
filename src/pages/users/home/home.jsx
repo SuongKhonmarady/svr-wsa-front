@@ -10,10 +10,10 @@ function Home() {
             <div
                 className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat bg-[url('/image/fd78805f8ce862135726b6fc7f51aafc.jpg')]"
                 style={{
-                    top: '-10vh',
+                    top: '-35vh',
                     bottom: '-10vh',
-                    height: '120vh'
-                }}
+                    height: '145vh'
+                }} 
             />
             {/* Content */}
             <div className="relative z-10">

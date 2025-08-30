@@ -10,7 +10,13 @@ function News() {
     return (
         <div className="min-h-5 relative">
             {/* Fixed background */}
-            <div className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat bg-[url('/image/fd78805f8ce862135726b6fc7f51aafc-2.jpg')]" />
+            <div className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat bg-[url('/image/fd78805f8ce862135726b6fc7f51aafc-2.jpg')]"
+            style={{
+                top: '-35vh',
+                bottom: '-10vh',
+                height: '100vh'
+            }} 
+            />
             
             {/* Content */}
             <div className="relative z-10">

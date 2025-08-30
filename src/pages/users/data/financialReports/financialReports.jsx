@@ -4,7 +4,13 @@ import ComingSoonPage from '../../../../components/ComingSoonPage';
 function FinancialReports() {
   return (
     <div className="min-h-screen relative">
-      <div className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat bg-[url('/image/fd78805f8ce862135726b6fc7f51aafc.jpg')]" />
+      <div className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat bg-[url('/image/fd78805f8ce862135726b6fc7f51aafc.jpg')]"
+      style={{
+                top: '-25vh',
+                bottom: '-10vh',
+                height: '100vh'
+            }}
+      />
       <div className="relative z-10">
         {/* Page Header */}
         <div className="relative bg-gradient-to-r from-teal-800/40 via-teal-700/80 to-teal-800/40 text-white py-16 lg:py-20 overflow-hidden">

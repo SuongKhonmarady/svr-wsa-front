@@ -57,7 +57,7 @@ function MissionVision() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                 </svg>
               </div>
-              <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 sm:mb-6 md:mb-8 font-bold text-gray-900 font-khmer-title">
+              <h2 className="text-3xl lg:text-3xl mb-4 sm:mb-6 md:mb-8 font-bold text-gray-900 font-khmer-title">
               ប្រវត្តិរដ្ឋាករទឹកស្វាយរៀង
               </h2>
             </div>

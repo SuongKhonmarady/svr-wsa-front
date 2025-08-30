@@ -48,7 +48,7 @@ function Layout({ children, activeNav, setActiveNav }) {
                   {/* Location Info */}
                   <div className="flex items-center space-x-2 bg-white/15 rounded-full px-4 py-2 backdrop-blur-sm border border-white/20 hover:bg-white/20 transition-all duration-300 cursor-pointer group">
                     <span className="text-yellow-300 text-lg group-hover:scale-110 transition-transform duration-300">📍</span>
-                    <span className="font-medium text-sm">ស្រុកស្វាយរៀង ខេត្តស្វាយរៀង ព្រះរាជាណាចក្រកម្ពុជា</span>
+                    <span className="font-medium text-sm">ក្រុងស្វាយរៀង ខេត្តស្វាយរៀង ព្រះរាជាណាចក្រកម្ពុជា</span>
                   </div>
 
                   {/* Contact Info */}
@@ -115,7 +115,7 @@ function Layout({ children, activeNav, setActiveNav }) {
                   {/* Location Only */}
                   <div className="flex items-center space-x-2 bg-white/20 rounded-lg px-3 py-2 backdrop-blur-sm border border-white/30">
                     <span className="text-yellow-300 text-base">📍</span>
-                    <span className="font-medium text-xs text-white">ស្រុកស្វាយរៀង ខេត្តស្វាយរៀង</span>
+                    <span className="font-medium text-xs text-white">ក្រុងស្វាយរៀង ខេត្តស្វាយរៀង</span>
                   </div>
 
                   {/* Language Selector */}
@@ -272,7 +272,7 @@ function Layout({ children, activeNav, setActiveNav }) {
                       }}
                     />
                     <span style={{ display: 'none' }} className="text-blue-400">📍</span>
-                    <span>ស្រុកស្វាយរៀង ខេត្តស្វាយរៀង</span>
+                    <span>ក្រុងស្វាយរៀង ខេត្តស្វាយរៀង</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <img

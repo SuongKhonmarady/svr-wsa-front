@@ -5,16 +5,8 @@ import NewsSection from './Components/NewsSection'
 
 function Home() {
 
-    const backgroundStyle = {
-        backgroundImage: "url('/image/fd78805f8ce862135726b6fc7f51aafc.jpg')",
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
-        backgroundAttachment: 'fixed',
-        minHeight: '100vh'
-      }
-      return (
-        <div className="min-h-screen" style={backgroundStyle}>
+    return (
+        <div className="min-h-screen bg-fixed bg-cover bg-center bg-no-repeat bg-[url('/image/fd78805f8ce862135726b6fc7f51aafc.jpg')]">
           <div className="relative z-10">
             <HeroSection />
             <ServicesOverview />

@@ -6,21 +6,18 @@ import { useState, useEffect } from 'react'
 
 function Home() {
     return (
-        <div className="relative min-h-screen">
-            {/* Background for mobile/iOS */}
-            <div
-                className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat bg-[url('/image/fd78805f8ce862135726b6fc7f51aafc.jpg')]"
-                style={{ height: '100%', minHeight: '100vh' }}
-            />
-            {/* Content wrapper */}
-            <div className="relative z-10 min-h-screen">
-                <HeroSection />
-                <ServicesOverview />
-                <ServiceRequestSection />
-                <NewsSection />
-            </div>
+        <div className="min-h-screen relative">
+          {/* Extended fixed background using Tailwind arbitrary values */}
+          <div className="fixed -top-[20vh] -left-[20vw] -right-[20vw] -bottom-[20vh] w-[140vw] h-[140vh] -z-10 bg-cover bg-center bg-no-repeat bg-fixed bg-[url('/image/fd78805f8ce862135726b6fc7f51aafc.jpg')]" />
+          {/* Content */}
+          <div className="relative z-10">
+            <HeroSection />
+            <ServicesOverview />
+            <ServiceRequestSection />
+            <NewsSection />
+          </div>
         </div>
-    )
+      )
 }
 
 export default Home

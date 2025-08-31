@@ -150,108 +150,111 @@ function ReportsManagement() {
 
     return (
         <AdminLayout>
-            <div className="flex justify-between items-center mb-4">
-                <div>
-                    <h1 className="text-2xl font-bold">Report Management</h1>
-                    <p className="text-sm text-gray-600 mt-1">
-                        Currently viewing: <span className="font-medium capitalize">{filter}</span> reports
-                        {filter === 'monthly' 
-                            ? selectedYear === 'all' && selectedMonth === 'all' 
-                                ? ' (all periods)'
-                                : selectedYear === 'all' 
-                                    ? ` for ${new Date(0, selectedMonth - 1).toLocaleString('default', { month: 'long' })} (all years)`
-                                    : selectedMonth === 'all'
-                                        ? ` for ${selectedYear} (all months)`
-                                        : ` for ${new Date(0, selectedMonth - 1).toLocaleString('default', { month: 'long' })} ${selectedYear}`
-                            : selectedYear === 'all'
-                                ? ' (all years)'
-                                : ` for ${selectedYear}`
-                        }
-                    </p>
-                </div>
-                <div className="flex items-center gap-4">
-                    <div className="relative">
-                        <select 
-                            value={filter} 
-                            onChange={handleFilterChange} 
-                            disabled={loading}
-                            className="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            <option value="monthly">Monthly Reports</option>
-                            <option value="yearly">Yearly Reports</option>
-                        </select>
-                        {loading && (
-                            <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-                                <div className="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
-                            </div>
-                        )}
+            <div className="px-4 sm:px-0 space-y-4 sm:space-y-6">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-start space-y-4 sm:space-y-0">
+                    <div className="flex-1">
+                        <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Report Management</h1>
+                        <p className="text-sm text-gray-600 mt-1">
+                            Currently viewing: <span className="font-medium capitalize">{filter}</span> reports
+                            {filter === 'monthly' 
+                                ? selectedYear === 'all' && selectedMonth === 'all' 
+                                    ? ' (all periods)'
+                                    : selectedYear === 'all' 
+                                        ? ` for ${new Date(0, selectedMonth - 1).toLocaleString('default', { month: 'long' })} (all years)`
+                                        : selectedMonth === 'all'
+                                            ? ` for ${selectedYear} (all months)`
+                                            : ` for ${new Date(0, selectedMonth - 1).toLocaleString('default', { month: 'long' })} ${selectedYear}`
+                                : selectedYear === 'all'
+                                    ? ' (all years)'
+                                    : ` for ${selectedYear}`
+                            }
+                        </p>
                     </div>
-                    <Link to="/admin/reports/create" className="bg-blue-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700">
-                        Create Report
-                    </Link>
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 sm:gap-4">
+                        <div className="relative">
+                            <select 
+                                value={filter} 
+                                onChange={handleFilterChange} 
+                                disabled={loading}
+                                className="w-full sm:w-auto p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                <option value="monthly">Monthly Reports</option>
+                                <option value="yearly">Yearly Reports</option>
+                            </select>
+                            {loading && (
+                                <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                                    <div className="animate-spin h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
+                                </div>
+                            )}
+                        </div>
+                        <Link to="/admin/reports/create" className="w-full sm:w-auto bg-blue-600 text-white px-4 py-2 rounded-md shadow-sm hover:bg-blue-700 text-center transition-colors">
+                            Create Report
+                        </Link>
+                    </div>
                 </div>
             </div>
 
 
-
             {/* Date Filters */}
             <div className="mb-4 p-4 bg-gray-50 rounded-lg">
-                <div className="flex items-center gap-4">
+                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                     <span className="text-sm font-medium text-gray-700">Filter by:</span>
                     
-                    {/* Year Filter (for both monthly and yearly) */}
-                    <div className="flex items-center gap-2">
-                        <label className="text-sm text-gray-600">Year:</label>
-                        <select
-                            value={selectedYear}
-                            onChange={(e) => setSelectedYear(e.target.value)}
-                            className="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                            disabled={loading}
-                        >
-                            <option value="all">All Years</option>
-                            {Array.from({ length: 10 }, (_, i) => {
-                                const year = new Date().getFullYear() - i;
-                                return (
-                                    <option key={year} value={year}>{year}</option>
-                                );
-                            })}
-                        </select>
-                    </div>
-
-                    {/* Month Filter (only for monthly reports) */}
-                    {filter === 'monthly' && (
-                        <div className="flex items-center gap-2">
-                            <label className="text-sm text-gray-600">Month:</label>
+                    <div className="flex flex-col sm:flex-row gap-4">
+                        {/* Year Filter (for both monthly and yearly) */}
+                        <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                            <label className="text-sm text-gray-600">Year:</label>
                             <select
-                                value={selectedMonth}
-                                onChange={(e) => setSelectedMonth(e.target.value)}
-                                className="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                value={selectedYear}
+                                onChange={(e) => setSelectedYear(e.target.value)}
+                                className="w-full sm:w-auto p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
                                 disabled={loading}
                             >
-                                <option value="all">All Months</option>
-                                {Array.from({ length: 12 }, (_, i) => {
-                                    const monthNumber = i + 1;
-                                    const monthName = new Date(0, i).toLocaleString('default', { month: 'long' });
+                                <option value="all">All Years</option>
+                                {Array.from({ length: 10 }, (_, i) => {
+                                    const year = new Date().getFullYear() - i;
                                     return (
-                                        <option key={monthNumber} value={monthNumber}>{monthName}</option>
+                                        <option key={year} value={year}>{year}</option>
                                     );
                                 })}
                             </select>
                         </div>
-                    )}
 
-                    {/* Clear Filters Button */}
-                    <button
-                        onClick={() => {
-                            setSelectedYear('all');
-                            setSelectedMonth('all');
-                            setPage(1);
-                        }}
-                        className="px-3 py-2 text-sm bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors"
-                        disabled={loading}
-                    >
-                        Show All
-                    </button>
+                        {/* Month Filter (only for monthly reports) */}
+                        {filter === 'monthly' && (
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                                <label className="text-sm text-gray-600">Month:</label>
+                                <select
+                                    value={selectedMonth}
+                                    onChange={(e) => setSelectedMonth(e.target.value)}
+                                    className="w-full sm:w-auto p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                    disabled={loading}
+                                >
+                                    <option value="all">All Months</option>
+                                    {Array.from({ length: 12 }, (_, i) => {
+                                        const monthNumber = i + 1;
+                                        const monthName = new Date(0, i).toLocaleString('default', { month: 'long' });
+                                        return (
+                                            <option key={monthNumber} value={monthNumber}>{monthName}</option>
+                                        );
+                                    })}
+                                </select>
+                            </div>
+                        )}
+
+                        {/* Clear Filters Button */}
+                        <button
+                            onClick={() => {
+                                setSelectedYear('all');
+                                setSelectedMonth('all');
+                                setPage(1);
+                            }}
+                            className="w-full sm:w-auto px-3 py-2 text-sm bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors"
+                            disabled={loading}
+                        >
+                            Show All
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -265,21 +268,22 @@ function ReportsManagement() {
 
             {/* Pagination Controls */}
             {!loading && pagination.last_page > 1 && (
-                <div className="flex justify-between items-center mt-4">
-                    <p className="text-sm text-gray-700">
+                <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 mt-4">
+                    <p className="text-sm text-gray-700 text-center sm:text-left">
                         Showing <span className="font-medium">{pagination.from}</span> to <span className="font-medium">{pagination.to}</span> of <span className="font-medium">{pagination.total}</span> results
                     </p>
-                    <div className="flex gap-2">
-                        <button onClick={() => handlePageChange(page - 1)} disabled={page === 1} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50">
+                    <div className="flex justify-center sm:justify-end gap-2">
+                        <button onClick={() => handlePageChange(page - 1)} disabled={page === 1} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 transition-colors">
                             Previous
                         </button>
-                        <button onClick={() => handlePageChange(page + 1)} disabled={page === pagination.last_page} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50">
+                        <button onClick={() => handlePageChange(page + 1)} disabled={page === pagination.last_page} className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 transition-colors">
                             Next
                         </button>
                     </div>
                 </div>
             )}
-        </AdminLayout>
+        
+    </AdminLayout>
     );
 }
 

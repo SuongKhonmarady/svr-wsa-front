@@ -352,22 +352,22 @@ function ServiceRequestsManagement() {
 
     return (
         <AdminLayout>
-            <div className="min-h-screen bg-gray-50 py-8">
+            <div className="min-h-screen bg-gray-50 py-4 sm:py-8">
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     {/* Header */}
-                    <div className="mb-8">
-                        <div className="flex justify-between items-center">
+                    <div className="mb-6 sm:mb-8">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
                             <div>
-                                <h1 className="text-3xl font-bold text-gray-900">Service Requests Management</h1>
-                                <p className="mt-2 text-gray-600">Manage customer service requests and update their status</p>
+                                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">Service Requests Management</h1>
+                                <p className="mt-2 text-gray-600 text-sm sm:text-base">Manage customer service requests and update their status</p>
                             </div>
                             {/* Action Buttons */}
-                            <div className="flex gap-3">
+                            <div className="flex flex-col sm:flex-row gap-3">
                                 {/* Refresh Button */}
                                 <button
                                     onClick={refreshData}
                                     disabled={loading}
-                                    className="inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 >
                                     {loading ? (
                                         <>
@@ -391,7 +391,7 @@ function ServiceRequestsManagement() {
                                 <button
                                     onClick={exportToExcel}
                                     disabled={exportLoading || loading || serviceRequests.length === 0}
-                                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed"
+                                    className="w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                                 >
                                     {exportLoading ? (
                                         <>
@@ -418,9 +418,9 @@ function ServiceRequestsManagement() {
                     <div className="mb-6 p-4 bg-white rounded-lg shadow">
                         {loading ? (
                             <div className="animate-pulse">
-                                <div className="flex items-center gap-4 flex-wrap">
+                                <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                                     <div className="h-4 bg-gray-200 rounded w-20"></div>
-                                    <div className="flex items-center gap-2">
+                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                                         <div className="h-4 bg-gray-200 rounded w-16"></div>
                                         <div className="h-8 bg-gray-200 rounded w-32"></div>
                                     </div>
@@ -428,44 +428,46 @@ function ServiceRequestsManagement() {
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex items-center gap-4 flex-wrap">
+                            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
                                 <span className="text-sm font-medium text-gray-700">Filter by:</span>
 
-                                {/* Status Filter */}
-                                <div className="flex items-center gap-2">
-                                    <label className="text-sm text-gray-600">Status:</label>
-                                    <select
-                                        value={selectedStatus}
-                                        onChange={(e) => setSelectedStatus(e.target.value)}
-                                        className="p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                    >
-                                        <option value="all">All Statuses</option>
-                                        {statuses.map((status) => (
-                                            <option key={status.id} value={status.id}>
-                                                {status.name}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-
-                                {/* Clear Filters Button */}
-                                <button
-                                    onClick={() => {
-                                        setSelectedStatus('all');
-                                        // Refetch data
-                                        fetchServiceRequests('all');
-                                    }}
-                                    className="px-3 py-2 text-sm bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors"
-                                >
-                                    Clear All Filters
-                                </button>
-
-                                {/* Filter Results Info */}
-                                {selectedStatus !== 'all' && (
-                                    <div className="text-sm text-blue-600 bg-blue-50 px-3 py-1 rounded-md">
-                                        Showing {serviceRequests.length} requests
+                                <div className="flex flex-col sm:flex-row gap-4">
+                                    {/* Status Filter */}
+                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                                        <label className="text-sm text-gray-600">Status:</label>
+                                        <select
+                                            value={selectedStatus}
+                                            onChange={(e) => setSelectedStatus(e.target.value)}
+                                            className="w-full sm:w-auto p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
+                                        >
+                                            <option value="all">All Statuses</option>
+                                            {statuses.map((status) => (
+                                                <option key={status.id} value={status.id}>
+                                                    {status.name}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
-                                )}
+
+                                    {/* Clear Filters Button */}
+                                    <button
+                                        onClick={() => {
+                                            setSelectedStatus('all');
+                                            // Refetch data
+                                            fetchServiceRequests('all');
+                                        }}
+                                        className="w-full sm:w-auto px-3 py-2 text-sm bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors"
+                                    >
+                                        Clear All Filters
+                                    </button>
+
+                                    {/* Filter Results Info */}
+                                    {selectedStatus !== 'all' && (
+                                        <div className="text-sm text-blue-600 bg-blue-50 px-3 py-1 rounded-md text-center sm:text-left">
+                                            Showing {serviceRequests.length} requests
+                                        </div>
+                                    )}
+                                </div>
                             </div>
                         )}
                     </div>

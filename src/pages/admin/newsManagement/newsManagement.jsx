@@ -107,16 +107,16 @@ function NewsManagement() {
 
   return (
     <AdminLayout>
-      <div className="space-y-6">
+      <div className="space-y-4 sm:space-y-6 px-4 sm:px-0">
         {/* Page header */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center space-y-4 sm:space-y-0">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">News Management</h1>
-            <p className="text-gray-600">Manage your news articles and announcements</p>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-900">News Management</h1>
+            <p className="text-gray-600 text-sm sm:text-base mt-1">Manage your news articles and announcements</p>
           </div>
           <button
             onClick={handleCreateNews}
-            className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+            className="w-full sm:w-auto bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
           >
             📰 Create New News
           </button>
@@ -124,9 +124,9 @@ function NewsManagement() {
 
         {/* Search and filters */}
         <div className="bg-white shadow rounded-lg">
-          <div className="px-6 py-4">
-            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
-              <div className="flex-1 max-w-md">
+          <div className="px-4 sm:px-6 py-4">
+            <div className="flex flex-col space-y-4">
+              <div className="flex-1">
                 <label htmlFor="search" className="sr-only">Search news</label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -144,11 +144,11 @@ function NewsManagement() {
                   />
                 </div>
               </div>
-              <div className="flex items-center space-x-4">
+              <div className="flex justify-center sm:justify-start">
                 <button
                   onClick={fetchNews}
                   disabled={loading}
-                  className={`inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+                  className={`w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
                   {loading ? (
                     <>

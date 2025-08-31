@@ -13,27 +13,27 @@ const ServiceRequestsList = ({
     // Handle loading state first
     if (loading) {
         return (
-            <div className="px-6 py-4">
+            <div className="px-4 sm:px-6 py-4">
                 <div className="animate-pulse space-y-4">
                     {[1, 2, 3, 4, 5].map((i) => (
-                        <div key={i} className="bg-gray-50 rounded-lg p-6 border border-gray-200">
+                        <div key={i} className="bg-gray-50 rounded-lg p-4 sm:p-6 border border-gray-200">
                             {/* Header Row Skeleton */}
-                            <div className="flex items-start justify-between mb-4">
+                            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 space-y-2 sm:space-y-0">
                                 <div className="flex-1">
-                                    <div className="flex items-center gap-3 mb-2">
+                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
                                         <div className="h-6 bg-gray-200 rounded w-32"></div>
                                         <div className="h-6 bg-gray-200 rounded w-20"></div>
                                     </div>
                                     <div className="h-4 bg-gray-200 rounded w-24"></div>
                                 </div>
-                                <div className="text-right">
+                                <div className="text-left sm:text-right">
                                     <div className="h-4 bg-gray-200 rounded w-16 mb-1"></div>
                                     <div className="h-4 bg-gray-200 rounded w-24"></div>
                                 </div>
                             </div>
 
                             {/* Main Content Grid Skeleton */}
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
                                 {/* Customer & Service Info Skeleton */}
                                 <div className="space-y-4">
                                     <div>
@@ -133,29 +133,29 @@ const ServiceRequestsList = ({
 
     return (
         <>
-            <div className="p-6">
-                <div className="grid gap-6">
+            <div className="p-4 sm:p-6">
+                <div className="grid gap-4 sm:gap-6">
                     {validRequests.map((request) => (
-                        <div key={request.id} className="bg-gray-50 rounded-lg p-6 hover:bg-gray-100 transition-colors duration-200 border border-gray-200">
+                        <div key={request.id} className="bg-gray-50 rounded-lg p-4 sm:p-6 hover:bg-gray-100 transition-colors duration-200 border border-gray-200">
                             {/* Header Row */}
-                            <div className="flex items-start justify-between mb-4">
+                            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 space-y-2 sm:space-y-0">
                                 <div className="flex-1">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <h3 className="text-lg font-semibold text-gray-900">{request.name}</h3>
+                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
+                                        <h3 className="text-base sm:text-lg font-semibold text-gray-900">{request.name}</h3>
                                         <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full border ${getStatusColor(request.status?.name)}`}>
                                             {request.status?.name || 'Pending'}
                                         </span>
                                     </div>
                                     <p className="text-sm text-gray-600">Request #{request.id}</p>
                                 </div>
-                                <div className="text-right">
+                                <div className="text-left sm:text-right">
                                     <p className="text-sm text-gray-500">Created</p>
                                     <p className="text-sm font-medium text-gray-900">{formatDate(request.created_at)}</p>
                                 </div>
                             </div>
 
                             {/* Main Content Grid */}
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
                                 {/* Customer & Service Info */}
                                 <div className="space-y-4">
                                     <div>
@@ -292,34 +292,37 @@ const ServiceRequestsList = ({
                                     </div>
 
                                     <div className="pt-4">
-                                        <div className="flex flex-col gap-2">
+                                        <div className="flex flex-col sm:flex-row gap-2">
                                             <button
                                                 onClick={() => openDetailModal(request)}
-                                                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition-colors duration-200"
+                                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition-colors duration-200"
                                             >
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 0 16 0z" />
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                                 </svg>
-                                                View Details
+                                                <span className="hidden sm:inline">View Details</span>
+                                                <span className="sm:hidden">Details</span>
                                             </button>
                                             <button
                                                 onClick={() => openStatusModal(request)}
-                                                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors duration-200"
+                                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors duration-200"
                                             >
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
                                                 </svg>
-                                                Update Status
+                                                <span className="hidden sm:inline">Update Status</span>
+                                                <span className="sm:hidden">Status</span>
                                             </button>
                                             <button
                                                 onClick={() => openDeleteModal(request)}
-                                                className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors duration-200"
+                                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors duration-200"
                                             >
                                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 01 16.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                                 </svg>
-                                                Delete Request
+                                                <span className="hidden sm:inline">Delete Request</span>
+                                                <span className="sm:hidden">Delete</span>
                                             </button>
                                         </div>
                                     </div>

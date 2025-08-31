@@ -14,25 +14,6 @@ function AdminLayout({ children }) {
   // Get current user info
   const currentUser = getCurrentUser()
 
-  // Fetch pending requests count
-  useEffect(() => {
-    const fetchPendingCount = async () => {
-      try {
-        const response = await apiService.getAdminServiceRequests()
-        if (response.data && response.data.success) {
-          const pendingCount = response.data.data.filter(
-            request => request.status?.name?.toLowerCase() === 'pending'
-          ).length
-          setPendingRequestsCount(pendingCount)
-        }
-      } catch (error) {
-        // Error fetching pending requests count
-      }
-    }
-
-    fetchPendingCount()
-  }, [])
-
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {

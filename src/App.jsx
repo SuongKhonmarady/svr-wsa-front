@@ -2,6 +2,7 @@ import React, { useState, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import LoadingFallback from './components/LoadingPage'; 
+import { ToastProvider } from './components/ToastContainer';
 // import { ProtectRouter } from './ProtectRouter'; // Assuming you have a ProtectRouter or similar
 
 // -------------------------------------------------------------------------
@@ -50,8 +51,9 @@ function App() {
   const [activeNav, setActiveNav] = useState('home');
 
   return (
-    <Router>
-      <Suspense fallback={<LoadingFallback />}> {/* A single Suspense for all lazy-loaded routes */}
+    <ToastProvider>
+      <Router>
+        <Suspense fallback={<LoadingFallback />}> {/* A single Suspense for all lazy-loaded routes */}
         <Routes>
           {/* Public routes */}
           <Route
@@ -327,6 +329,7 @@ function App() {
         </Routes>
       </Suspense>
     </Router>
+    </ToastProvider>
   );
 }
 

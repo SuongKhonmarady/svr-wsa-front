@@ -5,9 +5,11 @@ import AdminLayout from '../components/AdminLayout';
 import ServiceRequestsList from './components/ServiceRequestsList';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { useToast } from '../../../components/ToastContainer';
 
 function ServiceRequestsManagement() {
     const navigate = useNavigate();
+    const { showSuccess, showError } = useToast();
     const [serviceRequests, setServiceRequests] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -155,12 +157,6 @@ function ServiceRequestsManagement() {
         }
     }, [statuses, selectedStatus, loading]);
 
-
-
-
-
-
-
     // Initial data fetch - only run once on mount
     useEffect(() => {
         fetchAllData();
@@ -179,12 +175,6 @@ function ServiceRequestsManagement() {
             fetchServiceRequests(selectedStatus);
         }
     }, [selectedStatus, statuses.length]); // fetchServiceRequests is stable now
-
-
-
-
-
-
 
     const handleStatusUpdate = useCallback(async (requestId, newStatusId) => {
         try {
@@ -213,12 +203,12 @@ function ServiceRequestsManagement() {
                 setSelectedRequest(null);
 
                 // Show success message
-                alert('Status updated successfully!');
+                showSuccess('Status updated successfully!');
             } else if (response.error) {
-                alert('Error updating status: ' + response.error);
+                showError('Error updating status: ' + response.error);
             }
         } catch (err) {
-            alert('Failed to update status');
+            showError('Failed to update status');
         } finally {
             setUpdatingStatus(false);
         }
@@ -261,12 +251,12 @@ function ServiceRequestsManagement() {
                 setSelectedRequest(null);
 
                 // Show success message
-                alert('Service request deleted successfully!');
+                showSuccess('Service request deleted successfully!');
             } else if (response.error) {
-                alert('Error deleting service request: ' + response.error);
+                showError('Error deleting service request: ' + response.error);
             }
         } catch (err) {
-            alert('Failed to delete service request');
+            showError('Failed to delete service request');
         } finally {
             setDeletingRequest(false);
         }
@@ -349,10 +339,10 @@ function ServiceRequestsManagement() {
             saveAs(data, filename);
 
             // Show success message
-            alert(`Successfully exported ${allRequests.length} service requests to Excel!`);
+            showSuccess(`Successfully exported ${allRequests.length} service requests to Excel!`);
 
         } catch (error) {
-            alert('Failed to export data. Please try again.');
+            showError('Failed to export data. Please try again.');
         } finally {
             setExportLoading(false);
         }

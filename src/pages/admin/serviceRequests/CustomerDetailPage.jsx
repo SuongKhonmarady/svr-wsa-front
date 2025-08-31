@@ -26,30 +26,11 @@ function CustomerDetailPage() {
                 return;
             }
             
-            // Test API connectivity first
-            testApiConnection();
-            
             fetchCustomerDetail();
             fetchCategories();
         }
     }, [requestId]);
 
-    const testApiConnection = async () => {
-        try {
-            const response = await fetch(`${config.BASE_URL}/admin/service-requests`, {
-                headers: {
-                    'Authorization': `Bearer ${getAuthToken()}`,
-                    'Accept': 'application/json'
-                }
-            });
-            
-            if (!response.ok) {
-                // API test failed silently
-            }
-        } catch (err) {
-            // API test error handled silently
-        }
-    };
 
     const fetchCustomerDetail = async () => {
         try {

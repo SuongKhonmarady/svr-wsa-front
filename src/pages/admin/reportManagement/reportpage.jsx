@@ -3,14 +3,14 @@ import { Link, useLocation } from 'react-router-dom';
 import AdminLayout from '../components/AdminLayout';
 import apiService from '../../../services/api';
 import ReportsTable from './Components/ReportsTable'; // Assuming this component exists
+import { useToast } from '../../../components/ToastContainer';
 
 function ReportsManagement() {
     const location = useLocation();
+    const { showSuccess, showError } = useToast();
     const [reports, setReports] = useState([]);
     const [pagination, setPagination] = useState({});
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
     const [filter, setFilter] = useState('monthly'); // Default to 'monthly'
     const [page, setPage] = useState(1);
     
@@ -21,7 +21,6 @@ function ReportsManagement() {
 
     const loadReports = async (currentPage = 1, reportType = null) => {
         setLoading(true);
-        setError('');
         
         // Use the provided reportType or fall back to the current filter state
         const activeFilter = reportType || filter;
@@ -51,7 +50,7 @@ function ReportsManagement() {
             }
             
             if (result.error) {
-                setError(result.error);
+                showError('Failed to load reports: ' + result.error);
                 setReports([]);
                 setPagination({});
             } else {
@@ -76,7 +75,7 @@ function ReportsManagement() {
                 }
             }
         } catch (error) {
-            setError('Failed to load reports. Please try again.');
+            showError('Failed to load reports. Please try again.');
             setReports([]);
             setPagination({});
         } finally {
@@ -87,26 +86,17 @@ function ReportsManagement() {
     // Handle location state messages separately
     useEffect(() => {
         if (location.state?.message) {
-            setSuccess(location.state.message);
+            showSuccess(location.state.message);
             window.history.replaceState({}, document.title);
         }
-    }, [location.state]);
+    }, [location.state, showSuccess]);
 
     // This useEffect hook will re-run whenever the filter, page, year, or month changes.
     useEffect(() => {
         loadReports(page, filter);
     }, [filter, page, selectedYear, selectedMonth]);
 
-    // Effect to handle success message timeout
-    useEffect(() => {
-        if (success) {
-            const timer = setTimeout(() => {
-                setSuccess('');
-            }, 3000);
 
-            return () => clearTimeout(timer); // Cleanup timeout on component unmount or success change
-        }
-    }, [success]);
 
 
     const handleDelete = async (report) => {
@@ -117,9 +107,9 @@ function ReportsManagement() {
                 : apiService.deleteYearlyReport(report.id));
             
             if (result.error) {
-                setError(result.error);
+                showError('Error deleting report: ' + result.error);
             } else {
-                setSuccess('Report deleted successfully!');
+                showSuccess('Report deleted successfully!');
                 // If the last item on a page is deleted, go to the previous page
                 if (reports.length === 1 && page > 1) {
                     const newPage = page - 1;
@@ -128,23 +118,13 @@ function ReportsManagement() {
                 } else {
                     await loadReports(page, filter);
                 }
-
-                // Clear success message after 3 seconds
-                setTimeout(() => {
-                    setSuccess('');
-                }, 3000);
             }
         }
     };
 
     const handleStatusChange = async () => {
-        setSuccess('Report status updated successfully!');
+        showSuccess('Report status updated successfully!');
         await loadReports(page, filter);
-        
-        // Clear success message after 3 seconds
-        setTimeout(() => {
-            setSuccess('');
-        }, 3000);
     };
     
     const handlePageChange = (newPage) => {
@@ -155,10 +135,6 @@ function ReportsManagement() {
 
     const handleFilterChange = async (e) => {
         const newFilter = e.target.value;
-        
-        // Clear success and error messages
-        setSuccess('');
-        setError('');
         
         // Update filter and reset page immediately
         setFilter(newFilter);
@@ -216,18 +192,7 @@ function ReportsManagement() {
                 </div>
             </div>
 
-            {success && (
-                <div className="bg-green-100 text-green-800 p-4 rounded mb-4 flex justify-between items-center">
-                    <span>{success}</span>
-                    <button
-                        onClick={() => setSuccess('')}
-                        className="text-green-800 hover:text-green-600 focus:outline-none"
-                    >
-                        ✕
-                    </button>
-                </div>
-            )}
-            {error && <div className="bg-red-100 text-red-800 p-4 rounded mb-4">{error}</div>}
+
 
             {/* Date Filters */}
             <div className="mb-4 p-4 bg-gray-50 rounded-lg">

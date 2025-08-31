@@ -47,7 +47,8 @@ function AboutHero() {
 
   return (
 
-    <div className="relative text-white py-12 sm:py-16 lg:py-20 xl:py-24 bg-cover bg-center bg-no-repeat">
+    <div className="relative text-white py-12 sm:py-16 lg:py-20 xl:py-24 bg-cover bg-center bg-no-repeat"
+         style={{ backgroundImage: "url('/image/fd78805f8ce862135726b6fc7f51aafc.jpg')" }}>
       {/* Dark overlay for better text readability */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-900/50 via-blue-800/80 to-blue-900/50"></div>
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

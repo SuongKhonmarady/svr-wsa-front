@@ -52,7 +52,8 @@ function HeroSection() {
   }, []);
 
   return (
-    <div className="relative text-white py-8 sm:py-12 md:py-16 lg:py-28 overflow-hidden">
+    <div className="relative text-white py-8 sm:py-12 md:py-16 lg:py-28 overflow-hidden bg-cover bg-center bg-no-repeat"
+         style={{ backgroundImage: "url('/image/fd78805f8ce862135726b6fc7f51aafc.jpg')" }}>
       {/* Dark overlay for better text readability */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-900/50 via-blue-800/80 to-blue-900/60"></div>
 

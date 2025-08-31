@@ -10,8 +10,9 @@ function Yearly() {
     return (
         <div className="min-h-50 relative">
             {/* Fixed background */}
-            <div className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat bg-[url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80')]"
+            <div className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat"
             style={{
+                backgroundImage: "url('/image/fd78805f8ce862135726b6fc7f51aafc.jpg')",
                 top: '-35vh',
                 bottom: '-10vh',
                 height: '100vh'

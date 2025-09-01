@@ -64,7 +64,7 @@ function LocationMap() {
     // Coordinates for 11°04'58.3"N 105°48'50.0"E, Krong Svay Rieng, Cambodia
     const locations = [
         {
-            name: "SVR-WSA Main Office",
+            name: "កន្លែងផ្ដល់សេវាកម្ម",
             address: "3RM7+3G8, Krong Svay Rieng, Cambodia",
             phone: "023 991 235",
             hours: "ចន្លោះម៉ោង ៧:០០-១៧:០០ (ច-អ)",
@@ -73,7 +73,7 @@ function LocationMap() {
             placeId: "ChIJX8K8_2FK_zARFNH8L8K8_2F"
         },
         {
-            name: "SVR-WSA East Branch", 
+            name: "កន្លែងបង់ថ្លៃទឹកស្អាតប្រចាំខែ និងបង់ថ្លៃសេវាកម្ម", 
             address: "3RM7+3G8, Krong Svay Rieng, Cambodia",
             phone: "023 991 236", 
             hours: "ចន្លោះម៉ោង ៧:០០-១៧:០០ (ច-អ)",
@@ -108,7 +108,7 @@ function LocationMap() {
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="text-center mb-12">
                     <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
-                        ទីតាំងរបស់យើង
+                        ទីតាំងរបស់ ស.រ.ស
                     </h2>
                     <p className="text-xl text-gray-600 max-w-3xl mx-auto">
                         ស្វែងរកការិយាល័យទាំងពីររបស់រដ្ឋាករទឹកស្វាយរៀងនៅ ស្រុកស្វាយរៀង ក្រុងស្វាយរៀង ខេត្តស្វាយរៀង
@@ -269,7 +269,7 @@ function LocationMap() {
                             </svg>
                         </div>
                         <h3 className="font-semibold text-gray-900 mb-2">អ៊ីម៉ែល</h3>
-                        <p className="text-gray-600">info@svrwsa.gov.kh</p>
+                        <p className="text-gray-600">info@svrwsa.com.kh</p>
                         <p className="text-sm text-gray-500 mt-1">ការិយាល័យសំណួរ</p>
                     </div>
 

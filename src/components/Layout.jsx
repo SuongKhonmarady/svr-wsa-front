@@ -298,7 +298,7 @@ function Layout({ children, activeNav, setActiveNav }) {
                       }}
                     />
                     <span style={{ display: 'none' }} className="text-blue-400">✉️</span>
-                    <span>info@svayringwater.gov.kh</span>
+                    <span>info@svrwu.com.kh</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <img

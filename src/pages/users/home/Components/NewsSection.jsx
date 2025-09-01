@@ -121,7 +121,7 @@ function NewsSection() {
         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center">
             <div className="text-red-500 text-6xl mb-4">⚠️</div>
-            <h3 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 sm:mb-6 md:mb-8 font-semibold text-gray-900 mb-4">
+            <h3 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl sm:mb-6 md:mb-8 font-semibold text-gray-900 mb-4">
               មានបញ្ហាក្នុងការផ្ទុកព័ត៌មាន
             </h3>
             <div className="bg-red-50 border border-red-200 rounded-lg p-4 max-w-md mx-auto mb-6">

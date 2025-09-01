@@ -285,7 +285,7 @@ function NewsList() {
         }
       `}</style>
 
-      <div className="py-24 bg-white" ref={containerRef}>
+      <div className="py-16 bg-white" ref={containerRef}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Featured News */}
           {featuredNews.length > 0 && (
@@ -299,7 +299,7 @@ function NewsList() {
                   key={news.id}
                   data-news-item
                   data-index={index}
-                  className={`bg-white rounded-2xl shadow-xl overflow-hidden gap_8 mb-12 transition-all duration-1000 ${visibleItems.has(index) || animationTriggered
+                  className={`bg-white rounded-2xl shadow-xl overflow-hidden mb-12 transition-all duration-1000 ${visibleItems.has(index) || animationTriggered
                     ? 'opacity-100 translate-y-0 scale-100'
                     : 'opacity-0 translate-y-12 scale-95'
                     }`}
@@ -310,7 +310,7 @@ function NewsList() {
                       <img
                         src={news.image || "/image/mohamed-shaik-ScftZZiZnB8-unsplash.jpg"}
                         alt={news.title}
-                        className="w-full h-full object-cover backdrop-blur-2xl"
+                        className="w-full h-full object-cover"
                       />
                       {news.category && (
                         <div className="absolute top-4 left-4">
@@ -387,33 +387,10 @@ function NewsList() {
               ព័ត៌មានថ្មីៗទាំងអស់
             </h2>
 
-            {/* <div className="grid grid-row-1 md:grid-row-2 lg:grid-row-3 gap-8 mb-12">
-              {regularNews.map((news, index) => (
-                <div key={news.id} className="bg-white overflow-hidden p-2 rounded-2xl hover:bg-gray-200 transition-all duration-300">
-
-                  <a href={`/news/${news.slug}`} className="text-blue-600 font-medium hover:text-blue-700 transition-colors duration-200">
-
-                    <h3 className="text-xl font-bold text-gray-900 mb-4 mt-2 leading-tight hover:text-blue-700 flex items-center justify-between">
-                      {news.title}
-                      <div className="text-sm text-gray-500 flex items-center justify-end">
-                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        {getTimeAgo(news)}
-                      </div>
-                    </h3>
-                    <p className="text-gray-600 mb-4 leading-relaxed">{news.content ? news.content.substring(0, 150) + '...' : ''}</p>
-                  </a>
-
-                </div>
-
-              ))}
-            </div> */}
-
             {regularNews.length === 0 ? (
               <div className={`text-center py-16 transition-all duration-1000 ${animationTriggered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                 }`} style={{ transitionDelay: '700ms' }}>
-                <div className="text-gray-400 text-6xl mb-4 animate-bounce">📰</div>
+                <div className="text-gray-400 text-6xl mb-4">📰</div>
                 <p className="text-gray-600 text-lg">
                   មិនមានព័ត៌មានទេ
                 </p>
@@ -484,7 +461,7 @@ function NewsList() {
           {newsData.length > 0 && (
             <div className={`text-center mt-12 transition-all duration-1000 ${animationTriggered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`} style={{ transitionDelay: '1000ms' }}>
-              <p className="text-gray-600 animate-pulse">
+              <p className="text-gray-600">
                 បង្ហាញព័ត៌មាន {newsData.length} សរុប
               </p>
             </div>

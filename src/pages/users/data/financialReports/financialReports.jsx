@@ -1,48 +1,60 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ComingSoonPage from '../../../../components/ComingSoonPage';
 
 function FinancialReports() {
-  return (
-    <div className="min-h-screen relative">
-      <div className="absolute inset-0 -z-10 bg-cover bg-center bg-no-repeat"
-      style={{
-                backgroundImage: "url('/image/fd78805f8ce862135726b6fc7f51aafc.jpg')",
-                top: '-25vh',
-                bottom: '-10vh',
-                height: '100vh'
-            }}
-      />
-      <div className="relative z-10">
-        {/* Page Header */}
-        <div className="relative bg-gradient-to-r from-teal-800/40 via-teal-700/80 to-teal-800/40 text-white py-16 lg:py-20 overflow-hidden">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="text-center">
-              <h1 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 sm:mb-6 md:mb-8">
-                របាយការណ៍ហិរញ្ញវត្ថុ
-              </h1>
-              <h1
-                className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 sm:mb-6 md:mb-8"
-              >
-                ប្រចាំឆ្នាំ និងប្រចាំត្រីមាស
-              </h1>
-              <p className="text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl sm:mb-8 md:mb-12 text-teal-100 mb-8 max-w-3xl mx-auto">
-                Annual and Quarterly Financial Reports
-              </p>
-              <p className="text-base sm:text-lg md:text-xl text-teal-200 max-w-4xl mx-auto leading-relaxed">
-                របាយការណ៍ហិរញ្ញវត្ថុ ការវិភាគថវិកា និងស្ថិតិសេដ្ឋកិច្ច
-              </p>
-            </div>
-          </div>
+  const [isLoaded, setIsLoaded] = useState(false)
 
-          {/* Decorative wave */}
-          <div className="absolute bottom-0 left-0 right-0">
-            <svg className="w-full h-8" viewBox="0 0 100 20" fill="none" preserveAspectRatio="none">
-              <path d="M0 20L100 0V20H0Z" fill="rgb(249 250 251)" />
-            </svg>
-          </div>
+  useEffect(() => {
+    setIsLoaded(true)
+  }, [])
+  
+  return (
+    <div className="min-h-screen">
+      {/* Hero Section with Background Image */}
+      <div className="relative h-[40vh] min-h-[400px] flex items-center justify-center overflow-hidden">
+        {/* Background Image */}
+        <div 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+          style={{ backgroundImage: "url('/image/fd78805f8ce862135726b6fc7f51aafc.jpg')" }}
+        >
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-teal-700/70 via-teal-800/80 to-teal-700/70"></div>
         </div>
 
-        {/* Financial Reports Content */}
+        {/* Content */}
+        <div className="relative z-10 text-center text-white px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
+          <h1 className={`text-4xl sm:text-5xl lg:text-6xl mb-6 transition-all duration-1000 ${
+            isLoaded ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-8'
+          }`}>
+            របាយការណ៍ហិរញ្ញវត្ថុ
+          </h1>
+          <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-bold mb-6 transition-all duration-1500 ${
+            isLoaded ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-8'
+          }`}>
+            ប្រចាំឆ្នាំ និងប្រចាំត្រីមាស
+          </h2>
+          <p className={`text-xl sm:text-2xl text-teal-100 mb-6 max-w-4xl mx-auto leading-relaxed transition-all duration-2000 ${
+            isLoaded ? 'opacity-100 transform translate-x-0' : 'opacity-0 transform translate-y-8'
+          }`}>
+            Annual and Quarterly Financial Reports
+          </p>
+          <p className={`text-lg text-teal-200 max-w-5xl mx-auto leading-relaxed transition-all duration-2500 ${
+            isLoaded ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-8'
+          }`}>
+            របាយការណ៍ហិរញ្ញវត្ថុ ការវិភាគថវិកា និងស្ថិតិសេដ្ឋកិច្ច
+          </p>
+        </div>
+
+        {/* Decorative wave */}
+        <div className="absolute bottom-0 left-0 right-0">
+          <svg className="w-full h-10" viewBox="0 0 100 20" fill="none" preserveAspectRatio="none">
+            <path d="M0 20L100 0V20H0Z" fill="rgb(250 250 250)" />
+          </svg>
+        </div>
+      </div>
+
+      {/* Financial Reports Content */}
+      <div className="bg-gray-50">
         <ComingSoonPage
           title="របាយការណ៍ហិរញ្ញវត្ថុ"
           subtitle="Financial Reports"

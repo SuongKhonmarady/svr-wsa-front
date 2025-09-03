@@ -7,7 +7,14 @@ const API_CONFIG = {
   STORAGE_URL: 'https://api-scholar.site/storage',
 
   // Request timeout in milliseconds
-  TIMEOUT: 30000, // Increased to 30 seconds
+  TIMEOUT: 300000, // Increased to 5 minutes for large file uploads
+  
+  // File upload configuration
+  FILE_UPLOAD: {
+    MAX_SIZE: 10 * 1024 * 1024, // 10MB maximum file size
+    TIMEOUT: 300000, // 5 minutes for file uploads
+    CHUNK_SIZE: 1024 * 1024, // 1MB chunks for large files
+  },
   
   // Default headers
   DEFAULT_HEADERS: {

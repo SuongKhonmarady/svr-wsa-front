@@ -53,7 +53,7 @@ function TeamHero() {
               : 'opacity-0 transform translate-y-10'
             }`}
           > 
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold font-khmer-title">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-khmer-title">
               រចនាសម្ព័ន្ធរបស់ ស.រ.ស
             </h1>
           </div>

@@ -6,12 +6,11 @@ function NotFound() {
         <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
             <div className="max-w-md w-full text-center">
                 <div className="mb-8">
-                    <svg className="mx-auto w-32 h-32 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 64 64">
-                        <circle cx="32" cy="32" r="30" strokeWidth="4" className="text-blue-200" />
-                        <path d="M24 28c0-4 8-4 8 0m-8 8h8" strokeWidth="3" strokeLinecap="round" />
-                        <circle cx="24" cy="24" r="2" fill="currentColor" />
-                        <circle cx="40" cy="24" r="2" fill="currentColor" />
-                    </svg>
+                    <img 
+                        src="/image/Water_spigot.png" 
+                        alt="Water Spigot" 
+                        className="mx-auto w-40 h-40 object-contain rounded-full border-4 border-blue-500 shadow-lg"
+                    />
                 </div>
                 <h1 className="text-5xl font-extrabold text-blue-600 mb-4">404</h1>
                 <h2 className="text-2xl font-bold text-gray-800 mb-2">Page Not Found</h2>

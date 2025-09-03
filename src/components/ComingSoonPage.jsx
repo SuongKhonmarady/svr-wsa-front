@@ -95,14 +95,7 @@ function ComingSoonPage({
         )}
 
         {/* Estimated Completion */}
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
-            តម្រូវឱ្យបញ្ចប់: <span className="font-semibold text-gray-700">{estimatedCompletion}</span>
-          </p>
-          <p className="text-xs text-gray-400 mt-1">
-            Estimated completion: {estimatedCompletionEn}
-          </p>
-        </div>
+        
       </div>
     </div>
   );

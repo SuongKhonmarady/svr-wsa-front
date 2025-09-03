@@ -134,6 +134,72 @@ export const createFormData = (data) => {
   return formData
 }
 
+// Validate file size before upload
+export const validateFileSize = (file, maxSize = 10 * 1024 * 1024) => {
+  if (!file) return { valid: false, error: 'No file provided' }
+  
+  if (file.size > maxSize) {
+    return { 
+      valid: false, 
+      error: `File size (${formatFileSize(file.size)}) exceeds maximum allowed size (${formatFileSize(maxSize)})` 
+    }
+  }
+  
+  return { valid: true, error: null }
+}
+
+// Upload file with progress tracking
+export const uploadFileWithProgress = async (url, formData, onProgress) => {
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest()
+    
+    // Track upload progress
+    xhr.upload.addEventListener('progress', (e) => {
+      if (e.lengthComputable && onProgress) {
+        const percentComplete = (e.loaded / e.total) * 100
+        onProgress(percentComplete)
+      }
+    })
+    
+    // Handle response
+    xhr.addEventListener('load', () => {
+      if (xhr.status >= 200 && xhr.status < 300) {
+        try {
+          const response = JSON.parse(xhr.responseText)
+          resolve({ data: response, error: null })
+        } catch (error) {
+          resolve({ data: xhr.responseText, error: null })
+        }
+      } else {
+        reject(new Error(`Upload failed: ${xhr.status} ${xhr.statusText}`))
+      }
+    })
+    
+    // Handle errors
+    xhr.addEventListener('error', () => {
+      reject(new Error('Network error during upload'))
+    })
+    
+    xhr.addEventListener('abort', () => {
+      reject(new Error('Upload was aborted'))
+    })
+    
+    // Set timeout for large files
+    xhr.timeout = 300000 // 5 minutes
+    
+    // Send the request
+    xhr.open('POST', url)
+    
+    // Add authorization header if token exists
+    const token = localStorage.getItem('admin_token')
+    if (token) {
+      xhr.setRequestHeader('Authorization', `Bearer ${token}`)
+    }
+    
+    xhr.send(formData)
+  })
+}
+
 // Debounce function for API calls
 export const debounce = (func, delay) => {
   let timeoutId

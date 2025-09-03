@@ -12,7 +12,10 @@ class NewsService {
   // Generic fetch method with error handling
   async fetchWithErrorHandling(url, options = {}) {
     const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), this.timeout)
+    
+    // Use longer timeout for file uploads
+    const timeout = options.body instanceof FormData ? 300000 : this.timeout // 5 minutes for file uploads
+    const timeoutId = setTimeout(() => controller.abort(), timeout)
 
     // Get auth token for protected routes
     const token = localStorage.getItem('admin_token')
@@ -80,7 +83,7 @@ class NewsService {
       const data = await response.json()
 
       // Log the response for debugging
-      console.log(`News API Response for ${url}:`, data)
+      // console.log(`News API Response for ${url}:`, data)
 
       return { data, error: null }
     } catch (error) {

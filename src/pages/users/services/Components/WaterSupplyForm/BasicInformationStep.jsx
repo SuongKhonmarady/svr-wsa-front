@@ -125,7 +125,15 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                     </div>
 
                     {/* Village */}
-                    <div>
+                    
+                </div>
+            </div>
+
+            {/* Location Information */}
+            <div className="mb-8">
+                <h3 className="text-lg font-semibold text-gray-800 mb-4">ព័ត៌មានទីតាំង</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div>
                         <label htmlFor="village" className="block text-sm font-medium text-gray-700 mb-2">
                             ភូមិ <span className="text-red-500">*</span>
                         </label>
@@ -140,13 +148,6 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                             required
                         />
                     </div>
-                </div>
-            </div>
-
-            {/* Location Information */}
-            <div className="mb-8">
-                <h3 className="text-lg font-semibold text-gray-800 mb-4">ព័ត៌មានទីតាំង</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     {/* Province */}
                     <div>
                         <label htmlFor="province_id" className="block text-sm font-medium text-gray-700 mb-2">

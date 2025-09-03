@@ -79,7 +79,7 @@ function ContactForm() {
                 <h3 className="text-2xl font-bold text-gray-900">ម៉ោងធ្វើការ</h3>
               </div>
               <div className="space-y-4 text-gray-700 text-lg">
-                <p><strong>ថ្ងៃចន្ទ - ថ្ងៃសុក្រ:</strong> ០៨:០០ - ១៧:០០</p>
+                <p><strong>ថ្ងៃចន្ទ - ថ្ងៃសុក្រ:</strong> 7:30 - 12:00 និង 14:00 - 17:30</p>
                 <p><strong>ថ្ងៃសៅរ៍ - ថ្ងៃអាទិត្យ:</strong> បិទ</p>
                 <p className="text-blue-600 font-medium text-xl">សេវាកម្មបន្ទាន់: ២៤/៧</p>
               </div>

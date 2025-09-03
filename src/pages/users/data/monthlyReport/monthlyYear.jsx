@@ -7,7 +7,7 @@ function MonthlyYear() {
             <div className="relative h-[30vh] min-h-[300px] flex items-center justify-center overflow-hidden">
                 {/* Background Image */}
                 <div
-                    className="absolute inset-0 bg-cover bg-center bg-no-repeat bg-fixed"
+                    className="absolute inset-0 bg-cover bg-center bg-no-repeat"
                     style={{ 
                         backgroundImage: "url('/image/fd78805f8ce862135726b6fc7f51aafc.jpg')",
                         backgroundSize: 'cover',
@@ -31,8 +31,8 @@ function MonthlyYear() {
 
                 {/* Decorative wave */}
                 <div className="absolute bottom-0 left-0 right-0">
-                    <svg className="w-full h-12" viewBox="0 0 1200 120" fill="none" preserveAspectRatio="none">
-                        <path d="M0 120L1200 0V120H0Z" fill="rgb(249 250 251)" />
+                    <svg className="w-full h-10" viewBox="0 0 100 20" fill="none" preserveAspectRatio="none">
+                        <path d="M0 20L100 0V20H0Z" fill="rgb(249 250 251)" />
                     </svg>
                 </div>
             </div>

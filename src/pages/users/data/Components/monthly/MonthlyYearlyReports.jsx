@@ -242,7 +242,7 @@ function MonthlyYearlyReports() {
                     <div className="bg-white rounded-xl shadow-lg p-4 sm:p-6 border border-gray-100">
                         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
                             <div>
-                                <h2 className="text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-gray-900 mb-2">
+                                <h2 className="text-xl xs:text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
                                     របាយការណ៍ប្រចាំខែឆ្នាំ {year}
                                 </h2>
                                 <p className="text-sm sm:text-base text-gray-600">

@@ -28,6 +28,7 @@ const NewsCategoryPage = React.lazy(() => import('./pages/users/news/NewsCategor
 const SearchResultsPage = React.lazy(() => import('./pages/users/search/SearchResultsPage'));
 const NotFound = React.lazy(() => import('./components/notFound'));
 const Privacy = React.lazy(() => import('./pages/users/privacy/privacy'));
+const RepairService = React.lazy(() => import('./pages/users/services/RepairService'));
 
 
 // -------------------------------------------------------------------------
@@ -121,35 +122,12 @@ function App() {
               </Layout>
             }
           />
+          
           <Route
-            path="/services/water-treatment"
+            path="/services/repair-service"
             element={
               <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
-                <Services />
-              </Layout>
-            }
-          />
-          <Route
-            path="/services/maintenance"
-            element={
-              <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
-                <Services />
-              </Layout>
-            }
-          />
-          <Route
-            path="/services/billing"
-            element={
-              <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
-                <Services />
-              </Layout>
-            }
-          />
-          <Route
-            path="/services/customer-service"
-            element={
-              <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
-                <Services />
+                <RepairService />
               </Layout>
             }
           />

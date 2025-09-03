@@ -24,7 +24,7 @@ function Privacy() {
         <div className="relative bg-gradient-to-r from-indigo-800/40 via-indigo-700/80 to-indigo-800/40 text-white py-16 lg:py-20 overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h1 className={`text-4xl sm:text-5xl lg:text-6xl font-bold mb-6 font-khmer-title transition-all duration-1000 ${isLoaded
+              <h1 className={`text-4xl sm:text-5xl lg:text-6xl mb-6 transition-all duration-1000 ${isLoaded
                 ? 'opacity-100 transform translate-y-0'
                 : 'opacity-0 transform -translate-y-8'
                 }`}>
@@ -100,45 +100,18 @@ function Privacy() {
               <h2 className="text-3xl font-bold text-gray-900 mb-6 font-khmer-title">
                 របៀបដែលយើងប្រើប្រាស់ព័ត៌មាន
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="bg-green-50 p-6 rounded-xl border border-green-200">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">សេវាកម្មផ្តល់ទឹក</h3>
-                  <p className="text-gray-700">
-                    ផ្តល់សេវាកម្មទឹកស្អាត និងធានាគុណភាពសេវាកម្ម
-                  </p>
-                </div>
-
-                <div className="bg-blue-50 p-6 rounded-xl border border-blue-200">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">ការទំនាក់ទំនង</h3>
-                  <p className="text-gray-700">
-                    ទាក់ទងជាមួយអតិថិជន និងផ្តល់ព័ត៌មានសំខាន់ៗ
-                  </p>
-                </div>
-
-                <div className="bg-purple-50 p-6 rounded-xl border border-purple-200">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">ការវិភាគ</h3>
-                  <p className="text-gray-700">
-                    វិភាគគុណភាពសេវាកម្ម និងកែលម្អប្រសិទ្ធភាព
-                  </p>
-                </div>
-
-                <div className="bg-orange-50 p-6 rounded-xl border border-orange-200">
-                  <h3 className="text-xl font-semibold text-gray-900 mb-3">ការអនុលោមតាមច្បាប់</h3>
-                  <p className="text-gray-700">
-                    អនុលោមតាមច្បាប់ និងបទបញ្ញត្តិដែលពាក់ព័ន្ធ
-                  </p>
-                </div>
-              </div>
-            </div>
-
-            {/* Information Sharing */}
-            <div className="mb-12">
-              <div className="bg-yellow-50 p-6 rounded-xl border border-yellow-200">
-                <p className="text-gray-700 mb-1">
+              <div className="bg-gradient-to-r from-blue-50 to-green-50 p-8 rounded-xl border border-blue-200">
+                <h3 className="text-2xl font-semibold text-gray-900 mb-4 text-start">គោលបំណងរបស់យើង</h3>
+                <p className="text-gray-700 text-lg leading-relaxed text-start">
+                  យើងផ្តល់សេវាកម្មទឹកស្អាតដែលមានគុណភាពខ្ពស់ ទាក់ទងជាមួយអតិថិជនជាប្រចាំ វិភាគគុណភាពសេវាកម្មដើម្បីកែលម្អប្រសិទ្ធភាព និងអនុលោមតាមច្បាប់ និងបទបញ្ញត្តិដែលពាក់ព័ន្ធដើម្បីធានាសុវត្ថិភាព និងគុណភាពសេវាកម្ម
+                </p>
+                <p className="text-gray-700 mt-4 text-start">
                   យើង <strong>មិនចែករំលែក</strong> ព័ត៌មានផ្ទាល់ខ្លួនរបស់អ្នកជាមួយភាគីទីបីសម្រាប់គោលបំណងពាណិជ្ជកម្មឡើយ។
                 </p>
               </div>
             </div>
+
+          
 
             {/* Data Security */}
             <div className="mb-12">
@@ -163,7 +136,7 @@ function Privacy() {
               <h2 className="text-3xl font-bold text-gray-900 mb-6 font-khmer-title">
                 សិទ្ធិរបស់អ្នក
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div className="bg-blue-50 p-6 rounded-xl border border-blue-200">
                   <h3 className="text-xl font-semibold text-gray-900 mb-3">សិទ្ធិចូលប្រើ</h3>
                   <p className="text-gray-700">

@@ -13,10 +13,7 @@ function Navbar({ activeNav, setActiveNav }) {
   const servicesItems = [
     { id: 'services', label: 'សេវវាកម្ម', href: '/services'},
     { id: 'water-supply', label: 'បំពេញពាក្យស្នើរសុំសេវាកម្ម', href: '/services/water-supply'},
-    { id: 'water-treatment', label: 'ការចម្រាញ់ទឹក', href: '/services/water-treatment'},
-    { id: 'maintenance', label: 'ការថែទាំ', href: '/services/maintenance'},
-    { id: 'billing', label: 'ការបង់ប្រាក់', href: '/services/billing'},
-    { id: 'customer-service', label: 'សេវាកម្មអតិថិជន', href: '/services/customer-service'},
+    { id: 'repair-service', label: 'សេវាកម្មជួសជុលនិង ត្រួតពិនិត្យ', href: '/services/repair-service'},
   ]
 
   const aboutDropdownItems = [

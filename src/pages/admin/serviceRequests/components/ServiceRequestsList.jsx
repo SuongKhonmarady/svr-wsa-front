@@ -149,7 +149,7 @@ const ServiceRequestsList = ({
                                     <p className="text-sm text-gray-600">Request #{request.id}</p>
                                 </div>
                                 <div className="text-left sm:text-right">
-                                    <p className="text-sm text-gray-500">Created</p>
+                                    <p className="text-sm text-gray-500">ថ្ងៃស្នើរសុំ</p>
                                     <p className="text-sm font-medium text-gray-900">{formatDate(request.created_at)}</p>
                                 </div>
                             </div>

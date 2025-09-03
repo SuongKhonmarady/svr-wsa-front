@@ -398,21 +398,21 @@ function CustomerDetailPage() {
                     {/* Tab Content */}
                     {activeTab === 'overview' && (
                         <div className="space-y-8">
-                            {/* Customer Information */}
+                            {/* Customer & Family Information */}
                             <InfoCard 
-                                title="Customer Information" 
+                                title="ព័ត៌មានអតិថិជន និងគ្រួសារ" 
                                 icon={<svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                                 </svg>}
                             >
-                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                                     <div className="bg-slate-50 rounded-lg p-4">
-                                        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Full Name</p>
+                                        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">ឈ្មោះពេញជាភាសាខ្មែរ</p>
                                         <p className="text-lg font-semibold text-slate-900">{customerDetail.name}</p>
                                     </div>
                                     {customerDetail.phone && (
                                         <div className="bg-slate-50 rounded-lg p-4">
-                                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Phone</p>
+                                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">លេខទូរស័ព្ទ</p>
                                             <p className="text-lg font-semibold text-slate-900">{customerDetail.phone}</p>
                                         </div>
                                     )}
@@ -422,29 +422,18 @@ function CustomerDetailPage() {
                                             <p className="text-lg font-semibold text-slate-900">{customerDetail.email}</p>
                                         </div>
                                     )}
-                                </div>
-                            </InfoCard>
-
-                            {/* Family Information */}
-                            <InfoCard 
-                                title="Family Information" 
-                                icon={<svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                </svg>}
-                            >
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {customerDetail.family_members && (
                                         <div className="bg-slate-50 rounded-lg p-4">
-                                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Total Family Members</p>
+                                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">សមាជិកគ្រួសារសរុប</p>
                                             <p className="text-2xl font-bold text-green-600">{customerDetail.family_members}</p>
-                                            <p className="text-sm text-slate-500">members</p>
+                                            <p className="text-sm text-slate-500">នាក់</p>
                                         </div>
                                     )}
                                     {customerDetail.female_members && (
                                         <div className="bg-slate-50 rounded-lg p-4">
-                                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Female Members</p>
+                                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">ស្រីសរុប</p>
                                             <p className="text-2xl font-bold text-pink-600">{customerDetail.female_members}</p>
-                                            <p className="text-sm text-slate-500">members</p>
+                                            <p className="text-sm text-slate-500">នាក់</p>
                                         </div>
                                     )}
                                 </div>
@@ -452,7 +441,7 @@ function CustomerDetailPage() {
 
                             {/* Location Information */}
                             <InfoCard 
-                                title="Location Information" 
+                                title="ទីតាំងរបស់អតិថិជន" 
                                 icon={<svg className="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -477,25 +466,25 @@ function CustomerDetailPage() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                                     {customerDetail.village && (
                                         <div className="bg-slate-50 rounded-lg p-4">
-                                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Village</p>
+                                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">ភូមិ</p>
                                             <p className="font-semibold text-slate-900">{customerDetail.village}</p>
                                         </div>
                                     )}
                                     {customerDetail.province_id && (
                                         <div className="bg-slate-50 rounded-lg p-4">
-                                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Province</p>
+                                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">ខេត្ត</p>
                                             <p className="font-semibold text-slate-900">{getDisplayName(customerDetail.province_id, 'provinces')}</p>
                                         </div>
                                     )}
                                     {customerDetail.district_id && (
                                         <div className="bg-slate-50 rounded-lg p-4">
-                                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">District</p>
+                                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">ស្រុក</p>
                                             <p className="font-semibold text-slate-900">{getDisplayName(customerDetail.district_id, 'districts')}</p>
                                         </div>
                                     )}
                                     {customerDetail.commune_id && (
                                         <div className="bg-slate-50 rounded-lg p-4">
-                                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Commune</p>
+                                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">ឃុំ/សង្កាត់</p>
                                             <p className="font-semibold text-slate-900">{getDisplayName(customerDetail.commune_id, 'communes')}</p>
                                         </div>
                                     )}
@@ -504,7 +493,7 @@ function CustomerDetailPage() {
 
                             {/* Additional Information */}
                             <InfoCard 
-                                title="Additional Information" 
+                                title="ព័ត៌មានបន្ថែម" 
                                 icon={<svg className="w-5 h-5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                                 </svg>}
@@ -512,13 +501,13 @@ function CustomerDetailPage() {
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     {customerDetail.occupation_id && (
                                         <div className="bg-slate-50 rounded-lg p-4">
-                                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Occupation</p>
+                                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">មុខរបរ</p>
                                             <p className="font-semibold text-slate-900">{getDisplayName(customerDetail.occupation_id, 'occupations')}</p>
                                         </div>
                                     )}
                                     {customerDetail.usage_type_id && (
                                         <div className="bg-slate-50 rounded-lg p-4">
-                                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Usage Type</p>
+                                            <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">ប្រភេទនៃការប្រើប្រាស់</p>
                                             <p className="font-semibold text-slate-900">{getDisplayName(customerDetail.usage_type_id, 'usage_types')}</p>
                                         </div>
                                     )}
@@ -534,7 +523,7 @@ function CustomerDetailPage() {
                             >
                                 <div className="space-y-4">
                                     <div className="bg-slate-50 rounded-lg p-4">
-                                        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">Service Type</p>
+                                        <p className="text-xs font-medium text-slate-500 uppercase tracking-wide mb-1">ប្រភេទសេវាកម្ម</p>
                                         <p className="font-semibold text-slate-900">{customerDetail.service_type}</p>
                                     </div>
                                     {customerDetail.details && (

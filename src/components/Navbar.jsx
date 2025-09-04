@@ -12,7 +12,7 @@ function Navbar({ activeNav, setActiveNav }) {
 
   const servicesItems = [
     { id: 'services', label: 'សេវវាកម្ម', href: '/services'},
-    { id: 'water-supply', label: 'បំពេញពាក្យស្នើរសុំសេវាកម្ម', href: '/services/water-supply'},
+    { id: 'service-request', label: 'បំពេញពាក្យស្នើរសុំសេវាកម្ម', href: '/services/service-request'},
     { id: 'repair-service', label: 'សេវាកម្មជួសជុលនិង ត្រួតពិនិត្យ', href: '/services/repair-service'},
   ]
 
@@ -173,7 +173,7 @@ function Navbar({ activeNav, setActiveNav }) {
             
             {/* Service Request Button */}
             <a
-              href="/services/water-supply"
+              href="/services/service-request"
               className="ml-4 flex items-center space-x-2 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-4 py-2 rounded-full text-sm font-medium shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-200 border border-green-400"
             >
               <span className="font-semibold">ស្នើសុំសេវាកម្ម</span>
@@ -192,7 +192,7 @@ function Navbar({ activeNav, setActiveNav }) {
             <div className="flex items-center space-x-2">
               {/* Mobile Service Request Button */}
               <a
-                href="/services/water-supply"
+                href="/services/service-request"
                 className="flex items-center space-x-1 bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white px-2 py-1.5 rounded-full text-xs font-medium shadow-lg hover:shadow-xl transition-all duration-200 border border-green-400"
               >
                 <span className="font-semibold">ស្នើសុំសេវាកម្ម</span>

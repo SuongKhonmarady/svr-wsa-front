@@ -144,7 +144,7 @@ function NewsManagement() {
                   />
                 </div>
               </div>
-              <div className="flex justify-center sm:justify-start">
+              <div className="flex justify-center sm:justify-end">
                 <button
                   onClick={fetchNews}
                   disabled={loading}

@@ -1,4 +1,5 @@
 import HeroSection from './Components/HeroSection'
+import ImageSection from './Components/ImageSection'
 import ServicesOverview from './Components/ServicesOverview'
 import ServiceRequestSection from './Components/ServiceRequestSection'
 import NewsSection from './Components/NewsSection'
@@ -9,6 +10,7 @@ function Home() {
             {/* Content */}
             <div className="relative z-10">
                 <HeroSection />
+                <ImageSection />
                 <ServicesOverview />
                 <ServiceRequestSection />
                 <NewsSection />

@@ -3,6 +3,103 @@ import { Link, useParams } from 'react-router-dom';
 import NewsDetail from './Components/newsDetail';
 import newsService from '../../../services/newsService';
 
+// Loading Skeleton Component
+const NewsDetailSkeleton = () => {
+    return (
+        <div className="min-h-screen bg-gray-50">
+            {/* Header Skeleton */}
+            <div className="bg-white border-b border-gray-200">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    {/* Back Button Skeleton */}
+                    <div className="mb-6">
+                        <div className="h-6 bg-gray-200 rounded w-32 animate-skeleton-shimmer"></div>
+                    </div>
+
+                    {/* Meta Information Skeleton */}
+                    <div className="flex flex-wrap items-center gap-4 mb-4">
+                        <div className="h-6 bg-gray-200 rounded-full w-20 animate-skeleton-shimmer"></div>
+                        <div className="h-6 bg-gray-200 rounded-full w-16 animate-skeleton-shimmer"></div>
+                        <div className="h-6 bg-gray-200 rounded w-24 animate-skeleton-shimmer"></div>
+                    </div>
+
+                    {/* Title Skeleton */}
+                    <div className="space-y-3">
+                        <div className="h-8 bg-gray-200 rounded w-3/4 animate-skeleton-shimmer"></div>
+                        <div className="h-8 bg-gray-200 rounded w-1/2 animate-skeleton-shimmer"></div>
+                        <div className="h-8 bg-gray-200 rounded w-2/3 animate-skeleton-shimmer"></div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Featured Image Skeleton */}
+            <div className="bg-white">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+                    <div className="overflow-hidden rounded-lg">
+                        <div className="w-full h-64 sm:h-80 lg:h-96 bg-gray-200 animate-skeleton-shimmer"></div>
+                    </div>
+                </div>
+            </div>
+
+            {/* Content Skeleton */}
+            <article className="bg-white">
+                <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                    {/* Reading Time Skeleton */}
+                    <div className="flex items-center text-sm text-gray-500 mb-6 pb-6 border-b border-gray-200">
+                        <div className="h-4 bg-gray-200 rounded w-24 animate-skeleton-shimmer"></div>
+                    </div>
+
+                    {/* Article Content Skeleton */}
+                    <div className="space-y-4">
+                        {/* Paragraph 1 */}
+                        <div className="space-y-2">
+                            <div className="h-4 bg-gray-200 rounded w-full animate-skeleton-shimmer"></div>
+                            <div className="h-4 bg-gray-200 rounded w-5/6 animate-skeleton-shimmer"></div>
+                            <div className="h-4 bg-gray-200 rounded w-4/5 animate-skeleton-shimmer"></div>
+                        </div>
+
+                        {/* Paragraph 2 */}
+                        <div className="space-y-2">
+                            <div className="h-4 bg-gray-200 rounded w-full animate-skeleton-shimmer"></div>
+                            <div className="h-4 bg-gray-200 rounded w-3/4 animate-skeleton-shimmer"></div>
+                            <div className="h-4 bg-gray-200 rounded w-5/6 animate-skeleton-shimmer"></div>
+                        </div>
+
+                        {/* Paragraph 3 */}
+                        <div className="space-y-2">
+                            <div className="h-4 bg-gray-200 rounded w-full animate-skeleton-shimmer"></div>
+                            <div className="h-4 bg-gray-200 rounded w-4/5 animate-skeleton-shimmer"></div>
+                            <div className="h-4 bg-gray-200 rounded w-2/3 animate-skeleton-shimmer"></div>
+                        </div>
+
+                        {/* Paragraph 4 */}
+                        <div className="space-y-2">
+                            <div className="h-4 bg-gray-200 rounded w-full animate-skeleton-shimmer"></div>
+                            <div className="h-4 bg-gray-200 rounded w-5/6 animate-skeleton-shimmer"></div>
+                            <div className="h-4 bg-gray-200 rounded w-3/4 animate-skeleton-shimmer"></div>
+                        </div>
+
+                        {/* Paragraph 5 */}
+                        <div className="space-y-2">
+                            <div className="h-4 bg-gray-200 rounded w-full animate-skeleton-shimmer"></div>
+                            <div className="h-4 bg-gray-200 rounded w-4/5 animate-skeleton-shimmer"></div>
+                            <div className="h-4 bg-gray-200 rounded w-1/2 animate-skeleton-shimmer"></div>
+                        </div>
+                    </div>
+
+                    {/* Share Section Skeleton */}
+                    <div className="mt-8 pt-6 border-t border-gray-200">
+                        <div className="h-6 bg-gray-200 rounded w-48 mb-4 animate-skeleton-shimmer"></div>
+                        <div className="flex flex-wrap gap-3">
+                            <div className="h-10 bg-gray-200 rounded-lg w-32 animate-skeleton-shimmer"></div>
+                            <div className="h-10 bg-gray-200 rounded-lg w-28 animate-skeleton-shimmer"></div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+        </div>
+    );
+};
+
 function NewsDetailsPage() {
     const { slug } = useParams(); // Changed from id to slug
     const [news, setNews] = useState(null);
@@ -57,14 +154,7 @@ function NewsDetailsPage() {
     }, [slug]);
 
     if (loading) {
-        return (
-            <div className="max-w-3xl mx-auto py-32 px-4">
-                <div className="text-center">
-                    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-blue-600 mx-auto"></div>
-                    <p className="mt-4 text-gray-600">កំពុងទាញយកព័ត៌មាន...</p>
-                </div>
-            </div>
-        );
+        return <NewsDetailSkeleton />;
     }
 
     if (error) {

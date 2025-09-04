@@ -144,7 +144,7 @@ function NewsList() {
           {/* Featured News Skeleton */}
           <div className="mb-16">
             <div className="h-10 bg-gray-200 rounded w-64 mb-8 animate-pulse"></div>
-            {[1, 2, 3].map((i) => (
+            {[1].map((i) => (
               <div key={i} className="bg-white rounded-2xl shadow-xl overflow-hidden mb-12">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
                   {/* Image Skeleton */}

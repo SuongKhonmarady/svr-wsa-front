@@ -507,7 +507,7 @@ function AdminDashboard() {
             </div>
 
             {/* System Status */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+            {/* <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
               <h3 className="text-xl font-semibold text-gray-900 mb-4">System Status</h3>
               <div className="space-y-3">
                 <div className="flex items-center justify-between">
@@ -538,7 +538,7 @@ function AdminDashboard() {
                   </div>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

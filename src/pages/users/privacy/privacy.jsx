@@ -24,19 +24,19 @@ function Privacy() {
         <div className="relative bg-gradient-to-r from-indigo-800/40 via-indigo-700/80 to-indigo-800/40 text-white py-16 lg:py-20 overflow-hidden">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <h1 className={`text-4xl sm:text-5xl lg:text-6xl mb-6 transition-all duration-1000 ${isLoaded
+              <h1 className={`text-2xl sm:text-4xl lg:text-5xl mb-6 transition-all duration-1000 ${isLoaded
                 ? 'opacity-100 transform translate-y-0'
                 : 'opacity-0 transform -translate-y-8'
                 }`}>
                 គោលការណ៍ឯកជនភាពរបស់ ស.រ.ស
               </h1>
-              <p className={`text-xl sm:text-2xl text-indigo-100 mb-8 max-w-3xl mx-auto transition-all duration-1500 ${isLoaded
+              <p className={`text-xl sm:text-2xl lg:text-3xl text-indigo-100 mb-8 max-w-3xl mx-auto transition-all duration-1500 ${isLoaded
                 ? 'opacity-100 transform translate-x-0'
                 : 'opacity-0 translate-y-8'
                 }`}>
                 Privacy Policy
               </p>
-              <p className={`text-lg text-indigo-200 max-w-4xl mx-auto leading-relaxed transition-all duration-2000 ${isLoaded
+              <p className={`text-lg sm:text-xl lg:text-2xl text-indigo-200 max-w-4xl mx-auto leading-relaxed transition-all duration-2000 ${isLoaded
                 ? 'opacity-100 transform translate-y-0'
                 : 'opacity-0 translate-y-8'
                 }`}>
@@ -59,10 +59,10 @@ function Privacy() {
             {/* Last Updated */}
             <div className="text-center mb-12">
               <p className="text-gray-600 text-sm">
-                កែប្រែចុងក្រោយ: <span className="font-semibold">ថ្ងៃទី ១ ខែមករា ឆ្នាំ ២០២៥</span>
+                កែប្រែចុងក្រោយ: <span className="font-semibold">ថ្ងៃទី ១ ខែកញ្ញា ឆ្នាំ ២០២៥</span>
               </p>
               <p className="text-gray-500 text-xs mt-1">
-                Last Updated: January 1, 2025
+                Last Updated: September 1, 2025
               </p>
             </div>
 
@@ -172,7 +172,7 @@ function Privacy() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-2">អ៊ីមែល:</h3>
-                  <p className="text-blue-600">privacy@svayringwater.gov.kh</p>
+                  <p className="text-blue-600">info@svrwu.com.kh</p>
                 </div>
                 <div>
                   <h3 className="font-semibold text-gray-900 mb-2">លេខទូរស័ព្ទ:</h3>

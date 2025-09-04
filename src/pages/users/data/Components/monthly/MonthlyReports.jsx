@@ -391,11 +391,6 @@ function MonthlyReports() {
                                 </button>
                             ))}
                         </div>
-                    ) : initialLoading ? (
-                        <div className="flex justify-center items-center py-8">
-                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-                            <p className="ml-3 text-gray-600">កំពុងផ្ទុកឆ្នាំ...</p>
-                        </div>
                     ) : (
                         <div className="text-center py-8">
                             <div className="text-gray-400 mb-3">
@@ -410,11 +405,19 @@ function MonthlyReports() {
 
                 {/* Loading State */}
                 {(loading || initialLoading) && (
-                    <div className="flex justify-center items-center py-12">
-                        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-                        <p className="ml-4 text-gray-600">
-                            {initialLoading ? 'កំពុងផ្ទុកទិន្នន័យ...' : 'កំពុងធ្វើបច្ចុប្បន្នភាព...'}
-                        </p>
+                    <div className="flex flex-col sm:flex-row justify-center items-center py-8 sm:py-12 space-y-4 sm:space-y-0 sm:space-x-6">
+                        <div className="relative">
+                            <div className="animate-spin rounded-full h-12 w-12 sm:h-16 sm:w-16 border-4 border-blue-200 border-t-blue-600"></div>
+                            <div className="absolute inset-0 rounded-full border-4 border-transparent border-r-blue-400 animate-pulse"></div>
+                        </div>
+                        <div className="text-center sm:text-left">
+                            <p className="text-lg sm:text-xl text-gray-700 font-medium mb-1">
+                                {initialLoading ? 'កំពុងផ្ទុកទិន្នន័យ...' : 'កំពុងធ្វើបច្ចុប្បន្នភាព...'}
+                            </p>
+                            <p className="text-sm sm:text-base text-gray-500">
+                                {initialLoading ? 'សូមរង់ចាំខណៈយើងទាញយករបាយការណ៍ប្រចាំខែ' : 'សូមរង់ចាំខណៈយើងធ្វើបច្ចុប្បន្នភាពទិន្នន័យ'}
+                            </p>
+                        </div>
                     </div>
                 )}
 

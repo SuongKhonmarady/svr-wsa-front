@@ -5,18 +5,9 @@ function ComingSoonPage({
   subtitle = "Coming Soon",
   description = "ទំព័រនេះកំពុងស្ថិតក្នុងដំណើរការអភិវឌ្ឍន៍។ យើងកំពុងធ្វើការងារយ៉ាងល្អិតល្អន់ដើម្បីផ្តល់ព័ត៌មានគ្រប់ជ្រុងជ្រោយ។",
   englishDescription = "This page is currently under development. We're working hard to provide comprehensive information for you.",
-  progress = 75,
-  features = [
-    { icon: "📄", title: "ឯកសារ", subtitle: "Documents & Resources" },
-    { icon: "🔍", title: "ការស្វែងរក", subtitle: "Search Functionality" },
-    { icon: "📚", title: "ការបកស្រាយ", subtitle: "Detailed Guides" },
-    { icon: "⬇️", title: "ការទាញយក", subtitle: "Downloads" }
-  ],
-  estimatedCompletion = "ខែក្រោយ",
-  estimatedCompletionEn = "Next month",
   showContact = true,
   showHomeButton = true,
-  customBackground = null
+
 }) {
   return (
     <div className="py-36 bg-white">

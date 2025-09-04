@@ -53,7 +53,7 @@ function HeroSection() {
 
   return (
     <div className="relative text-white py-8 sm:py-12 md:py-16 lg:py-28 overflow-hidden bg-cover bg-center bg-no-repeat"
-         style={{ backgroundImage: "url('/image/fd78805f8ce862135726b6fc7f51aafc.jpg')" }}>
+         style={{ backgroundImage: "url('https://cdn.pixabay.com/photo/2023/08/07/21/38/dam-8176005_1280.png')" }}>
       {/* Dark overlay for better text readability */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-900/50 via-blue-800/80 to-blue-900/60"></div>
 
@@ -61,7 +61,7 @@ function HeroSection() {
         <div className="text-center">
           <div ref={titleRef} data-section="title">
             <h1 
-              className={`text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-2 sm:mb-3 md:mb-4 lg:mb-6 font-khmer-title transition-all duration-1200 leading-tight px-2 sm:px-0 ${
+              className={`text-3xl xs:text-4xl sm:text-5xl lg:text-6xl mb-2 sm:mb-2 md:mb-2 lg:mb-2 font-khmer-title transition-all duration-1200 leading-tight px-2 sm:px-0 ${
               visibleSections.title 
                 ? 'opacity-100 transform translate-y-0 animate-fade-in-up' 
                 : 'opacity-0 transform translate-y-10'
@@ -70,7 +70,7 @@ function HeroSection() {
               ស្វាគមន៍មកកាន់
             </h1>
             <h1 
-              className={`text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-4 sm:mb-6 md:mb-8 font-khmer-title transition-all duration-1400 leading-tight px-2 sm:px-0 ${
+              className={`text-3xl xs:text-4xl sm:text-5xl lg:text-6xl mb-4 sm:mb-6 md:mb-8 font-khmer-title transition-all duration-1400 leading-tight px-2 sm:px-0 ${
               visibleSections.title 
                 ? 'opacity-100 transform translate-y-0 animate-fade-in-up' 
                 : 'opacity-0 transform translate-y-10'

@@ -10,7 +10,7 @@ function NewsSection() {
     const publishedDate = newsItem.published_at ? new Date(newsItem.published_at) : null;
     const createdDate = newsItem.created_at ? new Date(newsItem.created_at) : null;
     const now = new Date();
-    
+
     if (publishedDate && createdDate) {
       // If published date is in the future or much older than created date, use created date
       if (publishedDate > now || (createdDate > publishedDate)) {
@@ -26,12 +26,12 @@ function NewsSection() {
   // Function to get relative time (e.g., "2h ago", "1d ago")
   const getTimeAgo = (news) => {
     const postDate = getMostRecentDate(news);
-    
+
     if (!postDate) return '';
-    
+
     const now = new Date();
     const diffInSeconds = Math.floor((now - postDate) / 1000);
-    
+
     if (diffInSeconds < 60) {
       return 'ទើបតែ'; // Just now
     } else if (diffInSeconds < 3600) {
@@ -51,7 +51,7 @@ function NewsSection() {
       return `${years}ឆ្នាំ​មុន`; // X years ago
     }
   };
-  
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
@@ -127,7 +127,7 @@ function NewsSection() {
             <div className="bg-red-50 border border-red-200 rounded-lg p-4 max-w-md mx-auto mb-6">
               <p className="text-red-700 text-sm">{error}</p>
             </div>
-            
+
             {retryCount > 0 && (
               <p className="text-sm text-gray-600 mb-4">
                 ការព្យាយាមលើកទី {retryCount + 1} ក្នុងចំណោម 4 លើក
@@ -135,7 +135,7 @@ function NewsSection() {
             )}
 
             <div className="flex justify-center space-x-4">
-              <button 
+              <button
                 onClick={retry}
                 disabled={refreshing}
                 className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2"
@@ -161,21 +161,20 @@ function NewsSection() {
       {/* Light overlay for better readability */}
       <div className="absolute inset-0 bg-gray-50"></div>
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className={`flex justify-between items-center mb-12 transition-all duration-1000 ${
-          isVisible 
-            ? 'opacity-100 transform translate-y-0' 
+        <div className={`flex justify-between items-center mb-12 transition-all duration-1000 ${isVisible
+            ? 'opacity-100 transform translate-y-0'
             : 'opacity-0 transform translate-y-8'
-        }`}>
+          }`}>
           <div>
-            <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl sm:mb-6 md:mb-8 font-bold text-gray-900 mb-4 font-khmer-title">
+            <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-5xl sm:mb-6 md:mb-8 font-bold text-gray-900 mb-4 font-khmer-title">
               ព័ត៌មានថ្មីៗ
             </h2>
             <p className="text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl mb-6 sm:mb-8 md:mb-12 text-gray-600">
-              ព័ត៌មាន និងការប្រកាសចុងក្រោយបំផុត ១០ ដំបូង
+              ព័ត៌មាន និងការប្រកាសចុងក្រោយបំផុត
             </p>
           </div>
           <div className="flex space-x-4">
-            <button 
+            <button
               onClick={() => window.location.href = '/news'}
               className="bg-blue-600 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-lg hover:bg-blue-700 transition-all duration-200 hover:scale-105 text-sm sm:text-base font-medium"
             >
@@ -199,73 +198,72 @@ function NewsSection() {
               // Take only the first 10 items
               .slice(0, 10)
               .map((item, index) => (
-              <article 
-                key={item.id}
-                className={`bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-1000 hover:scale-105 ${
-                  isVisible 
-                    ? 'opacity-100 transform translate-y-0' 
-                    : 'opacity-0 transform translate-y-8'
-                }`}
-                style={{ transitionDelay: `${300 + index * 100}ms` }} // Reduced delay for more items
-              >
-                <div className="relative">
-                  <img
-                    src={item.image || '/image/svrwsa_logo_high_quality.png'}
-                    alt={item.title || 'News image'}
-                    className="w-full h-48 object-cover"
-                    onError={(e) => {
-                      console.log('Image failed to load:', item.image);
-                      e.target.src = '/image/svrwsa_logo_high_quality.png';
-                    }}
-                  />
-                  <div className="absolute top-4 left-4">
-                    {item.featured ? (
-                      <span className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium">
-                        ព័ត៌មានសំខាន់
-                      </span>
-                    ) : (
-                      <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-medium">
-                        ព័ត៌មាន
-                      </span>
+                <article
+                  key={item.id}
+                  className={`bg-white rounded-2xl shadow-lg overflow-hidden hover:shadow-xl transition-all duration-1000 hover:scale-105 ${isVisible
+                      ? 'opacity-100 transform translate-y-0'
+                      : 'opacity-0 transform translate-y-8'
+                    }`}
+                  style={{ transitionDelay: `${300 + index * 100}ms` }} // Reduced delay for more items
+                >
+                  <div className="relative">
+                    <img
+                      src={item.image || '/image/svrwsa_logo_high_quality.png'}
+                      alt={item.title || 'News image'}
+                      className="w-full h-48 object-cover"
+                      onError={(e) => {
+                        console.log('Image failed to load:', item.image);
+                        e.target.src = '/image/svrwsa_logo_high_quality.png';
+                      }}
+                    />
+                    <div className="absolute top-4 left-4">
+                      {item.featured ? (
+                        <span className="bg-red-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                          ព័ត៌មានសំខាន់
+                        </span>
+                      ) : (
+                        <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                          ព័ត៌មាន
+                        </span>
+                      )}
+                    </div>
+                    {item.category && (
+                      <div className="absolute top-4 right-4">
+                        <span className="bg-gray-800 bg-opacity-75 text-white px-2 py-1 rounded text-xs">
+                          {item.category.name}
+                        </span>
+                      </div>
                     )}
                   </div>
-                  {item.category && (
-                    <div className="absolute top-4 right-4">
-                      <span className="bg-gray-800 bg-opacity-75 text-white px-2 py-1 rounded text-xs">
-                        {item.category.name}
-                      </span>
+
+                  <div className="p-6">
+                    <div className="text-sm text-gray-500 mb-3 flex items-center">
+                      <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      {getTimeAgo(item)}
                     </div>
-                  )}
-                </div>
 
-                <div className="p-6">
-                  <div className="text-sm text-gray-500 mb-3 flex items-center">
-                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    {getTimeAgo(item)}
+                    <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
+                      {item.title || 'មិនមានចំណងជើង'}
+                    </h3>
+
+                    <p className="text-gray-600 mb-4 line-clamp-3">
+                      {item.content && item.content.length > 150
+                        ? `${item.content.substring(0, 150)}...`
+                        : item.content || 'មិនមានមាតិកា...'
+                      }
+                    </p>
+
+                    <a
+                      href={`/news/${item.slug}`}
+                      className="text-blue-600 font-medium hover:text-blue-700 transition-colors duration-200"
+                    >
+                      អានបន្ថែម →
+                    </a>
                   </div>
-
-                  <h3 className="text-xl font-bold text-gray-900 mb-3 line-clamp-2">
-                    {item.title || 'មិនមានចំណងជើង'}
-                  </h3>
-
-                  <p className="text-gray-600 mb-4 line-clamp-3">
-                    {item.content && item.content.length > 150 
-                      ? `${item.content.substring(0, 150)}...` 
-                      : item.content || 'មិនមានមាតិកា...'
-                    }
-                  </p>
-
-                  <a
-                    href={`/news/${item.slug}`}
-                    className="text-blue-600 font-medium hover:text-blue-700 transition-colors duration-200"
-                  >
-                    អានបន្ថែម →
-                  </a>
-                </div>
-              </article>
-            ))}
+                </article>
+              ))}
           </div>
         ) : (
           <div className="text-center py-12">
@@ -278,15 +276,6 @@ function NewsSection() {
             </p>
           </div>
         )}
-
-        <div className="text-center mt-12 md:hidden">
-          <button 
-            onClick={() => window.location.href = '/news'}
-            className="bg-blue-600 text-white px-6 sm:px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 text-sm sm:text-base font-medium"
-          >
-            មើលព័ត៌មានទាំងអស់
-          </button>
-        </div>
       </div>
     </div>
   )

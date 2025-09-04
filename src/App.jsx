@@ -115,7 +115,7 @@ function App() {
           />
           {/* Grouping services routes if they all render the same Services component */}
           <Route
-            path="/services/water-supply"
+            path="/services/service-request"
             element={
               <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
                 <WaterSupplyRequest />

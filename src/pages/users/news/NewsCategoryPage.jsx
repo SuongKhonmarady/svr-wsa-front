@@ -3,6 +3,95 @@ import { useParams, Link } from 'react-router-dom';
 import apiService from '../../../services/api';
 import newsService from '../../../services/newsService';
 
+// Loading Skeleton Component
+const NewsCategorySkeleton = () => {
+    return (
+        <div className="min-h-screen bg-gray-50 py-12">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                {/* Header Skeleton */}
+                <div className="mb-12">
+                    {/* Breadcrumb Skeleton */}
+                    <nav className="flex mb-8" aria-label="Breadcrumb">
+                        <ol className="inline-flex items-center space-x-1 md:space-x-3">
+                            <li className="inline-flex items-center">
+                                <div className="h-4 bg-gray-200 rounded w-12 animate-skeleton-shimmer"></div>
+                            </li>
+                            <li>
+                                <div className="flex items-center">
+                                    <div className="h-4 bg-gray-200 rounded w-4 animate-skeleton-shimmer"></div>
+                                    <div className="ml-1 h-4 bg-gray-200 rounded w-8 animate-skeleton-shimmer md:ml-2"></div>
+                                </div>
+                            </li>
+                            <li aria-current="page">
+                                <div className="flex items-center">
+                                    <div className="h-4 bg-gray-200 rounded w-4 animate-skeleton-shimmer"></div>
+                                    <div className="ml-1 h-4 bg-gray-200 rounded w-16 animate-skeleton-shimmer md:ml-2"></div>
+                                </div>
+                            </li>
+                        </ol>
+                    </nav>
+
+                    {/* Title and Description Skeleton */}
+                    <div className="text-center">
+                        <div className="h-10 bg-gray-200 rounded w-64 mx-auto mb-4 animate-skeleton-shimmer"></div>
+                        <div className="h-6 bg-gray-200 rounded w-96 mx-auto mb-2 animate-skeleton-shimmer"></div>
+                        <div className="h-6 bg-gray-200 rounded w-80 mx-auto animate-skeleton-shimmer"></div>
+                        <div className="mt-4 h-4 bg-gray-200 rounded w-48 mx-auto animate-skeleton-shimmer"></div>
+                    </div>
+                </div>
+
+                {/* News Grid Skeleton */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {[1, 2, 3, 4, 5, 6].map((index) => (
+                        <article
+                            key={index}
+                            className="bg-white rounded-lg shadow-md overflow-hidden"
+                        >
+                            {/* Article Image Skeleton */}
+                            <div className="aspect-w-16 aspect-h-9">
+                                <div className="w-full h-48 bg-gray-200 animate-skeleton-shimmer"></div>
+                            </div>
+
+                            {/* Article Content Skeleton */}
+                            <div className="p-6">
+                                {/* Category Badge Skeleton */}
+                                <div className="flex items-center justify-between mb-3">
+                                    <div className="h-5 bg-gray-200 rounded-full w-16 animate-skeleton-shimmer"></div>
+                                    <div className="h-5 bg-gray-200 rounded-full w-20 animate-skeleton-shimmer"></div>
+                                </div>
+
+                                {/* Article Title Skeleton */}
+                                <div className="space-y-2 mb-3">
+                                    <div className="h-6 bg-gray-200 rounded w-full animate-skeleton-shimmer"></div>
+                                    <div className="h-6 bg-gray-200 rounded w-3/4 animate-skeleton-shimmer"></div>
+                                </div>
+
+                                {/* Article Excerpt Skeleton */}
+                                <div className="space-y-2 mb-4">
+                                    <div className="h-4 bg-gray-200 rounded w-full animate-skeleton-shimmer"></div>
+                                    <div className="h-4 bg-gray-200 rounded w-5/6 animate-skeleton-shimmer"></div>
+                                    <div className="h-4 bg-gray-200 rounded w-4/5 animate-skeleton-shimmer"></div>
+                                </div>
+
+                                {/* Article Meta Skeleton */}
+                                <div className="flex items-center justify-between">
+                                    <div className="h-4 bg-gray-200 rounded w-24 animate-skeleton-shimmer"></div>
+                                    <div className="h-4 bg-gray-200 rounded w-20 animate-skeleton-shimmer"></div>
+                                </div>
+                            </div>
+                        </article>
+                    ))}
+                </div>
+
+                {/* Back Button Skeleton */}
+                <div className="mt-16 text-center">
+                    <div className="h-12 bg-gray-200 rounded-lg w-48 mx-auto animate-skeleton-shimmer"></div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 function NewsCategoryPage() {
     const { categorySlug } = useParams();
     const [news, setNews] = useState([]);
@@ -60,15 +149,7 @@ function NewsCategoryPage() {
     };
 
     if (loading) {
-        return (
-            <div className="min-h-screen bg-gray-50 py-12">
-                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                    <div className="flex justify-center items-center py-20">
-                        <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
-                    </div>
-                </div>
-            </div>
-        );
+        return <NewsCategorySkeleton />;
     }
 
     if (error) {
@@ -81,13 +162,13 @@ function NewsCategoryPage() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
                             </svg>
                         </div>
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">Error Loading Content</h3>
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">មានបញ្ហាក្នុងការទាញយកព័ត៌មាន</h3>
                         <p className="text-gray-600 mb-6">{error}</p>
                         <Link
                             to="/news"
                             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
                         >
-                            Back to News
+                            ត្រឡប់ទៅទំព័រព័ត៌មាន
                         </Link>
                     </div>
                 </div>
@@ -111,7 +192,7 @@ function NewsCategoryPage() {
                             to="/news"
                             className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
                         >
-                            Back to News
+                            ត្រឡប់ទៅទំព័រព័ត៌មាន
                         </Link>
                     </div>
                 </div>
@@ -134,7 +215,7 @@ function NewsCategoryPage() {
                                     <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z" />
                                     </svg>
-                                    Home
+                                    ទំព័រដើម
                                 </Link>
                             </li>
                             <li>
@@ -146,7 +227,7 @@ function NewsCategoryPage() {
                                         to="/news"
                                         className="ml-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ml-2"
                                     >
-                                        News
+                                        ព័ត៌មាន
                                     </Link>
                                 </div>
                             </li>

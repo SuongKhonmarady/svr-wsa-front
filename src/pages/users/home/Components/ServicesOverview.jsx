@@ -85,7 +85,7 @@ function ServicesOverview() {
             : 'opacity-0 transform translate-y-8'
         }`}
         >
-          <h2 className="text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-2 sm:mb-3 md:mb-4 lg:mb-6 font-khmer-title">
+          <h2 className="text-2xl xs:text-3xl sm:text-4xl lg:text-5xl mb-2 sm:mb-3 md:mb-4 lg:mb-6 font-khmer-title">
             សេវាកម្មរបស់យើង
           </h2>
           <p className="text-xl text-gray-600 max-w-3xl mx-auto">

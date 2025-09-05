@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+        
 
 const ImageSection = () => {
     const [visibleSections, setVisibleSections] = useState({
@@ -175,9 +176,6 @@ const ImageSection = () => {
                                             ? 'opacity-100 translate-y-0' 
                                             : 'opacity-0 translate-y-4'
                                     }`}>
-                                        <button className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-300 transform hover:scale-105">
-                                            ស្វែងយល់បន្ថែម
-                                        </button>
                                     </div>
                                 </div>
                             </div>

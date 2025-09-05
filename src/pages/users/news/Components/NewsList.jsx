@@ -289,7 +289,7 @@ function NewsList() {
           {/* Featured News */}
           {featuredNews.length > 0 && (
             <div className="mb-16">
-              <h2 className={`text-3xl font-bold text-gray-900 mb-8 font-khmer-title transition-all duration-1000 ${animationTriggered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+              <h2 className={`text-2xl sm:text-3xl font-bold text-gray-900 mb-8 font-khmer-title transition-all duration-1000 ${animationTriggered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                 }`}>
                 ព័ត៌មានសំខាន់
               </h2>
@@ -298,18 +298,18 @@ function NewsList() {
                   key={news.id}
                   data-news-item
                   data-index={index}
-                  className={`bg-white rounded-2xl shadow-xl overflow-hidden mb-12 transition-all duration-1000 ${visibleItems.has(index) || animationTriggered
+                  className={`bg-white rounded-2xl shadow-xl overflow-hidden mb-8 transition-all duration-1000 ${visibleItems.has(index) || animationTriggered
                     ? 'opacity-100 translate-y-0 scale-100'
                     : 'opacity-0 translate-y-12 scale-95'
                     }`}
                   style={{ transitionDelay: `${index * 200}ms` }}
                 >
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                    <div className="relative h-64 lg:h-auto">
+                    <div className="relative h-70">
                       <img
                         src={news.image || "/image/mohamed-shaik-ScftZZiZnB8-unsplash.jpg"}
                         alt={news.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-70 md:h-90 object-cover"
                       />
                       {news.category && (
                         <div className="absolute top-4 left-4">
@@ -329,17 +329,17 @@ function NewsList() {
                         </div>
                       )}
                     </div>
-                    <div className="p-8 lg:p-12">
-                      <div className="text-sm text-gray-500 mb-4 flex items-center">
+                    <div className="p-8 lg:p-10">
+                      <div className="text-sm text-gray-500 mb-2 flex items-center">
                         <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
                         {getTimeAgo(news)}
                       </div>
-                      <h3 className="text-3xl font-bold text-gray-900 mb-6 leading-tight">
+                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 leading-tight">
                         {news.title}
                       </h3>
-                      <p className="text-gray-600 mb-6 text-lg leading-relaxed">
+                      <p className="text-gray-600 mb-4 text-sm sm:text-lg leading-relaxed">
                         {news.content ? news.content.substring(0, 200) + '...' : ''}
                       </p>
                       <a
@@ -381,7 +381,7 @@ function NewsList() {
 
           {/* News Grid */}
           <div>
-            <h2 className={`text-3xl font-bold text-gray-900 mb-8 font-khmer-title transition-all duration-1000 ${animationTriggered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            <h2 className={`text-2xl sm:text-3xl font-bold text-gray-900 mb-8 font-khmer-title transition-all duration-1000 ${animationTriggered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`} style={{ transitionDelay: '500ms' }}>
               ព័ត៌មានថ្មីៗទាំងអស់
             </h2>

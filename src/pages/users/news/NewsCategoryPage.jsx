@@ -245,14 +245,14 @@ function NewsCategoryPage() {
                     </nav>
 
                     <div className="text-center">
-                        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                        <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-gray-900 mb-4">
                             {category ? category.name : 'Loading...'}
                         </h1>
-                        <p className="text-xl text-gray-600 max-w-3xl mx-auto">
+                        <p className="text-sm sm:text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto">
                             {category ? `Stay updated with the latest news and updates from ${category.name}` : 'Loading category information...'}
                         </p>
                         {news.length > 0 && (
-                            <div className="mt-4 text-sm text-gray-500">
+                            <div className="mt-4 text-sm sm:text-xl md:text-2xl text-gray-500">
                                 Found {news.length} article{news.length !== 1 ? 's' : ''} in this category
                             </div>
                         )}
@@ -267,8 +267,8 @@ function NewsCategoryPage() {
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                             </svg>
                         </div>
-                        <h3 className="text-lg font-medium text-gray-900 mb-2">No News Available</h3>
-                        <p className="text-gray-600 mb-6">
+                        <h3 className="text-lg sm:text-xl md:text-2xl font-medium text-gray-900 mb-2">No News Available</h3>
+                        <p className="text-sm sm:text-xl md:text-2xl text-gray-600 mb-6">
                             There are currently no news articles in this category.
                         </p>
                         <Link
@@ -300,7 +300,7 @@ function NewsCategoryPage() {
                                 <div className="p-6">
                                     {/* Category Badge */}
                                     <div className="flex items-center justify-between mb-3">
-                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
+                                        <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs sm:text-sm md:text-base font-medium bg-blue-100 text-blue-800">
                                             {category.name}
                                         </span>
                                         {article.featured && (
@@ -311,7 +311,7 @@ function NewsCategoryPage() {
                                     </div>
 
                                     {/* Article Title */}
-                                    <h2 className="text-xl font-semibold text-gray-900 mb-3 line-clamp-2">
+                                    <h2 className="text-xl sm:text-2xl md:text-2xl font-semibold text-gray-900 mb-3 line-clamp-2">
                                         <Link
                                             to={`/news/${article.slug || article.id}`}
                                             className="hover:text-blue-600 transition-colors duration-200"
@@ -322,13 +322,13 @@ function NewsCategoryPage() {
 
                                     {/* Article Excerpt */}
                                     {article.content && (
-                                        <p className="text-gray-600 mb-4 line-clamp-3">
+                                        <p className="text-sm md:text-xl text-gray-600 mb-4 line-clamp-3">
                                             {article.content.replace(/<[^>]*>/g, '').substring(0, 150)}...
                                         </p>
                                     )}
 
                                     {/* Article Meta */}
-                                    <div className="flex items-center justify-between text-sm text-gray-500">
+                                    <div className="flex items-center justify-between text-sm sm:text-xltext-gray-500">
                                         <span>{formatDate(article.published_at || article.created_at)}</span>
                                         <Link
                                             to={`/news/${article.slug || article.id}`}

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 import AdminLayout from '../components/AdminLayout'
 import NewsTable from './Components/NewsTable'
 import NewsModal from './Components/NewsModal'
@@ -7,6 +8,7 @@ import { useToast } from '../../../components/ToastContainer'
 
 function NewsManagement() {
   const { showSuccess, showError } = useToast()
+  const navigate = useNavigate()
   const [news, setNews] = useState([])
   const [categories, setCategories] = useState([])
   const [loading, setLoading] = useState(true)
@@ -53,6 +55,10 @@ function NewsManagement() {
     setModalOpen(true)
   }
 
+  const handleViewNews = (newsItem) => {
+    navigate(`/admin/news/details/${newsItem.slug || newsItem.id}`)
+  }
+
   const handleEditNews = (newsItem) => {
     setSelectedNews(newsItem)
     setModalOpen(true)
@@ -76,7 +82,6 @@ function NewsManagement() {
 
   const handleSaveNews = async (formData, newsId) => {
     try {
-
       let result
       if (newsId) {
         // Update existing news - use selectedNews.slug instead of newsId
@@ -99,6 +104,7 @@ function NewsManagement() {
       throw err
     }
   }
+
 
   const filteredNews = news.filter(item =>
     item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -177,6 +183,7 @@ function NewsManagement() {
         {/* News table */}
         <NewsTable
           news={filteredNews}
+          onView={handleViewNews}
           onEdit={handleEditNews}
           onDelete={handleDeleteNews}
           loading={loading}

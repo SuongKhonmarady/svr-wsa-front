@@ -142,9 +142,9 @@ function MonthlyReportViewer() {
                     {/* Mobile-optimized header */}
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between py-4 sm:h-16 space-y-3 sm:space-y-0">
                         <div className="flex items-center">
-                            <h1 className="text-lg sm:text-xl font-semibold text-gray-900">
+                            <h2 className="text-lg sm:text-xl font-semibold text-gray-900">
                                 មើលរបាយការណ៍ប្រចាំខែ
-                            </h1>
+                            </h2>
                         </div>
 
                         {/* Action Buttons - Mobile optimized */}
@@ -199,10 +199,6 @@ function MonthlyReportViewer() {
                 {/* PDF Viewer - SHOWN FIRST */}
                 {!loading && !error && report?.file_url && (
                     <div className="bg-white rounded-lg sm:rounded-xl shadow-lg overflow-hidden mb-6 sm:mb-8">
-                        <div className="bg-gray-50 px-4 sm:px-6 py-3 sm:py-4 border-b border-gray-200">
-                            <h3 className="text-base sm:text-lg font-semibold text-gray-900">មើលរបាយការណ៍</h3>
-                        </div>
-
                         <div className="p-3 sm:p-6">
                             {!pdfError ? (
                                 <div className="w-full" style={{ height: '80vh', minHeight: '400px' }}>

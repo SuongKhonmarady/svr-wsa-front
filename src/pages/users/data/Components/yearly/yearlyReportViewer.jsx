@@ -97,9 +97,9 @@ function YearlyReportViewer() {
                                 ត្រលប់ទៅរបាយការណ៍ប្រចាំឆ្នាំ
                             </Link>
                             <div className="hidden sm:block h-6 w-px bg-gray-300"></div>
-                            <h1 className="text-base sm:text-lg font-semibold text-gray-900">
+                            <h2 className="text-base sm:text-lg font-semibold text-gray-900">
                                 មើលរបាយការណ៍ប្រចាំឆ្នាំ
-                            </h1>
+                            </h2>
                         </div>
                         
                         {/* Action Buttons */}

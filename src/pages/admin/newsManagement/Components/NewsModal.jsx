@@ -1,13 +1,27 @@
 import { useState, useEffect } from 'react'
 
 function NewsModal({ isOpen, onClose, news, categories = [], onSave }) {
+  // Helper function to format datetime for datetime-local input
+  const formatDateTimeForInput = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    return date.toISOString().slice(0, 16); // Format: YYYY-MM-DDTHH:MM
+  };
+
+  // Helper function to get current datetime in UTC+7 (Cambodia timezone)
+  const getCurrentDateTimeUTC7 = () => {
+    const now = new Date();
+    // Convert to UTC+7 by adding 7 hours
+    const utc7Time = new Date(now.getTime() + (7 * 60 * 60 * 1000));
+    return utc7Time.toISOString();
+  };
   const [formData, setFormData] = useState({
     title: '',
     content: '',
     category_id: '',
     featured: false,
     image: null,
-    published_at: new Date().toISOString().split('T')[0],
+    published_at: getCurrentDateTimeUTC7(), // Auto-set to current datetime in UTC+7
   })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -25,7 +39,7 @@ function NewsModal({ isOpen, onClose, news, categories = [], onSave }) {
         category_id: news.category_id || '',
         featured: news.featured || false,
         image: null, // Don't pre-fill image for editing
-        published_at: news.published_at ? news.published_at.split('T')[0] : new Date().toISOString().split('T')[0],
+        published_at: news.published_at ? news.published_at : new Date().toISOString(),
       }
       setFormData(newFormData)
       // Set existing image preview if editing
@@ -33,13 +47,15 @@ function NewsModal({ isOpen, onClose, news, categories = [], onSave }) {
         setImagePreview(news.image)
       }
     } else {
+      // Always set current datetime in UTC+7 when creating new news
+      const currentDateTime = getCurrentDateTimeUTC7()
       const newFormData = {
         title: '',
         content: '',
         category_id: '',
         featured: false,
         image: null,
-        published_at: new Date().toISOString().split('T')[0],
+        published_at: currentDateTime,
       }
       setFormData(newFormData)
       setImagePreview(null)
@@ -60,6 +76,10 @@ function NewsModal({ isOpen, onClose, news, categories = [], onSave }) {
       }
     } else if (type === 'checkbox') {
       setFormData(prev => ({ ...prev, [name]: checked }))
+    } else if (name === 'published_at' && type === 'datetime-local') {
+      // Convert datetime-local value to ISO string (keeping UTC+7 timezone)
+      const isoString = value ? new Date(value).toISOString() : getCurrentDateTimeUTC7()
+      setFormData(prev => ({ ...prev, [name]: isoString }))
     } else {
       setFormData(prev => ({ ...prev, [name]: value }))
     }
@@ -158,7 +178,7 @@ function NewsModal({ isOpen, onClose, news, categories = [], onSave }) {
       dataToSend.append('content', contentValue)
       dataToSend.append('category_id', formData.category_id || (news?.category_id || ''))
       dataToSend.append('featured', formData.featured ? '1' : '0')
-      dataToSend.append('published_at', formData.published_at || (news?.published_at ? news.published_at.split('T')[0] : new Date().toISOString().split('T')[0]))
+      dataToSend.append('published_at', formData.published_at || (news?.published_at ? news.published_at : getCurrentDateTimeUTC7()))
       
       // For updates with FormData, Laravel needs method spoofing
       if (news) {
@@ -178,14 +198,14 @@ function NewsModal({ isOpen, onClose, news, categories = [], onSave }) {
       await onSave(dataToSend, news?.id)
       onClose()
       
-      // Reset form
+      // Reset form with current datetime in UTC+7
       setFormData({
         title: '',
         content: '',
         category_id: '',
         featured: false,
         image: null,
-        published_at: new Date().toISOString().split('T')[0],
+        published_at: getCurrentDateTimeUTC7(), // Auto-set to current datetime in UTC+7
       })
       setImagePreview(null)
       setRemoveImage(false)
@@ -415,10 +435,10 @@ function NewsModal({ isOpen, onClose, news, categories = [], onSave }) {
                   Publish Date
                 </label>
                 <input
-                  type="date"
+                  type="datetime-local"
                   id="published_at"
                   name="published_at"
-                  value={formData.published_at}
+                  value={formatDateTimeForInput(formData.published_at)}
                   onChange={handleChange}
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"

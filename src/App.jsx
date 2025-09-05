@@ -29,6 +29,7 @@ const SearchResultsPage = React.lazy(() => import('./pages/users/search/SearchRe
 const NotFound = React.lazy(() => import('./components/notFound'));
 const Privacy = React.lazy(() => import('./pages/users/privacy/privacy'));
 const RepairService = React.lazy(() => import('./pages/users/services/RepairService'));
+const Navbar = React.lazy(() => import('./components/Navbar'));
 
 
 // -------------------------------------------------------------------------
@@ -37,6 +38,7 @@ const RepairService = React.lazy(() => import('./pages/users/services/RepairServ
 const AdminLogin = React.lazy(() => import('./pages/admin/login/login'));
 const AdminDashboard = React.lazy(() => import('./pages/admin/dashboard/dashboard'));
 const NewsManagement = React.lazy(() => import('./pages/admin/newsManagement/newsManagement'));
+const NewsManagementDetails = React.lazy(() => import('./pages/admin/newsManagement/NewsManagmentDetails'));
 const ServiceRequestsManagement = React.lazy(() => import('./pages/admin/serviceRequests/ServiceRequestsManagement'));
 const CustomerDetailPage = React.lazy(() => import('./pages/admin/serviceRequests/CustomerDetailPage'));
 const ReportsManagement = React.lazy(() => import('./pages/admin/reportManagement/reportpage')); // Corrected typo here
@@ -251,6 +253,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <NewsManagement />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/news/details/:slug"
+            element={
+              <ProtectedRoute>
+                <NewsManagementDetails />
               </ProtectedRoute>
             }
           />

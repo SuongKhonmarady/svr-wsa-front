@@ -23,17 +23,17 @@ function News() {
 
                 {/* Content */}
                 <div className="relative z-10 text-center text-white px-4 sm:px-6 lg:px-8 max-w-6xl mx-auto">
-                    <h1 className={`text-4xl sm:text-5xl lg:text-6xl mb-6 font-khmer-title transition-all duration-1000 ${
+                    <h1 className={`text-3xl sm:text-4xl md:text-5xl lg:text-6xl mb-6 font-khmer-title transition-all duration-1000 ${
                         isLoaded ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform -translate-y-8'
                     }`}>
                         ព័ត៌មាន និងសកម្មភាព
                     </h1>
-                    <p className={`text-xl sm:text-2xl text-green-100 mb-6 max-w-4xl mx-auto leading-relaxed transition-all duration-1500 ${
+                    <p className={`text-sm sm:text-xl md:text-2xl text-green-100 mb-6 max-w-4xl mx-auto leading-relaxed transition-all duration-1500 ${
                         isLoaded ? 'opacity-100 transform translate-x-0' : 'opacity-0 transform translate-y-8'
                     }`}>
                         ព័ត៌មានថ្មីៗ និងសកម្មភាពរបស់រដ្ឋករទឹកស្វាយរៀង
                     </p>
-                    <p className={`text-lg text-green-200 max-w-5xl mx-auto leading-relaxed transition-all duration-2000 ${
+                    <p className={`text-sm sm:text-xl md:text-2xl text-green-200 max-w-5xl mx-auto leading-relaxed transition-all duration-2000 ${
                         isLoaded ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-8'
                     }`}>
                         ស្វែងយល់អំពីការអភិវឌ្ឍន៍ គម្រោងថ្មីៗ និងសកម្មភាពសហគមន៍របស់យើង

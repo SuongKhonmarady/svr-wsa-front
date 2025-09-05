@@ -172,7 +172,7 @@ const NewsDetail = ({ news, formatDate }) => {
                             <img
                                 src={news.image}
                                 alt={news.title}
-                                className={`w-full h-64 sm:h-80 lg:h-96 object-cover transition-all duration-700 hover:scale-105 ${
+                                className={`w-full lg:h-full object-cover transition-all duration-700 hover:scale-105 ${
                                     visibleSections.image ? 'scale-100' : 'scale-110'
                                 }`}
                                 style={{ 

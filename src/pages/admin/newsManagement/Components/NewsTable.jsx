@@ -1,4 +1,4 @@
-function NewsTable({ news, onEdit, onDelete, loading }) {
+function NewsTable({ news, onEdit, onDelete, onView, loading }) {
   if (loading) {
     return (
       <div className="bg-white shadow rounded-lg">
@@ -42,9 +42,6 @@ function NewsTable({ news, onEdit, onDelete, loading }) {
                 Title
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Content
-              </th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Category
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -85,11 +82,6 @@ function NewsTable({ news, onEdit, onDelete, loading }) {
                       {item.title}
                     </div>
                   </td>
-                  <td className="px-6 py-4">
-                    <div className="text-sm text-gray-500 max-w-xs truncate">
-                      {item.content}
-                    </div>
-                  </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-900">
                       {item.category ? (
@@ -121,6 +113,12 @@ function NewsTable({ news, onEdit, onDelete, loading }) {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex space-x-2">
+                      <button
+                        onClick={() => onView(item)}
+                        className="text-green-600 hover:text-green-900 bg-green-100 hover:bg-green-200 px-3 py-1 rounded-md transition-colors"
+                      >
+                        View
+                      </button>
                       <button
                         onClick={() => onEdit(item)}
                         className="text-blue-600 hover:text-blue-900 bg-blue-100 hover:bg-blue-200 px-3 py-1 rounded-md transition-colors"

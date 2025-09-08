@@ -14,6 +14,33 @@ function AdminLayout({ children }) {
   // Get current user info
   const currentUser = getCurrentUser()
 
+  // Set initial sidebar state based on screen size
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth >= 768) {
+        // Desktop: sidebar open by default
+        setSidebarOpen(true)
+      } else {
+        // Mobile: sidebar closed by default
+        setSidebarOpen(false)
+      }
+    }
+
+    // Set initial state
+    handleResize()
+
+    // Listen for resize events
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // Close mobile sidebar when route changes
+  useEffect(() => {
+    if (window.innerWidth < 768) {
+      setSidebarOpen(false)
+    }
+  }, [location.pathname])
+
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event) {
@@ -165,12 +192,23 @@ function AdminLayout({ children }) {
         </div>
       </div>
 
-      {/* Static sidebar for desktop */}
-      <div className="hidden md:flex md:w-64 md:flex-col md:fixed md:inset-y-0">
+      {/* Full sidebar for desktop */}
+      <div className={`${sidebarOpen ? 'md:flex' : 'md:hidden'} hidden md:w-64 md:flex-col md:fixed md:inset-y-0 transition-all duration-300 ease-in-out z-30`}>
         <div className="flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-white">
           <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-            <div className="flex items-center justify-center flex-shrink-0">
-              <img className="h-24 w-auto" src="/image/រដ្ឋាករទឹកស្វាយរៀង.png" alt="SVRWSA" />
+            <div className="flex items-center justify-between flex-shrink-0 px-4">
+              <img className="h-20 w-auto" src="/image/រដ្ឋាករទឹកស្វាយរៀង.png" alt="SVRWSA" />
+              <button
+                type="button"
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition-colors"
+                onClick={() => setSidebarOpen(false)}
+                title="Close sidebar"
+              >
+                <span className="sr-only">Close sidebar</span>
+                <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
             <nav className="mt-5 flex-1 px-2 space-y-1">
               {navigation.map((item) => (
@@ -197,8 +235,50 @@ function AdminLayout({ children }) {
         </div>
       </div>
 
+      {/* Mini sidebar for desktop (icons only) */}
+      <div className={`${!sidebarOpen ? 'md:flex' : 'md:hidden'} hidden md:w-16 md:flex-col md:fixed md:inset-y-0 transition-all duration-300 ease-in-out z-30`}>
+        <div className="flex-1 flex flex-col min-h-0 border-r border-gray-200 bg-white">
+          <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
+            <div className="flex items-center justify-center flex-shrink-0 mb-5">
+              <button
+                type="button"
+                className="inline-flex items-center justify-center p-2 rounded-md text-gray-500 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 transition-colors"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                title="Open sidebar"
+              >
+                <span className="sr-only">Open sidebar</span>
+                <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
+            <nav className="flex-1 px-2 space-y-2">
+              {navigation.map((item) => (
+                <button
+                  key={item.name}
+                  onClick={() => navigate(item.href)}
+                  title={item.name}
+                  className={`relative w-full flex items-center justify-center px-2 py-3 text-lg rounded-md transition-colors ${
+                    location.pathname === item.href
+                      ? 'bg-blue-100 text-blue-900'
+                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                  }`}
+                >
+                  <span>{item.icon}</span>
+                  {item.badge && (
+                    <span className="absolute -top-1 -right-1 inline-flex items-center justify-center px-1 py-0.5 rounded-full text-xs font-medium bg-red-500 text-white min-w-[16px] h-4">
+                      {item.badge}
+                    </span>
+                  )}
+                </button>
+              ))}
+            </nav>
+          </div>
+        </div>
+      </div>
+
       {/* Main content */}
-      <div className="md:pl-64 flex flex-col flex-1">
+      <div className={`${sidebarOpen ? 'md:pl-64' : 'md:pl-16'} flex flex-col flex-1 transition-all duration-300 ease-in-out`}>
         <div className="sticky top-0 z-10 md:hidden pl-1 pt-1 sm:pl-3 sm:pt-3 bg-gray-100">
           <button
             type="button"

@@ -13,80 +13,39 @@ const ServiceRequestsList = ({
     // Handle loading state first
     if (loading) {
         return (
-            <div className="px-4 sm:px-6 py-4">
-                <div className="animate-pulse space-y-4">
+            <div className="overflow-x-auto rounded-xl border border-gray-200 shadow-md">
+                <table className="min-w-full divide-y divide-gray-200">
+                    <thead className="bg-gray-100 hidden md:table-header-group">
+                        <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">លេខសម្គាល់</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ឈ្មោះអតិថិជន</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ស្ថានភាព</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">លេខទូរស័ព្ទ</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ប្រភេទសេវាកម្ម</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ទីតាំង</th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">សកម្មភាព</th>
+                        </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
                     {[1, 2, 3, 4, 5].map((i) => (
-                        <div key={i} className="bg-gray-50 rounded-lg p-4 sm:p-6 border border-gray-200">
-                            {/* Header Row Skeleton */}
-                            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 space-y-2 sm:space-y-0">
-                                <div className="flex-1">
-                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-                                        <div className="h-6 bg-gray-200 rounded w-32"></div>
-                                        <div className="h-6 bg-gray-200 rounded w-20"></div>
-                                    </div>
-                                    <div className="h-4 bg-gray-200 rounded w-24"></div>
-                                </div>
-                                <div className="text-left sm:text-right">
-                                    <div className="h-4 bg-gray-200 rounded w-16 mb-1"></div>
-                                    <div className="h-4 bg-gray-200 rounded w-24"></div>
-                                </div>
-                            </div>
-
-                            {/* Main Content Grid Skeleton */}
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-                                {/* Customer & Service Info Skeleton */}
-                                <div className="space-y-4">
-                                    <div>
-                                        <div className="h-4 bg-gray-200 rounded w-32 mb-2"></div>
-                                        <div className="space-y-2">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-4 h-4 bg-gray-200 rounded"></div>
-                                                <div className="h-4 bg-gray-200 rounded w-24"></div>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-4 h-4 bg-gray-200 rounded"></div>
-                                                <div className="h-4 bg-gray-200 rounded w-32"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Location Info Skeleton */}
-                                <div className="space-y-4">
-                                    <div>
-                                        <div className="h-4 bg-gray-200 rounded w-24 mb-2"></div>
-                                        <div className="space-y-2">
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-4 h-4 bg-gray-200 rounded"></div>
-                                                <div className="h-4 bg-gray-200 rounded w-28"></div>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-4 h-4 bg-gray-200 rounded"></div>
-                                                <div className="h-4 bg-gray-200 rounded w-24"></div>
-                                            </div>
-                                            <div className="flex items-center gap-2">
-                                                <div className="w-4 h-4 bg-gray-200 rounded"></div>
-                                                <div className="h-4 bg-gray-200 rounded w-32"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                {/* Action Buttons Skeleton */}
-                                <div className="space-y-4">
-                                    <div>
-                                        <div className="h-4 bg-gray-200 rounded w-20 mb-2"></div>
+                            <tr key={i} className="animate-pulse">
+                                <td className="px-6 py-4 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-12"></div></td>
+                                <td className="px-6 py-4 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-32"></div></td>
+                                <td className="px-6 py-4 whitespace-nowrap"><div className="h-6 bg-gray-200 rounded w-20"></div></td>
+                                <td className="px-6 py-4 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-24"></div></td>
+                                <td className="px-6 py-4 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-40"></div></td>
+                                <td className="px-6 py-4 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-28"></div></td>
+                                <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex space-x-2">
-                                            <div className="w-20 h-8 bg-gray-200 rounded"></div>
-                                            <div className="w-20 h-8 bg-gray-200 rounded"></div>
-                                            <div className="w-20 h-8 bg-gray-200 rounded"></div>
+                                        <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                                        <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
+                                        <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         );
     }
@@ -131,210 +90,182 @@ const ServiceRequestsList = ({
         );
     }
 
+    // Helper function to get status styling
+    const getStatusStyling = (status) => {
+        const statusName = status?.name?.toLowerCase() || 'pending';
+
+        switch (statusName) {
+            case 'pending':
+            case 'រង់ចាំ':
+                return {
+                    className: "inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full",
+                    style: { backgroundColor: '#fef3c7', color: '#d97706' },
+                    icon: "fas fa-clock",
+                    text: "រង់ចាំ"
+                };
+            case 'progressing':
+            case 'in_progress':
+            case 'in progress':
+            case 'in-progress':
+            case 'កំពុងដំណើរការ':
+                return {
+                    className: "inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full",
+                    style: { backgroundColor: '#dbeafe', color: '#2563eb' },
+                    icon: "fas fa-sync-alt fa-spin",
+                    text: "កំពុងដំណើរការ"
+                };
+            case 'completed':
+            case 'បានបញ្ចប់':
+                return {
+                    className: "inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full",
+                    style: { backgroundColor: '#d1fae5', color: '#047857' },
+                    icon: "fas fa-check-circle",
+                    text: "បានបញ្ចប់"
+                };
+            case 'rejected':
+            case 'បដិសេធ':
+                return {
+                    className: "inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full",
+                    style: { backgroundColor: '#fee2e2', color: '#dc2626' },
+                    icon: "fas fa-times-circle",
+                    text: "បដិសេធ"
+                };
+            default:
+                return {
+                    className: "inline-flex items-center px-3 py-1.5 text-xs font-bold rounded-full",
+                    style: { backgroundColor: '#fef3c7', color: '#d97706' },
+                    icon: "fas fa-clock",
+                    text: "រង់ចាំ"
+                };
+        }
+    };
+
     return (
-        <>
-            <div className="p-4 sm:p-6">
-                <div className="grid gap-4 sm:gap-6">
-                    {validRequests.map((request) => (
-                        <div key={request.id} className="bg-gray-50 rounded-lg p-4 sm:p-6 hover:bg-gray-100 transition-colors duration-200 border border-gray-200">
-                            {/* Header Row */}
-                            <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between mb-4 space-y-2 sm:space-y-0">
-                                <div className="flex-1">
-                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 mb-2">
-                                        <h3 className="text-base sm:text-lg font-semibold text-gray-900">{request.name}</h3>
-                                        <span className={`inline-flex px-3 py-1 text-xs font-semibold rounded-full border ${getStatusColor(request.status?.name)}`}>
-                                            {request.status?.name || 'Pending'}
+        <div className="rounded-xl border border-gray-200 shadow-md">
+            <div className="overflow-x-auto overflow-y-auto max-h-screen">
+                <table className="min-w-full divide-y divide-gray-200 table-fixed w-full" style={{ minWidth: '1400px' }}>
+                    <thead className="bg-gray-100 hidden md:table-header-group sticky top-0 z-10 border-b-2 border-gray-200">
+                        <tr>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">
+                                លេខសម្គាល់
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">
+                                ឈ្មោះអតិថិជន
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-40">
+                                ស្ថានភាព
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
+                                លេខទូរស័ព្ទ
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-44">
+                                ប្រភេទសេវាកម្ម
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
+                                ភូមិ
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
+                                ឃុំ/សង្កាត់
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
+                                ស្រុក
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
+                                ខេត្ត
+                            </th>
+                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-36">
+                                សកម្មភាព
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody className="bg-white divide-y divide-gray-200">
+                        {validRequests.map((request) => {
+                            const statusStyling = getStatusStyling(request.status);
+
+    return (
+                                <tr key={request.id} className="hover:bg-gray-50 transition duration-200 ease-in-out md:table-row flex flex-col md:flex-row border border-gray-200 md:border-none mb-4 md:mb-0 rounded-lg md:rounded-none p-4 md:p-0 bg-white shadow-lg md:shadow-none">
+                                    {/* ID */}
+                                    <td className="px-6 py-3 text-sm text-gray-500 md:table-cell flex items-center md:items-start border-b border-gray-100 md:border-none last:border-b-0 before:content-[attr(data-label)] before:font-semibold before:text-gray-700 before:w-32 before:flex-shrink-0 before:mr-4 md:before:content-none" data-label="លេខសម្គាល់:">
+                                        {request.id}
+                                    </td>
+
+                                    {/* Customer Name */}
+                                    <td className="px-6 py-3 text-sm font-medium text-gray-900 md:table-cell flex items-center md:items-start border-b border-gray-100 md:border-none last:border-b-0 before:content-[attr(data-label)] before:font-semibold before:text-gray-700 before:w-32 before:flex-shrink-0 before:mr-4 md:before:content-none" data-label="ឈ្មោះអតិថិជន:">
+                                        {request.name}
+                                    </td>
+
+                                    {/* Status */}
+                                    <td className="px-6 py-3 text-sm text-gray-500 md:table-cell flex items-center md:items-start border-b border-gray-100 md:border-none last:border-b-0 before:content-[attr(data-label)] before:font-semibold before:text-gray-700 before:w-32 before:flex-shrink-0 before:mr-4 md:before:content-none" data-label="ស្ថានភាព:">
+                                        <span className={statusStyling.className} style={statusStyling.style}>
+                                            <i className={`${statusStyling.icon} mr-2`}></i>
+                                            {statusStyling.text}
                                         </span>
-                                    </div>
-                                    <p className="text-sm text-gray-600">Request #{request.id}</p>
-                                </div>
-                                <div className="text-left sm:text-right">
-                                    <p className="text-sm text-gray-500">ថ្ងៃស្នើរសុំ</p>
-                                    <p className="text-sm font-medium text-gray-900">{formatDate(request.created_at)}</p>
-                                </div>
-                            </div>
+                                    </td>
 
-                            {/* Main Content Grid */}
-                            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
-                                {/* Customer & Service Info */}
-                                <div className="space-y-4">
-                                    <div>
-                                        <h4 className="text-sm font-medium text-gray-700 mb-2">Customer Information</h4>
-                                        <div className="space-y-2">
-                                            {request.phone && (
-                                                <div className="flex items-center gap-2 text-sm">
-                                                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-                                                    </svg>
-                                                    <span className="text-gray-900">{request.phone}</span>
-                                                </div>
-                                            )}
-                                            {request.email && (
-                                                <div className="flex items-center gap-2 text-sm">
-                                                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                                    </svg>
-                                                    <span className="text-gray-900">{request.email}</span>
-                                                </div>
-                                            )}
-                                            {request.occupation && request.occupation.name && (
-                                                <div className="flex items-center gap-2 text-sm">
-                                                    <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                                    </svg>
-                                                    <span className="text-gray-900">{request.occupation.name}</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
 
-                                    <div>
-                                        <h4 className="text-sm font-medium text-gray-700 mb-2">Service Details</h4>
-                                        <div className="space-y-2">
-                                            <div className="flex items-center gap-2 text-sm">
-                                                <svg className="w-4 h-4 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                                </svg>
-                                                <span className="text-gray-900 font-medium">{request.service_type}</span>
-                                            </div>
-                                            {request.details && (
-                                                <p className="text-sm text-gray-600" style={{
-                                                    display: '-webkit-box',
-                                                    WebkitLineClamp: 2,
-                                                    WebkitBoxOrient: 'vertical',
-                                                    overflow: 'hidden'
-                                                }}>{request.details}</p>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
+                                    {/* Phone */}
+                                    <td className="px-6 py-3 text-sm text-gray-500 md:table-cell flex items-center md:items-start border-b border-gray-100 md:border-none last:border-b-0 before:content-[attr(data-label)] before:font-semibold before:text-gray-700 before:w-32 before:flex-shrink-0 before:mr-4 md:before:content-none" data-label="លេខទូរស័ព្ទ:">
+                                        {request.phone || 'N/A'}
+                                    </td>
 
-                                {/* Family & Location Info */}
-                                <div className="space-y-4">
-                                    <div>
-                                        <h4 className="text-sm font-medium text-gray-700 mb-2">Family Information</h4>
-                                        <div className="space-y-2">
-                                            {request.family_members && (
-                                                <div className="flex items-center gap-2 text-sm">
-                                                    <svg className="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                                                    </svg>
-                                                    <span className="text-gray-900">{request.family_members} members</span>
-                                                </div>
-                                            )}
-                                            {request.female_members && (
-                                                <div className="flex items-center gap-2 text-sm">
-                                                    <svg className="w-4 h-4 text-pink-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                                    </svg>
-                                                    <span className="text-gray-900">{request.female_members} female members</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
+                                    {/* Service Type */}
+                                    <td className="px-6 py-3 text-sm text-gray-500 md:table-cell flex items-center md:items-start border-b border-gray-100 md:border-none last:border-b-0 before:content-[attr(data-label)] before:font-semibold before:text-gray-700 before:w-32 before:flex-shrink-0 before:mr-4 md:before:content-none" data-label="ប្រភេទសេវាកម្ម:">
+                                        {request.service_type || 'ការដាក់ពាក្រស្នើសុំប្រើប្រាស់ទឹកស្អាត'}
+                                    </td>
 
-                                    <div>
-                                        <h4 className="text-sm font-medium text-gray-700 mb-2">Location</h4>
-                                        <div className="space-y-2">
-                                            {request.village && (
-                                                <div className="flex items-center gap-2 text-sm">
-                                                    <svg className="w-4 h-4 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                                                    </svg>
-                                                    <span className="text-gray-900">ភូមិ {request.village}</span>
-                                                </div>
-                                            )}
-                                            {request.province && request.province.name && (
-                                                <div className="flex items-center gap-2 text-sm">
-                                                    <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                    </svg>
-                                                    <span className="text-gray-900">ខេត្ត {request.province.name}</span>
-                                                </div>
-                                            )}
-                                            {request.district && request.district.name && (
-                                                <div className="flex items-center gap-2 text-sm">
-                                                    <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                    </svg>
-                                                    <span className="text-gray-900">ស្រុក {request.district.name}</span>
-                                                </div>
-                                            )}
-                                            {request.commune && request.commune.name && (
-                                                <div className="flex items-center gap-2 text-sm">
-                                                    <svg className="w-4 h-4 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-                                                    </svg>
-                                                    <span className="text-gray-900">ឃុំ/សង្កាត់ {request.commune.name}</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
-                                </div>
+                                    {/* Village */}
+                                    <td className="px-6 py-3 text-sm text-gray-500 md:table-cell flex items-center md:items-start border-b border-gray-100 md:border-none last:border-b-0 before:content-[attr(data-label)] before:font-semibold before:text-gray-700 before:w-32 before:flex-shrink-0 before:mr-4 md:before:content-none" data-label="ភូមិ:">
+                                        {request.village || 'N/A'}
+                                    </td>
 
-                                {/* Additional Info & Actions */}
-                                <div className="space-y-4">
-                                    <div>
-                                        <h4 className="text-sm font-medium text-gray-700 mb-2">Additional Information</h4>
-                                        <div className="space-y-2">
-                                            {request.usage_type && request.usage_type.name && (
-                                                <div className="flex items-center gap-2 text-sm">
-                                                    <svg className="w-4 h-4 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                                                    </svg>
-                                                    <span className="text-gray-900">{request.usage_type.name}</span>
-                                                </div>
-                                            )}
-                                        </div>
-                                    </div>
+                                    {/* Commune */}
+                                    <td className="px-6 py-3 text-sm text-gray-500 md:table-cell flex items-center md:items-start border-b border-gray-100 md:border-none last:border-b-0 before:content-[attr(data-label)] before:font-semibold before:text-gray-700 before:w-32 before:flex-shrink-0 before:mr-4 md:before:content-none" data-label="ឃុំ/សង្កាត់:">
+                                        {request.commune?.name || 'N/A'}
+                                    </td>
 
-                                    <div className="pt-4">
-                                        <div className="flex flex-col sm:flex-row gap-2">
-                                            <button
-                                                onClick={() => openDetailModal(request)}
-                                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-indigo-600 text-white text-sm font-medium rounded-md hover:bg-indigo-700 transition-colors duration-200"
-                                            >
-                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 0 16 0z" />
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                                                </svg>
-                                                <span className="hidden sm:inline">View Details</span>
-                                                <span className="sm:hidden">Details</span>
-                                            </button>
+                                    {/* District */}
+                                    <td className="px-6 py-3 text-sm text-gray-500 md:table-cell flex items-center md:items-start border-b border-gray-100 md:border-none last:border-b-0 before:content-[attr(data-label)] before:font-semibold before:text-gray-700 before:w-32 before:flex-shrink-0 before:mr-4 md:before:content-none" data-label="ស្រុក:">
+                                        {request.district?.name || 'N/A'}
+                                    </td>
+
+                                    {/* Province */}
+                                    <td className="px-6 py-3 text-sm text-gray-500 md:table-cell flex items-center md:items-start border-b border-gray-100 md:border-none last:border-b-0 before:content-[attr(data-label)] before:font-semibold before:text-gray-700 before:w-32 before:flex-shrink-0 before:mr-4 md:before:content-none" data-label="ខេត្ត:">
+                                        {request.province?.name || 'N/A'}
+                                    </td>
+
+                                    {/* Actions */}
+                                    <td className="px-6 py-4 text-sm font-medium md:table-cell flex justify-center md:justify-start items-center border-t-2 border-gray-200 md:border-none pt-4 md:pt-4 mt-4 md:mt-0">
+                                        <div className="flex space-x-2 justify-center">
                                             <button
                                                 onClick={() => openStatusModal(request)}
-                                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors duration-200"
+                                                title="Update Status"
+                                                className="text-blue-600 hover:text-blue-800 transition duration-300 p-3 rounded-lg hover:bg-blue-50 border border-blue-200"
                                             >
-                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                                                </svg>
-                                                <span className="hidden sm:inline">Update Status</span>
-                                                <span className="sm:hidden">Status</span>
+                                                <i className="fas fa-edit"></i>
+                                            </button>
+                                            <button
+                                                onClick={() => openDetailModal(request)}
+                                                title="View Details"
+                                                className="text-gray-600 hover:text-gray-800 transition duration-300 p-3 rounded-lg hover:bg-gray-50 border border-gray-200"
+                                            >
+                                                <i className="fas fa-eye"></i>
                                             </button>
                                             <button
                                                 onClick={() => openDeleteModal(request)}
-                                                className="w-full sm:w-auto flex items-center justify-center gap-2 px-3 sm:px-4 py-2 bg-red-600 text-white text-sm font-medium rounded-md hover:bg-red-700 transition-colors duration-200"
+                                                title="Delete"
+                                                className="text-red-600 hover:text-red-800 transition duration-300 p-3 rounded-lg hover:bg-red-50 border border-red-200"
                                             >
-                                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 01 16.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                                </svg>
-                                                <span className="hidden sm:inline">Delete Request</span>
-                                                <span className="sm:hidden">Delete</span>
+                                                <i className="fas fa-trash-alt"></i>
                                             </button>
                                         </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                                    </td>
+                                </tr>
+                            );
+                        })}
+                    </tbody>
+                </table>
                 </div>
             </div>
-
-
-        </>
     );
 };
 

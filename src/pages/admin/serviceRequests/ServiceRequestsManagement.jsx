@@ -23,6 +23,10 @@ function ServiceRequestsManagement() {
     const [selectedStatus, setSelectedStatus] = useState('all');
     const [dataFetched, setDataFetched] = useState(false); // Flag to prevent multiple fetches
 
+    // Search functionality state
+    const [searchQuery, setSearchQuery] = useState('');
+    const [searchType, setSearchType] = useState('name'); // 'name' or 'phone'
+    const [isSearching, setIsSearching] = useState(false);
 
     // Simple state for all requests
     const [totalRequests, setTotalRequests] = useState(0);
@@ -52,7 +56,7 @@ function ServiceRequestsManagement() {
         }
 
         try {
-            setLoading(true);
+            setLoading(true);   
             setError('');
 
             // Fetch both APIs simultaneously
@@ -100,8 +104,8 @@ function ServiceRequestsManagement() {
         }
     }, [dataFetched, loading]); // Include dataFetched to prevent multiple calls
 
-    // Fetch service requests with status filter (for filtering only)
-    const fetchServiceRequests = useCallback(async (statusFilter = null) => {
+    // Fetch service requests with status filter and search (for filtering only)
+    const fetchServiceRequests = useCallback(async (statusFilter = null, searchTerm = null, searchTypeParam = null) => {
         // Prevent multiple simultaneous calls
         if (loading) {
             return;
@@ -123,6 +127,14 @@ function ServiceRequestsManagement() {
                 if (selectedStatusObj) {
                     queryParams.append('status', selectedStatusObj.name);
                 }
+            }
+
+            // Add search parameters if provided
+            const currentSearchTerm = searchTerm !== null ? searchTerm : searchQuery;
+            const currentSearchType = searchTypeParam !== null ? searchTypeParam : searchType;
+            
+            if (currentSearchTerm && currentSearchTerm.trim() !== '') {
+                queryParams.append(currentSearchType, currentSearchTerm.trim());
             }
 
             const response = await apiService.getAdminServiceRequests(queryParams);
@@ -155,7 +167,7 @@ function ServiceRequestsManagement() {
         } finally {
             setLoading(false);
         }
-    }, [statuses, selectedStatus, loading]);
+    }, [statuses, selectedStatus, loading, searchQuery, searchType]);
 
     // Initial data fetch - only run once on mount
     useEffect(() => {
@@ -272,6 +284,36 @@ function ServiceRequestsManagement() {
         });
     }, []);
 
+    // Search functionality handlers
+    const handleSearch = async () => {
+        if (!searchQuery.trim()) {
+            // If search is empty, fetch all requests
+            fetchServiceRequests();
+            return;
+        }
+
+        setIsSearching(true);
+        try {
+            await fetchServiceRequests(null, searchQuery, searchType);
+        } finally {
+            setIsSearching(false);
+        }
+    };
+
+    const handleSearchInputChange = (e) => {
+        setSearchQuery(e.target.value);
+    };
+
+    const handleSearchTypeChange = (e) => {
+        setSearchType(e.target.value);
+    };
+
+    const handleSearchKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            handleSearch();
+        }
+    };
+
     // Export to Excel function
     const exportToExcel = useCallback(async () => {
         try {
@@ -283,17 +325,17 @@ function ServiceRequestsManagement() {
             // Prepare data for Excel export
             const excelData = allRequests.map((request, index) => ({
                 'No.': index + 1,
-                'Customer Name': request.name || '',
-                'Phone': request.phone || '',
-                'Service Type': request.service_type || '',
-                'Family Members': request.family_members || '',
-                'Female Members': request.female_members || '',
-                'Village': request.village || '',
-                'Province': request.province?.name || '',
-                'District': request.district?.name || '',
-                'Commune': request.commune?.name || '',
-                'Occupation': request.occupation?.name || '',
-                'Usage Type': request.usage_type?.name || '',
+                'ឈ្មោះអតិថិជន': request.name || '',
+                'លេខទូរសព្ទ': request.phone || '',
+                'ប្រភេទសេវាកម្ម': request.service_type || '',
+                'ចំនួនសមាជិកគ្រួសារ': request.family_members || '',
+                'ស្រីចំនួន': request.female_members || '',
+                'ភូមិ': request.village || '',
+                'ខេត្ត': request.province?.name || '',
+                'ស្រុក': request.district?.name || '',
+                'ឃុំ/សង្កាត់': request.commune?.name || '',
+                'មុខរបរ': request.occupation?.name || '',
+                'ប្រភេទនៃការប្រើប្រាស់': request.usage_type?.name || '',
                 'Details': request.details || '',
                 'Status': request.status?.name || 'Pending',
                 'Created Date': formatDate(request.created_at),
@@ -428,45 +470,92 @@ function ServiceRequestsManagement() {
                                 </div>
                             </div>
                         ) : (
-                            <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                                <span className="text-sm font-medium text-gray-700">Filter by:</span>
+                            <div className="space-y-4">
+                                <h3 className="text-sm font-medium text-gray-700">Filter by:</h3>
 
-                                <div className="flex flex-col sm:flex-row gap-4">
-                                    {/* Status Filter */}
-                                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                                        <label className="text-sm text-gray-600">Status:</label>
-                                        <select
-                                            value={selectedStatus}
-                                            onChange={(e) => setSelectedStatus(e.target.value)}
-                                            className="w-full sm:w-auto p-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500"
-                                        >
-                                            <option value="all">All Statuses</option>
-                                            {statuses.map((status) => (
-                                                <option key={status.id} value={status.id}>
-                                                    {status.name}
-                                                </option>
-                                            ))}
-                                        </select>
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    {/* Status Filter with Clear Button */}
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-sm text-gray-600 font-medium">Status:</label>
+                                        <div className="flex gap-2">
+                                            <select
+                                                value={selectedStatus}
+                                                onChange={(e) => setSelectedStatus(e.target.value)}
+                                                className="flex-1 p-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                            >
+                                                <option value="all">All Statuses</option>
+                                                {statuses.map((status) => (
+                                                    <option key={status.id} value={status.id}>
+                                                        {status.name}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <button
+                                                onClick={() => {
+                                                    setSelectedStatus('all');
+                                                    setSearchQuery('');
+                                                    setSearchType('name');
+                                                    // Refetch data
+                                                    fetchServiceRequests('all');
+                                                }}
+                                                className="px-3 py-2.5 text-sm bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors font-medium whitespace-nowrap"
+                                                title="Clear All Filters"
+                                            >
+                                                <i className="fas fa-times"></i>
+                                                <span className="hidden sm:inline ml-2">Clear</span>
+                                            </button>
+                                        </div>
                                     </div>
 
-                                    {/* Clear Filters Button */}
-                                    <button
-                                        onClick={() => {
-                                            setSelectedStatus('all');
-                                            // Refetch data
-                                            fetchServiceRequests('all');
-                                        }}
-                                        className="w-full sm:w-auto px-3 py-2 text-sm bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition-colors"
-                                    >
-                                        Clear All Filters
-                                    </button>
-
-                                    {/* Filter Results Info */}
-                                    {selectedStatus !== 'all' && (
-                                        <div className="text-sm text-blue-600 bg-blue-50 px-3 py-1 rounded-md text-center sm:text-left">
-                                            Showing {serviceRequests.length} requests
+                                    {/* Search Filter */}
+                                    <div className="flex flex-col gap-2">
+                                        <label className="text-sm text-gray-600 font-medium">Search:</label>
+                                        <div className="flex flex-col sm:flex-row gap-3">
+                                            {/* Search Type Selector */}
+                                            <div className="w-full sm:w-auto">
+                                                <select
+                                                    value={searchType}
+                                                    onChange={handleSearchTypeChange}
+                                                    className="w-full sm:w-32 p-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                                >
+                                                    <option value="name">Name</option>
+                                                    <option value="phone">Phone</option>
+                                                </select>
+                                            </div>
+                                            
+                                            {/* Search Input */}
+                                            <div className="relative flex-1 sm:min-w-64">
+                                                <input
+                                                    type="text"
+                                                    value={searchQuery}
+                                                    onChange={handleSearchInputChange}
+                                                    onKeyPress={handleSearchKeyPress}
+                                                    placeholder={`Search by ${searchType}...`}
+                                                    className="w-full pl-4 pr-20 py-2.5 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 text-sm"
+                                                />
+                                                <div className="absolute inset-y-0 right-0 flex items-center pr-1">
+                                                    <button
+                                                        onClick={handleSearch}
+                                                        disabled={isSearching}
+                                                        className="p-1.5 ml-1 text-blue-600 hover:text-blue-800 disabled:text-gray-400 rounded-full hover:bg-blue-50"
+                                                        title="Search"
+                                                    >
+                                                        {isSearching ? (
+                                                            <i className="fas fa-spinner fa-spin text-xs"></i>
+                                                        ) : (
+                                                            <i className="fas fa-search text-xs"></i>
+                                                        )}
+                                                    </button>
+                                                </div>
+                                            </div>
                                         </div>
-                                    )}
+                                    </div>
+                                </div>
+
+                                {/* Results Info */}
+                                <div className="text-sm text-blue-600 px-3 py-2 rounded-md text-end">
+                                    <i className="fas fa-info-circle mr-1"></i>
+                                    Showing {serviceRequests.length} results
                                 </div>
                             </div>
                         )}
@@ -548,11 +637,7 @@ function ServiceRequestsManagement() {
 
                     {/* Service Requests Table */}
                     <div className="bg-white shadow rounded-lg overflow-hidden">
-                        <div className="px-6 py-4 border-b border-gray-200">
-                            <div className="flex items-center justify-between">
-                                <h2 className="text-lg font-medium text-gray-900">All Service Requests</h2>
-                            </div>
-                        </div>
+                        
 
                         <ServiceRequestsList
                             serviceRequests={serviceRequests}

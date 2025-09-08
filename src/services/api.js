@@ -307,6 +307,8 @@ class ApiService {
   async getAdminServiceRequests(queryParams = '') {
     // Check if we're filtering by status
     const statusParam = queryParams.get ? queryParams.get('status') : null;
+    const nameParam = queryParams.get ? queryParams.get('name') : null;
+    const phoneParam = queryParams.get ? queryParams.get('phone') : null;
     
     let url;
     if (statusParam) {
@@ -315,6 +317,16 @@ class ApiService {
     } else {
       // Use the general endpoint for all requests
       url = '/admin/service-requests';
+    }
+    
+    // Add search parameters if they exist
+    const searchParams = new URLSearchParams();
+    if (nameParam) searchParams.append('name', nameParam);
+    if (phoneParam) searchParams.append('phone', phoneParam);
+    
+    // If we have search params, append them to the URL
+    if (searchParams.toString()) {
+      url = `/service-requests?${searchParams.toString()}`;
     }
     
     // Check if we have a pending request for this URL

@@ -1,6 +1,6 @@
 import React from 'react';
 
-function BasicInformationStep({ formData, handleInputChange, categories }) {
+function BasicInformationStep({ formData, handleInputChange, categories, errors = {} }) {
     return (
         <div>
             {/* Service Information */}
@@ -42,10 +42,13 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                             name="name"
                             value={formData.name}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className={`w-full px-3 py-2 border ${errors.name ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                             placeholder="សូមបញ្ចូលឈ្មោះពេញ"
                             required
                         />
+                        {errors.name && (
+                            <p className="mt-1 text-sm text-red-600">{errors.name}</p>
+                        )}
                     </div>
 
                     {/* Phone */}
@@ -59,10 +62,13 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                             name="phone"
                             value={formData.phone}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className={`w-full px-3 py-2 border ${errors.phone ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                             placeholder="012 345 678"
                             required
                         />
+                        {errors.phone && (
+                            <p className="mt-1 text-sm text-red-600">{errors.phone}</p>
+                        )}
                     </div>
 
                     {/* Service Type */}
@@ -75,7 +81,7 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                             name="service_type"
                             value={formData.service_type}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className={`w-full px-3 py-2 border ${errors.service_type ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                             required
                         >
                             <option value="">សូមជ្រើសរើសប្រភេទសេវាកម្ម</option>
@@ -85,6 +91,9 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                             <option value="ការផ្លាស់ប្ដូរទីតាំងនាឡិការទឹក">ការផ្លាស់ប្ដូរទីតាំងនាឡិការទឹក</option>
 
                         </select>
+                        {errors.service_type && (
+                            <p className="mt-1 text-sm text-red-600">{errors.service_type}</p>
+                        )}
                     </div>
 
                     {/* Family Members */}
@@ -99,10 +108,13 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                             value={formData.family_members}
                             onChange={handleInputChange}
                             min="1"
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className={`w-full px-3 py-2 border ${errors.family_members ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                             placeholder="ចំនួនសមាជិក"
                             required
                         />
+                        {errors.family_members && (
+                            <p className="mt-1 text-sm text-red-600">{errors.family_members}</p>
+                        )}
                     </div>
 
                     {/* Female Members */}
@@ -118,10 +130,13 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                             onChange={handleInputChange}
                             min="0"
                             max={formData.family_members || 999}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className={`w-full px-3 py-2 border ${errors.female_members ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                             placeholder="ចំនួនសមាជិកស្រី"
                             required
                         />
+                        {errors.female_members && (
+                            <p className="mt-1 text-sm text-red-600">{errors.female_members}</p>
+                        )}
                     </div>
 
                     {/* Village */}
@@ -132,7 +147,7 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
             {/* Location Information */}
             <div className="mb-8">
                 <h3 className="text-lg font-semibold text-gray-800 mb-4">ព័ត៌មានទីតាំង</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                         <label htmlFor="village" className="block text-sm font-medium text-gray-700 mb-2">
                             ភូមិ <span className="text-red-500">*</span>
@@ -143,10 +158,13 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                             name="village"
                             value={formData.village}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className={`w-full px-3 py-2 border ${errors.village ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                             placeholder="ឈ្មោះភូមិ"
                             required
                         />
+                        {errors.village && (
+                            <p className="mt-1 text-sm text-red-600">{errors.village}</p>
+                        )}
                     </div>
                     {/* Province */}
                     <div>
@@ -158,7 +176,7 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                             name="province_id"
                             value={formData.province_id}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className={`w-full px-3 py-2 border ${errors.province_id ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                             required
                         >
                             <option value="">សូមជ្រើសរើសខេត្ត</option>
@@ -168,6 +186,9 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                                 </option>
                             ))}
                         </select>
+                        {errors.province_id && (
+                            <p className="mt-1 text-sm text-red-600">{errors.province_id}</p>
+                        )}
                     </div>
 
                     {/* District */}
@@ -180,7 +201,7 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                             name="district_id"
                             value={formData.district_id}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className={`w-full px-3 py-2 border ${errors.district_id ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                             required
                         >
                             <option value="">សូមជ្រើសរើសស្រុក</option>
@@ -190,6 +211,9 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                                 </option>
                             ))}
                         </select>
+                        {errors.district_id && (
+                            <p className="mt-1 text-sm text-red-600">{errors.district_id}</p>
+                        )}
                     </div>
 
                     {/* Commune */}
@@ -202,7 +226,7 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                             name="commune_id"
                             value={formData.commune_id}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className={`w-full px-3 py-2 border ${errors.commune_id ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                             required
                         >
                             <option value="">សូមជ្រើសរើសឃុំ/សង្កាត់</option>
@@ -212,6 +236,9 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                                 </option>
                             ))}
                         </select>
+                        {errors.commune_id && (
+                            <p className="mt-1 text-sm text-red-600">{errors.commune_id}</p>
+                        )}
                     </div>
                 </div>
             </div>
@@ -230,7 +257,7 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                             name="occupation_id"
                             value={formData.occupation_id}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className={`w-full px-3 py-2 border ${errors.occupation_id ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                             required
                         >
                             <option value="">សូមជ្រើសរើសមុខរបរ</option>
@@ -240,6 +267,9 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                                 </option>
                             ))}
                         </select>
+                        {errors.occupation_id && (
+                            <p className="mt-1 text-sm text-red-600">{errors.occupation_id}</p>
+                        )}
                     </div>
 
                     {/* Usage Type */}
@@ -252,7 +282,7 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                             name="usage_type_id"
                             value={formData.usage_type_id}
                             onChange={handleInputChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500"
+                            className={`w-full px-3 py-2 border ${errors.usage_type_id ? 'border-red-500' : 'border-gray-300'} rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500`}
                             required
                         >
                             <option value="">សូមជ្រើសរើសប្រភេទការប្រើប្រាស់</option>
@@ -266,6 +296,9 @@ function BasicInformationStep({ formData, handleInputChange, categories }) {
                                 <option value="" disabled>No usage types available</option>
                             )}
                         </select>
+                        {errors.usage_type_id && (
+                            <p className="mt-1 text-sm text-red-600">{errors.usage_type_id}</p>
+                        )}
                     </div>
 
                     {/* Details */}

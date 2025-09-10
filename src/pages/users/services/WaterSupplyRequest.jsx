@@ -47,7 +47,8 @@ function WaterSupplyRequest() {
         handleSubmit,
         setIsModalOpen,
         handlePrivacyChange,
-        scrollToTop
+        scrollToTop,
+        errors
     } = useWaterSupplyForm();
 
     useEffect(() => {
@@ -106,6 +107,7 @@ function WaterSupplyRequest() {
                         formData={formData}
                         handleInputChange={handleInputChange}
                         categories={categories}
+                        errors={errors}
                     />
                 );
             case 2:

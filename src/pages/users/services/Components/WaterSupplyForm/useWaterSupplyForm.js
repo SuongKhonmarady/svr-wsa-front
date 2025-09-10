@@ -7,6 +7,7 @@ export function useWaterSupplyForm() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitMessage, setSubmitMessage] = useState({ type: '', text: '' });
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const [errors, setErrors] = useState({});
     const [categories, setCategories] = useState({
         provinces: [],
         districts: [],
@@ -78,6 +79,14 @@ export function useWaterSupplyForm() {
             ...prev,
             [name]: value
         }));
+
+        // Clear error of this field when user starts fixing it
+        setErrors(prev => {
+            if (!prev[name]) return prev;
+            const next = { ...prev };
+            delete next[name];
+            return next;
+        });
     };
 
     const handlePrivacyChange = (e) => {
@@ -153,24 +162,28 @@ export function useWaterSupplyForm() {
                 'province_id', 'occupation_id', 'usage_type_id'
             ];
             
-            const missingFields = requiredFields.filter(field => !formData[field]);
-            
-            if (missingFields.length > 0) {
-                setSubmitMessage({
-                    type: 'error',
-                    text: 'សូមបំពេញព័ត៌មានចាំបាច់ទាំងអស់'
-                });
-                return false;
-            }
+            const fieldErrors = {};
+            requiredFields.forEach(field => {
+                if (!formData[field]) {
+                    fieldErrors[field] = 'សូមបំពេញព័ត៌មាននេះ';
+                }
+            });
 
             // Validate family members count
             if (parseInt(formData.female_members) > parseInt(formData.family_members)) {
+                fieldErrors.female_members = 'មិនអាចច្រើនជាងចំនួនសមាជិកគ្រួសារ';
+            }
+
+            if (Object.keys(fieldErrors).length > 0) {
+                setErrors(fieldErrors);
                 setSubmitMessage({
                     type: 'error',
-                    text: 'ចំនួនសមាជិកស្រីមិនអាចច្រើនជាងចំនួនសមាជិកគ្រួសារបានទេ'
+                    text: 'សូមពិនិត្យ និងបំពេញព័ត៌មានដែលខ្វះ'
                 });
                 return false;
             }
+            // Clear errors when valid
+            setErrors({});
         }
 
         if (currentStep === 2) {
@@ -212,6 +225,7 @@ export function useWaterSupplyForm() {
 
     const handlePrevStep = () => {
         setSubmitMessage({ type: '', text: '' });
+        setErrors({});
         setIsStepTransitioning(true);
         
         setTimeout(() => {
@@ -249,6 +263,7 @@ export function useWaterSupplyForm() {
         });
         setCurrentStep(1);
         setPrivacyAccepted(false);
+        setErrors({});
     };
 
     const handleSubmit = async (e) => {
@@ -359,6 +374,7 @@ export function useWaterSupplyForm() {
         documentPreviews,
         categories,
         privacyAccepted,
+        errors,
         
         // Actions
         handleInputChange,

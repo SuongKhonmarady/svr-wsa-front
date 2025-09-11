@@ -38,6 +38,9 @@ function SuccessMessage({ isOpen, onClose, title, message }) {
             <p className="text-md text-gray-600">
               {message}
             </p>
+            <p className="text-sm text-gray-500 mt-1 italic">
+              ពួកយើងនិងទាក់ទងទៅវិញតាមរយៈលេខទូរស័ព្ទលោកអ្នកក្នុងពេលឆាប់ៗនេះ។
+            </p>
           </div>
         </div>
 

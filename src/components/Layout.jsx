@@ -8,9 +8,14 @@ function Layout({ children, activeNav, setActiveNav }) {
   const location = useLocation()
   const [selectedLanguage, setSelectedLanguage] = useState('kh')
   const [isLanguageDropdownOpen, setIsLanguageDropdownOpen] = useState(false)
+  const [isSearchOpen, setIsSearchOpen] = useState(false)
   
   // Auto-scroll to top on route change
   useScrollToTop()
+
+  const handleSearchStateChange = (searchOpen) => {
+    setIsSearchOpen(searchOpen)
+  }
 
   const languages = [
     { code: 'kh', name: 'ខ្មែរ', flag: '/image/kh-flag.jpg' },
@@ -167,22 +172,30 @@ function Layout({ children, activeNav, setActiveNav }) {
             <div className="flex flex-col sm:flex-row items-center justify-between w-full space-y-4 sm:space-y-0">
               <div className="flex items-center space-x-3 sm:space-x-8 w-full sm:w-auto">
                 <div className="relative group flex-shrink-0">
-                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-300 to-cyan-400 rounded-full blur opacity-30 group-hover:opacity-50 transition duration-300"></div>
+                  <div className="absolute -inset-1 bg-gradient-to-r from-blue-300 to-cyan-400 rounded-full blur opacity-250 group-hover:opacity-50 transition duration-300"></div>
                   <a href="/">
                     <img
-                      src="/image/រដ្ឋាករទឹកស្វាយរៀង (4).png"
+                      src="/image/wusvr-logo(2).png"
                       alt="SVR Water Utility Logo"
-                      className="relative h-14 w-14 sm:h-20 sm:w-20 lg:h-30 lg:w-30 rounded-full border-2 sm:border-4 border-blue-300 object-cover shadow-xl group-hover:scale-105 transition-transform duration-300"
+                      className="relative h-14 w-14 sm:h-20 sm:w-20 lg:h-30 lg:w-30 rounded-full object-cover shadow-xl group-hover:scale-105 transition-transform duration-300"
                     />
                   </a>
                 </div>
 
                 <div className="space-y-1 sm:space-y-2 min-w-0 flex-1">
-                  <h1 className="text-lg sm:text-2xl md:text-3xl lg:text-4xl font-bold text-blue-700 tracking-tight leading-tight khmer-title break-words">
+                  <h1 className={`font-bold text-blue-700 tracking-tight leading-tight khmer-title break-words text-lg sm:text-2xl lg:text-4xl ${
+                    isSearchOpen 
+                      ? 'md:text-2xl' 
+                      : 'md:text-3xl'
+                  }`}>
                     រដ្ឋាករទឹកស្វាយរៀង
                   </h1>
                   <div className="flex items-center space-x-2 sm:space-x-3">
-                    <p className="text-xs sm:text-sm md:text-base lg:text-3xl text-blue-800 font-semibold leading-tight">SVAY RIENG WATER UTILITY</p>
+                    <p className={`text-blue-800 font-semibold leading-tight text-xs sm:text-sm lg:text-3xl ${
+                      isSearchOpen 
+                        ? 'md:text-sm' 
+                        : 'md:text-base'
+                    }`}>SVAY RIENG WATER UTILITY</p>
                   </div>
                 </div>
               </div>
@@ -190,14 +203,22 @@ function Layout({ children, activeNav, setActiveNav }) {
               <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-4 items-center w-full sm:w-auto">
 
                 {/* Enhanced Search Component with Mobile Support */}
-                <GlobalSearch />
+                <GlobalSearch onSearchStateChange={handleSearchStateChange} />
 
                 {/* Service Status Cards - Hidden on small mobile, visible on larger screens */}
                 <div className="hidden md:flex items-center space-x-3 order-1 sm:order-2">
-                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 px-3 sm:px-4 py-2 sm:py-3 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-200">
+                  <div className={`bg-gradient-to-br from-blue-50 to-cyan-50 border border-blue-200 rounded-xl shadow-md hover:shadow-lg px-3 sm:px-4 py-2 sm:py-3 ${
+                    isSearchOpen 
+                      ? 'md:px-2 md:py-2' 
+                      : ''
+                  }`}>
                     <div className="flex items-center space-x-2">
                       <div>
-                        <div className="text-blue-700 font-bold text-xs sm:text-sm">សេវាកម្ម ២៤/៧</div>
+                        <div className={`text-blue-700 font-bold text-xs sm:text-sm ${
+                          isSearchOpen 
+                            ? 'md:text-xs' 
+                            : ''
+                        }`}>សេវាកម្ម ២៤/៧</div>
                         <div className="text-blue-600 text-xs">តែងតែបម្រើដល់អ្នក</div>
                       </div>
                     </div>
@@ -222,7 +243,7 @@ function Layout({ children, activeNav, setActiveNav }) {
               <div className="md:col-span-1">
                 <div className="flex items-center space-x-4 mb-6">
                   <img
-                    src="/image/រដ្ឋាករទឹកស្វាយរៀង (4).png"
+                    src="/image/wusvr-logo(2).png"
                     alt="Company Logo"
                     className="h-24 w-24 rounded-full object-cover border-2 border-gray-600"
                   />

@@ -18,7 +18,7 @@ function Navbar({ activeNav, setActiveNav }) {
 
   const aboutDropdownItems = [
     { id: 'about', label: 'អំពី រ.ស.រ', href: '/about'},
-    { id: 'team', label: 'ក្រុមការងារ', href: '/about/team'},
+    { id: 'team', label: 'រចនាសម្ព័ន្ធ', href: '/about/team'},
     { id: 'location-map', label: 'ផែនទីទីតាំង', href: '/about/location'}
   ]
 

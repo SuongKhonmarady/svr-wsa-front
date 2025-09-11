@@ -6,7 +6,7 @@ function TeamLists() {
       {
         name: "លោក A",
         position: "អគ្គនាយក",
-        image: "/image/410640094_122096341784159313_2294110224216625627_n.jpg"
+        image: "/image/wusvr-logo(2).png"
       }
     ],
     managers: [
@@ -14,13 +14,13 @@ function TeamLists() {
         name: "លោក B",
         position: "អគ្គនាយករង",
         description: "ជំនាញពិសេសក្នុងការចម្រាញ់ទឹក និងបច្ចេកវិទ្យាទំនើប",
-        image: "/image/410640094_122096341784159313_2294110224216625627_n.jpg"
+        image: "/image/wusvr-logo(2).png"
       },
       {
         name: "លោក C",
         position: "អគ្គនាយករង",
         description: "ការធានាសេវាកម្មល្អបំផុតដល់អតិថិជនគ្រប់រូប",
-        image: "/image/410640094_122096341784159313_2294110224216625627_n.jpg"
+        image: "/image/wusvr-logo(2).png"
       }
     ],
     supervisors: [
@@ -28,25 +28,25 @@ function TeamLists() {
         name: "លោក D",
         position: "ប្រធាន",
         description: "ការគ្រប់គ្រងផ្នែកបច្ចេកទេស",
-        image: "/image/410640094_122096341784159313_2294110224216625627_n.jpg"
+        image: "/image/wusvr-logo(2).png"
       },
       {
         name: "លោក E",
         position: "ប្រធាន",
         description: "ការគ្រប់គ្រងផ្នែកសេវាកម្មអតិថិជន",
-        image: "/image/410640094_122096341784159313_2294110224216625627_n.jpg"
+        image: "/image/wusvr-logo(2).png"
       },
       {
         name: "លោក F",
         position: "ប្រធាន",
         description: "ការគ្រប់គ្រងផ្នែកហិរញ្ញវត្ថុ",
-        image: "/image/410640094_122096341784159313_2294110224216625627_n.jpg"
+        image: "/image/wusvr-logo(2).png"
       },
       {
         name: "លោក G",
         position: "ប្រធាន",
         description: "ការគ្រប់គ្រងផ្នែកធនធានមនុស្ស",
-        image: "/image/410640094_122096341784159313_2294110224216625627_n.jpg"
+        image: "/image/wusvr-logo(2).png"
       }
     ],
     staff: [
@@ -54,25 +54,25 @@ function TeamLists() {
         name: "លោក H",
         position: "បុគ្គលិក",
         description: "ជំនាញបច្ចេកទេស",
-        image: "/image/410640094_122096341784159313_2294110224216625627_n.jpg"
+        image: "/image/wusvr-logo(2).png"
       },
       {
         name: "លោក I",
         position: "បុគ្គលិក",
         description: "ជំនាញសេវាកម្មអតិថិជន",
-        image: "/image/410640094_122096341784159313_2294110224216625627_n.jpg"
+        image: "/image/wusvr-logo(2).png"
       },
       {
         name: "លោក J",
         position: "បុគ្គលិក",
         description: "ជំនាញហិរញ្ញវត្ថុ",
-        image: "/image/410640094_122096341784159313_2294110224216625627_n.jpg"
+        image: "/image/wusvr-logo(2).png"
       },
       {
         name: "លោក K",
         position: "បុគ្គលិក",
         description: "ជំនាញធនធានមនុស្ស",
-        image: "/image/410640094_122096341784159313_2294110224216625627_n.jpg"
+        image: "/image/wusvr-logo(2).png"
       }
     ]
   }

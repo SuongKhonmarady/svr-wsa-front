@@ -312,7 +312,7 @@ export function useWaterSupplyForm() {
             if (response.data && response.data.success) {
                 setSubmitMessage({
                     type: 'success',
-                    text: response.data.message || 'សំណើសេវាកម្មរបស់អ្នកត្រូវបានដាក់ស្នើដោយជោគជ័យ!'
+                    text: 'សំណើសេវាកម្មរបស់អ្នកត្រូវបានដាក់ស្នើដោយជោគជ័យ!'
                 });
                 setIsModalOpen(true);
                 resetForm();

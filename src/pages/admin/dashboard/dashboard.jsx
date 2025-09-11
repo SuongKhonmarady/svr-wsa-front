@@ -450,7 +450,7 @@ function AdminDashboard() {
           <div className="lg:col-span-2">
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
               <div className="flex items-center justify-between mb-6">
-                <h3 className="text-xl font-semibold text-gray-900">Customer Growth 2025</h3>
+                <h3 className="text-xl font-semibold text-gray-900">Customer Growth {new Date().getFullYear()}</h3>
                 <div className="text-sm text-gray-500">
                   {loading ? 'Loading...' : 'Monthly new customer registrations'}
                 </div>

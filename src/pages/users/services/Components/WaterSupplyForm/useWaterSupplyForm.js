@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import apiService from '../../../../../services/api';
-import { compressDocumentImage, isValidImageFile, formatFileSize } from '../../../../../utils/imageCompression';
 
 export function useWaterSupplyForm() {
     const [currentStep, setCurrentStep] = useState(1);
@@ -100,7 +99,8 @@ export function useWaterSupplyForm() {
             const file = files[0];
 
             // Validate file type (only supported image formats)
-            if (!isValidImageFile(file)) {
+            const supportedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
+            if (!supportedTypes.includes(file.type)) {
                 setSubmitMessage({
                     type: 'error',
                     text: 'សូមជ្រើសរើសឯកសាររូបភាពតែប៉ុណ្ណោះ (PNG, JPG, JPEG)'
@@ -108,7 +108,7 @@ export function useWaterSupplyForm() {
                 return;
             }
 
-            // Validate original file size (max 5MB)
+            // Validate file size (max 5MB)
             if (file.size > 5 * 1024 * 1024) {
                 setSubmitMessage({
                     type: 'error',
@@ -117,52 +117,32 @@ export function useWaterSupplyForm() {
                 return;
             }
 
-            try {
-                // Show compression in progress message
-                setSubmitMessage({
-                    type: 'info',
-                    text: 'កំពុងបង្រួមទំហំរូបភាព...'
-                });
+            // Update documents state with original file
+            setDocuments(prev => ({
+                ...prev,
+                [name]: file
+            }));
 
-                // Compress the image based on document type
-                const compressedFile = await compressDocumentImage(file, name);
-                
-                // Update documents state with compressed file
-                setDocuments(prev => ({
+            // Create preview from original file
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setDocumentPreviews(prev => ({
                     ...prev,
-                    [name]: compressedFile
+                    [name]: e.target.result
                 }));
+            };
+            reader.readAsDataURL(file);
 
-                // Create preview from compressed file
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    setDocumentPreviews(prev => ({
-                        ...prev,
-                        [name]: e.target.result
-                    }));
-                };
-                reader.readAsDataURL(compressedFile);
+            // Show success message
+            setSubmitMessage({
+                type: 'success',
+                text: 'រូបភាពត្រូវបានផ្ទុកដោយជោគជ័យ'
+            });
 
-                // Show success message with compression info
-                const originalSize = formatFileSize(file.size);
-                const compressedSize = formatFileSize(compressedFile.size);
-                setSubmitMessage({
-                    type: 'success',
-                    text: `រូបភាពត្រូវបានបង្រួមពី ${originalSize} ទៅ ${compressedSize}`
-                });
-
-                // Clear success message after 3 seconds
-                setTimeout(() => {
-                    setSubmitMessage({ type: '', text: '' });
-                }, 3000);
-
-            } catch (error) {
-                console.error('Image compression failed:', error);
-                setSubmitMessage({
-                    type: 'error',
-                    text: 'មានបញ្ហាក្នុងការបង្រួមរូបភាព។ សូមព្យាយាមម្តងទៀត'
-                });
-            }
+            // Clear success message after 3 seconds
+            setTimeout(() => {
+                setSubmitMessage({ type: '', text: '' });
+            }, 3000);
         }
     };
 

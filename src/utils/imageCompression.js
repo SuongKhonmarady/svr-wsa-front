@@ -15,10 +15,10 @@
  */
 export const compressImage = async (file, options = {}) => {
     const {
-        maxWidth = 1600,
-        maxHeight = 2000,
-        quality = 0.9,
-        maxSizeKB = 800
+        maxWidth = 1200,
+        maxHeight = 1600,
+        quality = 0.8,
+        maxSizeKB = 500
     } = options;
 
     return new Promise((resolve, reject) => {
@@ -123,16 +123,16 @@ const calculateOptimalDimensions = (originalWidth, originalHeight, maxWidth, max
  */
 export const DOCUMENT_COMPRESSION_SETTINGS = {
     id_card: {
-        maxWidth: 1600,
-        maxHeight: 1000,
-        quality: 0.92,
-        maxSizeKB: 800
+        maxWidth: 1000,
+        maxHeight: 700,
+        quality: 0.85,
+        maxSizeKB: 400
     },
     family_book: {
-        maxWidth: 1800,
-        maxHeight: 2400,
-        quality: 0.88,
-        maxSizeKB: 1000
+        maxWidth: 1200,
+        maxHeight: 1600,
+        quality: 0.8,
+        maxSizeKB: 500
     }
 };
 

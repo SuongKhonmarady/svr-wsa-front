@@ -229,20 +229,20 @@ export const cropToFrame = (video, canvas, frameRect, maintainOriginalQuality = 
         // Use the actual crop dimensions from the video for maximum quality
         canvas.width = Math.round(cropWidth);
         canvas.height = Math.round(cropHeight);
+        
+        // Disable any image processing that might affect quality
+        ctx.imageSmoothingEnabled = false;
+        ctx.webkitImageSmoothingEnabled = false;
+        ctx.mozImageSmoothingEnabled = false;
+        ctx.msImageSmoothingEnabled = false;
     } else {
         canvas.width = cropWidth;
         canvas.height = cropHeight;
-    }
-    
-    // Disable image smoothing for original quality preservation
-    if (maintainOriginalQuality) {
-        ctx.imageSmoothingEnabled = false;
-    } else {
         ctx.imageSmoothingEnabled = true;
         ctx.imageSmoothingQuality = 'high';
     }
     
-    // Draw the cropped portion
+    // Draw the cropped portion with pixel-perfect precision
     ctx.drawImage(
         video,
         Math.round(cropX), Math.round(cropY), Math.round(cropWidth), Math.round(cropHeight),  // Source rectangle
@@ -262,12 +262,16 @@ export const cropToFrame = (video, canvas, frameRect, maintainOriginalQuality = 
  */
 export const createFileFromCanvas = async (canvas, fileName, mimeType = 'image/png', quality = 1.0) => {
     return new Promise((resolve) => {
+        // For true original quality, use PNG (lossless) for ID cards
+        const finalMimeType = fileName.includes('id_card') ? 'image/png' : mimeType;
+        const finalQuality = finalMimeType === 'image/png' ? undefined : quality;
+        
         canvas.toBlob((blob) => {
             const file = new File([blob], fileName, {
-                type: mimeType,
+                type: finalMimeType,
                 lastModified: Date.now()
             });
             resolve(file);
-        }, mimeType, quality);
+        }, finalMimeType, finalQuality);
     });
 };

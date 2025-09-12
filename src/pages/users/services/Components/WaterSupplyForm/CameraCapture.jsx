@@ -43,10 +43,32 @@ function CameraCapture({
 
         if (isOpen) {
             document.addEventListener('keydown', handleEscape);
+            
+            // Prevent body scroll when modal is open (mobile)
+            document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
+            
+            // Set viewport meta for mobile
+            const viewport = document.querySelector('meta[name=viewport]');
+            if (viewport) {
+                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
+            }
         }
 
         return () => {
             document.removeEventListener('keydown', handleEscape);
+            
+            // Restore body scroll
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
+            
+            // Restore viewport
+            const viewport = document.querySelector('meta[name=viewport]');
+            if (viewport) {
+                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0');
+            }
         };
     }, [isOpen]);
 
@@ -63,9 +85,15 @@ function CameraCapture({
             const constraints = {
                 video: {
                     facingMode: facingMode,
-                    width: { ideal: 1920, min: 1280 },
-                    height: { ideal: 1080, min: 720 },
-                    frameRate: { ideal: 30 }
+                    width: { 
+                        ideal: window.innerWidth > 768 ? 1920 : 1280, 
+                        min: 640 
+                    },
+                    height: { 
+                        ideal: window.innerWidth > 768 ? 1080 : 720, 
+                        min: 480 
+                    },
+                    frameRate: { ideal: 30, min: 15 }
                 }
             };
 
@@ -156,8 +184,8 @@ function CameraCapture({
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
             const fileName = `${documentType}_cropped_${timestamp}.png`;
             
-            // Use PNG for lossless quality or JPEG with maximum quality
-            const capturedFile = await createFileFromCanvas(canvas, fileName, 'image/jpeg', 1.0);
+            // Use PNG for lossless quality
+            const capturedFile = await createFileFromCanvas(canvas, fileName, 'image/png');
 
             // Send the original quality cropped file directly to callback
             onCapture(capturedFile);
@@ -175,7 +203,7 @@ function CameraCapture({
 
     return (
         <div 
-            className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center"
+            className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center overflow-hidden"
             onClick={(e) => {
                 // Close modal if clicking the backdrop (not the content)
                 if (e.target === e.currentTarget) {
@@ -183,23 +211,23 @@ function CameraCapture({
                 }
             }}
         >
-            <div className="relative w-full h-full max-w-lg mx-auto">
+            <div className="relative w-full h-full max-w-lg mx-auto flex flex-col">
                 {/* Header */}
-                <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/70 to-transparent p-4">
+                <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/70 to-transparent p-4 safe-area-top">
                     <div className="flex items-center justify-between text-white">
                         <button
                             onClick={handleClose}
-                            className="p-2 rounded-full bg-black/30 hover:bg-black/50 transition-colors"
+                            className="p-2 rounded-full bg-black/30 hover:bg-black/50 transition-colors touch-manipulation"
                         >
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                             </svg>
                         </button>
-                        <h3 className="text-lg font-semibold text-center flex-1">{title}</h3>
+                        <h3 className="text-lg font-semibold text-center flex-1 px-2">{title}</h3>
                         {/* Camera switch button (only show on mobile) */}
                         <button
                             onClick={switchCamera}
-                            className="p-2 rounded-full bg-black/30 hover:bg-black/50 transition-colors md:hidden"
+                            className="p-2 rounded-full bg-black/30 hover:bg-black/50 transition-colors sm:hidden touch-manipulation"
                         >
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
@@ -209,8 +237,7 @@ function CameraCapture({
                 </div>
 
                 {/* Camera view */}
-                <div className="relative w-full h-full flex items-center justify-center">
-                    {error ? (
+                <div className="relative w-full h-full flex items-center justify-center min-h-0">{error ? (
                         <div className="text-center p-6 text-white">
                             <div className="mb-4">
                                 <svg className="w-16 h-16 mx-auto text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -233,16 +260,23 @@ function CameraCapture({
                                 playsInline
                                 muted
                                 className="w-full h-full object-cover"
+                                style={{ 
+                                    transform: facingMode === 'user' ? 'scaleX(-1)' : 'none'
+                                }}
                             />
                             
                             {/* ID Card Frame Overlay */}
                             {isCameraReady && (
                                 <div className="absolute inset-0 flex items-center justify-center">
                                     <div className="relative">
-                                        {/* Card frame */}
+                                        {/* Card frame - responsive sizing */}
                                         <div 
                                             ref={frameRef}
-                                            className="w-80 h-48 border-4 border-yellow-400 rounded-lg relative"
+                                            className="border-4 border-yellow-400 rounded-lg relative"
+                                            style={{
+                                                width: Math.min(320, window.innerWidth * 0.8),
+                                                height: Math.min(200, window.innerWidth * 0.5)
+                                            }}
                                         >
                                             {/* Corner indicators */}
                                             <div className="absolute -top-2 -left-2 w-6 h-6 border-l-4 border-t-4 border-yellow-400"></div>
@@ -266,11 +300,11 @@ function CameraCapture({
 
                 {/* Bottom controls */}
                 {!error && isCameraReady && (
-                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6">
+                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-6 safe-area-bottom">
                         <div className="flex items-center justify-center space-x-8">
                             {/* File upload alternative */}
-                            <label className="flex flex-col items-center cursor-pointer">
-                                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors">
+                            <label className="flex flex-col items-center cursor-pointer touch-manipulation">
+                                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors active:bg-white/40">
                                     <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                                     </svg>
@@ -293,7 +327,7 @@ function CameraCapture({
                             <button
                                 onClick={capturePhoto}
                                 disabled={isCapturing}
-                                className="w-16 h-16 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="w-16 h-16 bg-white rounded-full flex items-center justify-center hover:bg-gray-100 transition-colors disabled:opacity-50 disabled:cursor-not-allowed touch-manipulation active:scale-95"
                             >
                                 {isCapturing ? (
                                     <div className="w-6 h-6 border-2 border-gray-600 border-t-transparent rounded-full animate-spin"></div>
@@ -302,10 +336,18 @@ function CameraCapture({
                                 )}
                             </button>
 
-                            {/* Flash/Settings placeholder */}
-                            <div className="w-12 h-12 flex items-center justify-center">
-                                {/* You can add flash toggle or other settings here */}
-                            </div>
+                            {/* Camera switch button for mobile */}
+                            <button
+                                onClick={switchCamera}
+                                className="flex flex-col items-center cursor-pointer touch-manipulation sm:hidden"
+                            >
+                                <div className="w-12 h-12 bg-white/20 rounded-full flex items-center justify-center hover:bg-white/30 transition-colors active:bg-white/40">
+                                    <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                                    </svg>
+                                </div>
+                                <span className="text-white text-xs mt-1">ប្តូរ</span>
+                            </button>
                         </div>
                     </div>
                 )}

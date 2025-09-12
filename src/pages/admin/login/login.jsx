@@ -83,12 +83,12 @@ function AdminLogin() {
           <div className="flex justify-center">
             <img
               className="h-36 w-auto"
-              src="/image/រដ្ឋាករទឹកស្វាយរៀង(remove background).png"
+              src="/image/svrwu-logo-remove-background.png"
               alt="SVRWSA Logo"
             />
           </div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            WU Admin
+            WUSVR
           </h2>
         </div>
 
@@ -161,9 +161,9 @@ function AdminLogin() {
           </div>
 
           <div className="text-center">
-            <p className="text-sm text-gray-600">
+            {/* <p className="text-sm text-gray-600">
               Use your admin credentials to sign in
-            </p>
+            </p> */}
           </div>
         </form>
       </div>

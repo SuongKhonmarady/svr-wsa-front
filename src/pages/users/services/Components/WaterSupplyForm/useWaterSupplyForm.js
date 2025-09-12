@@ -118,22 +118,44 @@ export function useWaterSupplyForm() {
             }
 
             try {
-                // Show compression in progress message
-                setSubmitMessage({
-                    type: 'info',
-                    text: 'កំពុងបង្រួមទំហំរូបភាព...'
-                });
-
-                // Compress the image based on document type
-                const compressedFile = await compressDocumentImage(file, name);
+                // Check if this is a camera-captured file (from cropping)
+                const isCameraCaptured = file.name.includes('_cropped_');
                 
-                // Update documents state with compressed file
+                let finalFile;
+                
+                if (isCameraCaptured) {
+                    // Camera captured files are already cropped - use original quality
+                    finalFile = file;
+                    setSubmitMessage({
+                        type: 'success',
+                        text: `រូបភាពត្រូវបានកាត់តាមស៊ុម (${formatFileSize(file.size)} - គុណភាពដើម)`
+                    });
+                } else {
+                    // Regular file upload - apply compression
+                    setSubmitMessage({
+                        type: 'info',
+                        text: 'កំពុងបង្រួមទំហំរូបភាព...'
+                    });
+
+                    // Compress the image based on document type
+                    finalFile = await compressDocumentImage(file, name);
+                    
+                    // Show success message with compression info
+                    const originalSize = formatFileSize(file.size);
+                    const compressedSize = formatFileSize(finalFile.size);
+                    setSubmitMessage({
+                        type: 'success',
+                        text: `រូបភាពត្រូវបានបង្រួមពី ${originalSize} ទៅ ${compressedSize}`
+                    });
+                }
+                
+                // Update documents state with final file
                 setDocuments(prev => ({
                     ...prev,
-                    [name]: compressedFile
+                    [name]: finalFile
                 }));
 
-                // Create preview from compressed file
+                // Create preview from final file
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     setDocumentPreviews(prev => ({
@@ -141,15 +163,7 @@ export function useWaterSupplyForm() {
                         [name]: e.target.result
                     }));
                 };
-                reader.readAsDataURL(compressedFile);
-
-                // Show success message with compression info
-                const originalSize = formatFileSize(file.size);
-                const compressedSize = formatFileSize(compressedFile.size);
-                setSubmitMessage({
-                    type: 'success',
-                    text: `រូបភាពត្រូវបានបង្រួមពី ${originalSize} ទៅ ${compressedSize}`
-                });
+                reader.readAsDataURL(finalFile);
 
                 // Clear success message after 3 seconds
                 setTimeout(() => {
@@ -157,10 +171,10 @@ export function useWaterSupplyForm() {
                 }, 3000);
 
             } catch (error) {
-                console.error('Image compression failed:', error);
+                console.error('Image processing failed:', error);
                 setSubmitMessage({
                     type: 'error',
-                    text: 'មានបញ្ហាក្នុងការបង្រួមរូបភាព។ សូមព្យាយាមម្តងទៀត'
+                    text: 'មានបញ្ហាក្នុងការដំណើរការរូបភាព។ សូមព្យាយាមម្តងទៀត'
                 });
             }
         }

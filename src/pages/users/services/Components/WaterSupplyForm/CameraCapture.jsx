@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { compressDocumentImage } from '../../../../../utils/imageCompression';
+import { cropToFrame, createFileFromCanvas } from '../../../../../utils/imageCompression';
 
 function CameraCapture({ 
     isOpen, 
@@ -16,17 +16,39 @@ function CameraCapture({
     
     const videoRef = useRef(null);
     const canvasRef = useRef(null);
+    const frameRef = useRef(null);
 
     // Initialize camera when component opens
     useEffect(() => {
         if (isOpen) {
             initializeCamera();
         } else {
+            // Ensure cleanup happens when modal closes
             cleanup();
         }
 
-        return cleanup;
+        // Cleanup function for component unmount or dependencies change
+        return () => {
+            cleanup();
+        };
     }, [isOpen, facingMode]);
+
+    // Handle escape key to close modal
+    useEffect(() => {
+        const handleEscape = (event) => {
+            if (event.key === 'Escape' && isOpen) {
+                handleClose();
+            }
+        };
+
+        if (isOpen) {
+            document.addEventListener('keydown', handleEscape);
+        }
+
+        return () => {
+            document.removeEventListener('keydown', handleEscape);
+        };
+    }, [isOpen]);
 
     const initializeCamera = async () => {
         try {
@@ -41,8 +63,9 @@ function CameraCapture({
             const constraints = {
                 video: {
                     facingMode: facingMode,
-                    width: { ideal: 1280 },
-                    height: { ideal: 720 }
+                    width: { ideal: 1920, min: 1280 },
+                    height: { ideal: 1080, min: 720 },
+                    frameRate: { ideal: 30 }
                 }
             };
 
@@ -75,52 +98,70 @@ function CameraCapture({
 
     const cleanup = () => {
         if (stream) {
-            stream.getTracks().forEach(track => track.stop());
+            // Stop all tracks to properly release camera
+            stream.getTracks().forEach(track => {
+                track.stop();
+                console.log('Camera track stopped:', track.kind);
+            });
             setStream(null);
         }
+        
+        // Clear video src to ensure complete cleanup
+        if (videoRef.current) {
+            videoRef.current.srcObject = null;
+        }
+        
         setIsCameraReady(false);
+        setError('');
+    };
+
+    const handleClose = () => {
+        // Ensure immediate cleanup before closing
+        cleanup();
+        onClose();
     };
 
     const switchCamera = () => {
+        // Clean up current stream before switching
+        cleanup();
         setFacingMode(prev => prev === 'user' ? 'environment' : 'user');
     };
 
     const capturePhoto = async () => {
-        if (!videoRef.current || !canvasRef.current || isCapturing) return;
+        if (!videoRef.current || !canvasRef.current || !frameRef.current || isCapturing) return;
 
         try {
             setIsCapturing(true);
 
             const video = videoRef.current;
             const canvas = canvasRef.current;
-            const ctx = canvas.getContext('2d');
+            const frameElement = frameRef.current;
 
-            // Set canvas dimensions to match video
-            canvas.width = video.videoWidth;
-            canvas.height = video.videoHeight;
+            // Get frame position and dimensions
+            const videoRect = video.getBoundingClientRect();
+            const frameRect = frameElement.getBoundingClientRect();
+            
+            // Calculate frame position relative to video
+            const relativeFrame = {
+                x: frameRect.left - videoRect.left,
+                y: frameRect.top - videoRect.top,
+                width: frameRect.width,
+                height: frameRect.height
+            };
 
-            // Draw the current frame to canvas
-            ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+            // Crop the video to frame area while maintaining original quality
+            cropToFrame(video, canvas, relativeFrame, true);
 
-            // Convert canvas to blob
-            const blob = await new Promise(resolve => {
-                canvas.toBlob(resolve, 'image/jpeg', 0.95);
-            });
-
-            // Create a File object from the blob
+            // Create file from canvas without compression (PNG for lossless quality)
             const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-            const fileName = `${documentType}_${timestamp}.jpg`;
-            const capturedFile = new File([blob], fileName, { 
-                type: 'image/jpeg',
-                lastModified: Date.now()
-            });
+            const fileName = `${documentType}_cropped_${timestamp}.png`;
+            
+            // Use PNG for lossless quality or JPEG with maximum quality
+            const capturedFile = await createFileFromCanvas(canvas, fileName, 'image/jpeg', 1.0);
 
-            // Compress the captured image
-            const compressedFile = await compressDocumentImage(capturedFile, documentType);
-
-            // Call the onCapture callback with the compressed file
-            onCapture(compressedFile);
-            onClose();
+            // Send the original quality cropped file directly to callback
+            onCapture(capturedFile);
+            handleClose();
 
         } catch (error) {
             console.error('Photo capture failed:', error);
@@ -133,13 +174,21 @@ function CameraCapture({
     if (!isOpen) return null;
 
     return (
-        <div className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center">
+        <div 
+            className="fixed inset-0 bg-black bg-opacity-90 z-50 flex items-center justify-center"
+            onClick={(e) => {
+                // Close modal if clicking the backdrop (not the content)
+                if (e.target === e.currentTarget) {
+                    handleClose();
+                }
+            }}
+        >
             <div className="relative w-full h-full max-w-lg mx-auto">
                 {/* Header */}
                 <div className="absolute top-0 left-0 right-0 z-10 bg-gradient-to-b from-black/70 to-transparent p-4">
                     <div className="flex items-center justify-between text-white">
                         <button
-                            onClick={onClose}
+                            onClick={handleClose}
                             className="p-2 rounded-full bg-black/30 hover:bg-black/50 transition-colors"
                         >
                             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -170,7 +219,7 @@ function CameraCapture({
                             </div>
                             <p className="text-lg mb-4">{error}</p>
                             <button
-                                onClick={onClose}
+                                onClick={handleClose}
                                 className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
                             >
                                 ជ្រើសរើសឯកសារ
@@ -191,7 +240,10 @@ function CameraCapture({
                                 <div className="absolute inset-0 flex items-center justify-center">
                                     <div className="relative">
                                         {/* Card frame */}
-                                        <div className="w-80 h-48 border-4 border-yellow-400 rounded-lg relative">
+                                        <div 
+                                            ref={frameRef}
+                                            className="w-80 h-48 border-4 border-yellow-400 rounded-lg relative"
+                                        >
                                             {/* Corner indicators */}
                                             <div className="absolute -top-2 -left-2 w-6 h-6 border-l-4 border-t-4 border-yellow-400"></div>
                                             <div className="absolute -top-2 -right-2 w-6 h-6 border-r-4 border-t-4 border-yellow-400"></div>
@@ -230,7 +282,7 @@ function CameraCapture({
                                     onChange={(e) => {
                                         if (e.target.files && e.target.files[0]) {
                                             onCapture(e.target.files[0]);
-                                            onClose();
+                                            handleClose();
                                         }
                                     }}
                                     className="sr-only"

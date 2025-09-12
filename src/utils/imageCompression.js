@@ -15,10 +15,10 @@
  */
 export const compressImage = async (file, options = {}) => {
     const {
-        maxWidth = 1200,
-        maxHeight = 1600,
-        quality = 0.8,
-        maxSizeKB = 500
+        maxWidth = 1600,
+        maxHeight = 2000,
+        quality = 0.9,
+        maxSizeKB = 800
     } = options;
 
     return new Promise((resolve, reject) => {
@@ -123,16 +123,16 @@ const calculateOptimalDimensions = (originalWidth, originalHeight, maxWidth, max
  */
 export const DOCUMENT_COMPRESSION_SETTINGS = {
     id_card: {
-        maxWidth: 1000,
-        maxHeight: 700,
-        quality: 0.85,
-        maxSizeKB: 400
+        maxWidth: 1600,
+        maxHeight: 1000,
+        quality: 0.92,
+        maxSizeKB: 800
     },
     family_book: {
-        maxWidth: 1200,
-        maxHeight: 1600,
-        quality: 0.8,
-        maxSizeKB: 500
+        maxWidth: 1800,
+        maxHeight: 2400,
+        quality: 0.88,
+        maxSizeKB: 1000
     }
 };
 
@@ -183,4 +183,91 @@ export const formatFileSize = (bytes) => {
     const sizes = ['Bytes', 'KB', 'MB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+};
+
+/**
+ * Crop image to specific frame dimensions (for ID card capture)
+ * @param {HTMLVideoElement} video - Video element
+ * @param {HTMLCanvasElement} canvas - Canvas element
+ * @param {Object} frameRect - Frame rectangle {x, y, width, height} relative to video
+ * @param {boolean} maintainOriginalQuality - Whether to maintain original quality (default: true)
+ * @returns {HTMLCanvasElement} - Cropped canvas
+ */
+export const cropToFrame = (video, canvas, frameRect, maintainOriginalQuality = true) => {
+    const ctx = canvas.getContext('2d');
+    
+    // Calculate the actual video display dimensions
+    const videoAspectRatio = video.videoWidth / video.videoHeight;
+    const containerAspectRatio = video.clientWidth / video.clientHeight;
+    
+    let videoDisplayWidth, videoDisplayHeight, offsetX = 0, offsetY = 0;
+    
+    if (videoAspectRatio > containerAspectRatio) {
+        // Video is wider than container, so there will be vertical bars
+        videoDisplayHeight = video.clientHeight;
+        videoDisplayWidth = videoDisplayHeight * videoAspectRatio;
+        offsetX = (videoDisplayWidth - video.clientWidth) / 2;
+    } else {
+        // Video is taller than container, so there will be horizontal bars
+        videoDisplayWidth = video.clientWidth;
+        videoDisplayHeight = videoDisplayWidth / videoAspectRatio;
+        offsetY = (videoDisplayHeight - video.clientHeight) / 2;
+    }
+    
+    // Calculate scale factors
+    const scaleX = video.videoWidth / videoDisplayWidth;
+    const scaleY = video.videoHeight / videoDisplayHeight;
+    
+    // Convert frame coordinates to video coordinates
+    const cropX = (frameRect.x + offsetX) * scaleX;
+    const cropY = (frameRect.y + offsetY) * scaleY;
+    const cropWidth = frameRect.width * scaleX;
+    const cropHeight = frameRect.height * scaleY;
+    
+    // Set canvas to crop size - maintain original resolution if quality preservation is enabled
+    if (maintainOriginalQuality) {
+        // Use the actual crop dimensions from the video for maximum quality
+        canvas.width = Math.round(cropWidth);
+        canvas.height = Math.round(cropHeight);
+    } else {
+        canvas.width = cropWidth;
+        canvas.height = cropHeight;
+    }
+    
+    // Disable image smoothing for original quality preservation
+    if (maintainOriginalQuality) {
+        ctx.imageSmoothingEnabled = false;
+    } else {
+        ctx.imageSmoothingEnabled = true;
+        ctx.imageSmoothingQuality = 'high';
+    }
+    
+    // Draw the cropped portion
+    ctx.drawImage(
+        video,
+        Math.round(cropX), Math.round(cropY), Math.round(cropWidth), Math.round(cropHeight),  // Source rectangle
+        0, 0, canvas.width, canvas.height           // Destination rectangle
+    );
+    
+    return canvas;
+};
+
+/**
+ * Create a file from canvas without compression (original quality)
+ * @param {HTMLCanvasElement} canvas - Canvas element
+ * @param {string} fileName - File name
+ * @param {string} mimeType - MIME type (default: 'image/png' for lossless)
+ * @param {number} quality - Quality for JPEG (1.0 = maximum quality)
+ * @returns {Promise<File>} - File object
+ */
+export const createFileFromCanvas = async (canvas, fileName, mimeType = 'image/png', quality = 1.0) => {
+    return new Promise((resolve) => {
+        canvas.toBlob((blob) => {
+            const file = new File([blob], fileName, {
+                type: mimeType,
+                lastModified: Date.now()
+            });
+            resolve(file);
+        }, mimeType, quality);
+    });
 };

@@ -26,7 +26,10 @@ function DocumentUploadField({
                                 <p className="text-sm font-medium text-gray-900 truncate max-w-[150px]" title={document?.name}>
                                     {document?.name}
                                 </p>
-                                <p className="text-sm text-gray-500">{(document?.size / 1024 / 1024).toFixed(2)} MB</p>
+                                <p className="text-sm text-gray-500">
+                                    {(document?.size / 1024).toFixed(0)} KB 
+                                    <span className="text-green-600 ml-1">(បង្រួម)</span>
+                                </p>
                             </div>
                         </div>
                         <button
@@ -52,7 +55,7 @@ function DocumentUploadField({
                                 ចុចដើម្បីជ្រើសរើស{label}
                             </span>
                             <span className="mt-1 block text-sm text-gray-500 group-hover:text-blue-600 transition-colors duration-200">
-                                PNG, JPG, JPEG តិចជាង 5MB
+                                PNG, JPG, JPEG តិចជាង 10MB (នឹងត្រូវបង្រួមស្វ័យប្រវត្តិ)
                             </span>
 
                             <input
@@ -90,6 +93,7 @@ function DocumentUploadStep({
                             <li>• ធ្វើការថតរូបឯកសារដោយត្រង់ មិនត្រូវឲ្យវៀចរូបភាពទៅខាងឆ្វេង ឬស្តាំ (មិនត្រូវថតទ្រេត)</li>
                             <li>• ដាក់ឯកសារលើផ្ទៃមានពណ៌ងងឹត</li>
                             <li>• ត្រូវប្រាកដថាមិនមានវត្ថុផ្សេងទៀតនៅក្នុងរូបថត</li>
+                            <li>• រូបភាពនឹងត្រូវបង្រួមទំហំស្វ័យប្រវត្តិសម្រាប់ការអាប់ឡូតលឿន</li>
                         </ul>
                     </div>
 
@@ -144,8 +148,9 @@ function DocumentUploadStep({
                 <ul className="text-sm text-blue-700 space-y-1">
                     <li>• អត្តសញ្ញាណប័ណ្ណ: រូបថតច្បាស់លាស់ទាំងមុខ និងក្រោយ</li>
                     <li>• សៀវភៅគ្រួសារ: រូបថតទំព័រដែលមានព័ត៌មានគ្រួសារ</li>
-                    <li>• ទម្រង់ឯកសារ: PNG, JPG, JPEG តិចជាង 5MB</li>
+                    <li>• ទម្រង់ឯកសារ: PNG, JPG, JPEG តិចជាង 10MB</li>
                     <li>• គុណភាពរូបថត: ច្បាស់លាស់ និងអាចអានបាន</li>
+                    <li>• ការបង្រួម: រូបភាពនឹងត្រូវបង្រួមទំហំស្វ័យប្រវត្តិ (ID ប័ណ្ណ: ~400KB, សៀវភៅ: ~500KB)</li>
                 </ul>
             </div>
         </div>

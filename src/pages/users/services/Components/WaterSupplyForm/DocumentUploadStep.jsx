@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState } from 'react';
+import CameraCapture from './CameraCapture';
 
 function DocumentUploadField({
     label,
@@ -8,6 +9,26 @@ function DocumentUploadField({
     onDocumentChange,
     onRemoveDocument
 }) {
+    const [isCameraOpen, setIsCameraOpen] = useState(false);
+
+    const handleCameraCapture = async (capturedFile) => {
+        // Create a synthetic event to match the expected format
+        const syntheticEvent = {
+            target: {
+                name: documentKey,
+                files: [capturedFile]
+            }
+        };
+        
+        await onDocumentChange(syntheticEvent);
+    };
+
+    const getCameraTitle = () => {
+        if (documentKey === 'id_card_front') return 'ថតរូបអត្តសញ្ញាណប័ណ្ណ (មុខ)';
+        if (documentKey === 'id_card_back') return 'ថតរូបអត្តសញ្ញាណប័ណ្ណ (ក្រោយ)';
+        if (documentKey === 'family_books') return 'ថតរូបសៀវភៅគ្រួសារ';
+        return 'ថតរូបឯកសារ';
+    };
     return (
         <div>
             <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -43,31 +64,58 @@ function DocumentUploadField({
                         </button>
                     </div>
                 ) : (
-                    <label htmlFor={documentKey} className='cursor-pointer border-2 border-dashed border-gray-300 rounded-lg p-6 block w-full text-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 ease-in-out group'>
+                    <div className="space-y-4">
+                        {/* Camera capture and file upload options */}
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            {/* Camera capture button */}
+                            <button
+                                type="button"
+                                onClick={() => setIsCameraOpen(true)}
+                                className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-blue-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 group"
+                            >
+                                <svg className="w-12 h-12 text-blue-400 group-hover:text-blue-500 transition-colors duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 13a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                <span className="mt-2 text-sm font-medium text-gray-900 group-hover:text-blue-700 transition-colors duration-200">
+                                    ថតរូបដោយកាមេរ៉ា
+                                </span>
+                                <span className="mt-1 text-xs text-gray-500 group-hover:text-blue-600 transition-colors duration-200">
+                                    បើកកាមេរ៉ាដើម្បីថតរូប
+                                </span>
+                            </button>
 
-
-                        <svg className="mx-auto h-12 w-12 text-gray-400 group-hover:text-blue-500 transition-colors duration-200" stroke="currentColor" fill="none" viewBox="0 0 48 48">
-                            <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
-                        </svg>
-                        <div className="mt-4">
-
-                            <span className="mt-2 block text-sm font-medium text-gray-900 group-hover:text-blue-700 transition-colors duration-200">
-                                ចុចដើម្បីជ្រើសរើស{label}
-                            </span>
-                            <span className="mt-1 block text-sm text-gray-500 group-hover:text-blue-600 transition-colors duration-200">
-                                PNG, JPG, JPEG តិចជាង 10MB (នឹងត្រូវបង្រួមស្វ័យប្រវត្តិ)
-                            </span>
-
-                            <input
-                                id={documentKey}
-                                name={documentKey}
-                                type="file"
-                                accept="image/*"
-                                onChange={onDocumentChange}
-                                className="sr-only"
-                            />
+                            {/* File upload button */}
+                            <label htmlFor={documentKey} className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-gray-300 rounded-lg hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 group cursor-pointer">
+                                <svg className="w-12 h-12 text-gray-400 group-hover:text-blue-500 transition-colors duration-200" stroke="currentColor" fill="none" viewBox="0 0 48 48">
+                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" />
+                                </svg>
+                                <span className="mt-2 text-sm font-medium text-gray-900 group-hover:text-blue-700 transition-colors duration-200">
+                                    ជ្រើសរើសឯកសារ
+                                </span>
+                                <span className="mt-1 text-xs text-gray-500 group-hover:text-blue-600 transition-colors duration-200">
+                                    PNG, JPG, JPEG តិចជាង 10MB (នឹងត្រូវបង្រួមស្វ័យប្រវត្តិ)
+                                </span>
+                                <input
+                                    id={documentKey}
+                                    name={documentKey}
+                                    type="file"
+                                    accept="image/*"
+                                    onChange={onDocumentChange}
+                                    className="sr-only"
+                                />
+                            </label>
                         </div>
-                    </label>
+
+                        {/* Camera capture modal */}
+                        <CameraCapture
+                            isOpen={isCameraOpen}
+                            onClose={() => setIsCameraOpen(false)}
+                            onCapture={handleCameraCapture}
+                            documentType={documentKey}
+                            title={getCameraTitle()}
+                        />
+                    </div>
                 )}
             </div>
         </div>
@@ -93,6 +141,7 @@ function DocumentUploadStep({
                             <li>• ធ្វើការថតរូបឯកសារដោយត្រង់ មិនត្រូវឲ្យវៀចរូបភាពទៅខាងឆ្វេង ឬស្តាំ (មិនត្រូវថតទ្រេត)</li>
                             <li>• ដាក់ឯកសារលើផ្ទៃមានពណ៌ងងឹត</li>
                             <li>• ត្រូវប្រាកដថាមិនមានវត្ថុផ្សេងទៀតនៅក្នុងរូបថត</li>
+                            <li>• ប្រើកាមេរ៉ាសម្រាប់គុណភាពល្អបំផុត ឬជ្រើសរើសឯកសារពីថតរូប</li>
                             <li>• រូបភាពនឹងត្រូវបង្រួមទំហំស្វ័យប្រវត្តិសម្រាប់ការអាប់ឡូតលឿន</li>
                         </ul>
                     </div>
@@ -150,6 +199,7 @@ function DocumentUploadStep({
                     <li>• សៀវភៅគ្រួសារ: រូបថតទំព័រដែលមានព័ត៌មានគ្រួសារ</li>
                     <li>• ទម្រង់ឯកសារ: PNG, JPG, JPEG តិចជាង 10MB</li>
                     <li>• គុណភាពរូបថត: ច្បាស់លាស់ និងអាចអានបាន</li>
+                    <li>• ការថតរូប: ប្រើកាមេរ៉ាដោយផ្ទាល់ ឬជ្រើសរើសពីឯកសារ</li>
                     <li>• ការបង្រួម: រូបភាពនឹងត្រូវបង្រួមទំហំស្វ័យប្រវត្តិ (ID ប័ណ្ណ: ~400KB, សៀវភៅ: ~500KB)</li>
                 </ul>
             </div>

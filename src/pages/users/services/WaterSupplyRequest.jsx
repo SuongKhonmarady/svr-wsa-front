@@ -48,7 +48,8 @@ function WaterSupplyRequest() {
         setIsModalOpen,
         handlePrivacyChange,
         scrollToTop,
-        errors
+        errors,
+        documentErrors
     } = useWaterSupplyForm();
 
     useEffect(() => {
@@ -117,6 +118,7 @@ function WaterSupplyRequest() {
                         documentPreviews={documentPreviews}
                         handleDocumentChange={handleDocumentChange}
                         handleRemoveDocument={handleRemoveDocument}
+                        documentErrors={documentErrors}
                     />
                 );
             case 3:

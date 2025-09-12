@@ -6,7 +6,8 @@ function DocumentUploadField({
     document,
     documentPreview,
     onDocumentChange,
-    onRemoveDocument
+    onRemoveDocument,
+    error
 }) {
     return (
         <div>
@@ -49,7 +50,7 @@ function DocumentUploadField({
                                 ចុចដើម្បីជ្រើសរើស{label}
                             </span>
                             <span className="mt-1 block text-sm text-gray-500 group-hover:text-blue-600 transition-colors duration-200">
-                                PNG, JPG, JPEG តិចជាង 5MB
+                                PNG, JPG, JPEG តិចជាង 3MB
                             </span>
                             <input
                                 id={documentKey}
@@ -63,6 +64,12 @@ function DocumentUploadField({
                     </label>
                 )}
             </div>
+            {/* Error message */}
+            {error && (
+                <div className="mt-2 text-sm text-red-600 bg-red-50 border border-red-200 rounded-md p-2">
+                    {error}
+                </div>
+            )}
         </div>
     );
 }
@@ -71,7 +78,8 @@ function DocumentUploadStep({
     documents,
     documentPreviews,
     handleDocumentChange,
-    handleRemoveDocument
+    handleRemoveDocument,
+    documentErrors
 }) {
     return (
         <div>
@@ -111,6 +119,7 @@ function DocumentUploadStep({
                         documentPreview={documentPreviews.id_card_front}
                         onDocumentChange={handleDocumentChange}
                         onRemoveDocument={handleRemoveDocument}
+                        error={documentErrors.id_card_front}
                     />
 
                     <DocumentUploadField
@@ -120,6 +129,7 @@ function DocumentUploadStep({
                         documentPreview={documentPreviews.id_card_back}
                         onDocumentChange={handleDocumentChange}
                         onRemoveDocument={handleRemoveDocument}
+                        error={documentErrors.id_card_back}
                     />
                 </div>
 
@@ -131,6 +141,7 @@ function DocumentUploadStep({
                     documentPreview={documentPreviews.family_books}
                     onDocumentChange={handleDocumentChange}
                     onRemoveDocument={handleRemoveDocument}
+                    error={documentErrors.family_books}
                 />
             </div>
 
@@ -140,7 +151,7 @@ function DocumentUploadStep({
                 <ul className="text-sm text-blue-700 space-y-1">
                     <li>• អត្តសញ្ញាណប័ណ្ណ: រូបថតច្បាស់លាស់ទាំងមុខ និងក្រោយ</li>
                     <li>• សៀវភៅគ្រួសារ: រូបថតទំព័រដែលមានព័ត៌មានគ្រួសារ</li>
-                    <li>• ទម្រង់ឯកសារ: PNG, JPG, JPEG តិចជាង 5MB</li>
+                    <li>• ទម្រង់ឯកសារ: PNG, JPG, JPEG តិចជាង 3MB</li>
                     <li>• គុណភាពរូបថត: ច្បាស់លាស់ និងអាចអានបាន</li>
                 </ul>
             </div>

@@ -8,6 +8,7 @@ export function useWaterSupplyForm() {
     const [submitMessage, setSubmitMessage] = useState({ type: '', text: '' });
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [errors, setErrors] = useState({});
+    const [documentErrors, setDocumentErrors] = useState({});
     const [categories, setCategories] = useState({
         provinces: [],
         districts: [],
@@ -98,22 +99,29 @@ export function useWaterSupplyForm() {
         if (files && files[0]) {
             const file = files[0];
 
+            // Clear any existing error for this document
+            setDocumentErrors(prev => {
+                const next = { ...prev };
+                delete next[name];
+                return next;
+            });
+
             // Validate file type (only supported image formats)
             const supportedTypes = ['image/jpeg', 'image/jpg', 'image/png'];
             if (!supportedTypes.includes(file.type)) {
-                setSubmitMessage({
-                    type: 'error',
-                    text: 'សូមជ្រើសរើសឯកសាររូបភាពតែប៉ុណ្ណោះ (PNG, JPG, JPEG)'
-                });
+                setDocumentErrors(prev => ({
+                    ...prev,
+                    [name]: 'សូមជ្រើសរើសឯកសាររូបភាពតែប៉ុណ្ណោះ (PNG, JPG, JPEG)'
+                }));
                 return;
             }
 
-            // Validate file size (max 5MB)
-            if (file.size > 5 * 1024 * 1024) {
-                setSubmitMessage({
-                    type: 'error',
-                    text: 'ទំហំឯកសារត្រូវតែតិចជាង 5MB'
-                });
+            // Validate file size (max 3MB)
+            if (file.size > 3 * 1024 * 1024) {
+                setDocumentErrors(prev => ({
+                    ...prev,
+                    [name]: 'ទំហំឯកសារត្រូវតែតិចជាង 3MB'
+                }));
                 return;
             }
 
@@ -155,6 +163,13 @@ export function useWaterSupplyForm() {
             ...prev,
             [docType]: null
         }));
+
+        // Clear document error for this field
+        setDocumentErrors(prev => {
+            const next = { ...prev };
+            delete next[docType];
+            return next;
+        });
 
         // Clear file input
         const fileInput = document.querySelector(`input[name="${docType}"]`);
@@ -271,6 +286,7 @@ export function useWaterSupplyForm() {
             id_card_back: null,
             family_books: null
         });
+        setDocumentErrors({});
         setCurrentStep(1);
         setPrivacyAccepted(false);
         setErrors({});
@@ -385,6 +401,7 @@ export function useWaterSupplyForm() {
         categories,
         privacyAccepted,
         errors,
+        documentErrors,
         
         // Actions
         handleInputChange,

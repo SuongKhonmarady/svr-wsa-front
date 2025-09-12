@@ -16,29 +16,41 @@ function DocumentUploadField({
             </label>
             <div className="border-2 border-dashed border-gray-300 rounded-lg p-6">
                 {documentPreview ? (
-                    <div className="flex items-center justify-between">
-                        <div className="flex items-center space-x-4">
+                    <div className="space-y-4">
+                        {/* Full size image preview with consistent dimensions */}
+                        <div className="w-full h-64 bg-gray-100 rounded-lg overflow-hidden border shadow-sm">
                             <img
                                 src={documentPreview}
                                 alt={`${label} Preview`}
-                                className="w-20 h-20 object-cover rounded-lg border"
+                                className="w-full h-full object-contain"
                             />
-                            <div>
-                                <p className="text-sm font-medium text-gray-900 truncate max-w-[150px]" title={document?.name}>
-                                    {document?.name}
-                                </p>
-                                <p className="text-sm text-gray-500">{(document?.size / 1024 / 1024).toFixed(2)} MB</p>
-                            </div>
                         </div>
-                        <button
-                            type="button"
-                            onClick={() => onRemoveDocument(documentKey)}
-                            className="text-red-600 hover:text-red-800"
-                        >
-                            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
+                        {/* File info and remove button */}
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between bg-gray-50 p-3 rounded-lg space-y-3 sm:space-y-0">
+                            <div className="flex items-center space-x-3 flex-1 min-w-0">
+                                <div className="flex-shrink-0">
+                                    <svg className="w-8 h-8 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-medium text-gray-900 truncate" title={document?.name}>
+                                        {document?.name}
+                                    </p>
+                                    <p className="text-sm text-gray-500">{(document?.size / 1024 / 1024).toFixed(2)} MB</p>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={() => onRemoveDocument(documentKey)}
+                                className="flex items-center justify-center space-x-2 px-3 py-2 text-red-600 hover:text-red-800 hover:bg-red-50 rounded-md transition-colors duration-200 flex-shrink-0 w-full sm:w-auto"
+                            >
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                                <span className="text-sm">លុប</span>
+                            </button>
+                        </div>
                     </div>
                 ) : (
                     <label htmlFor={documentKey} className='cursor-pointer border-2 border-dashed border-gray-300 rounded-lg p-6 block w-full text-center hover:border-blue-400 hover:bg-blue-50 transition-all duration-200 ease-in-out group'>

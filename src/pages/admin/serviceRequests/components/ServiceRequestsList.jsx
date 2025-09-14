@@ -1,9 +1,9 @@
 import React from 'react';
 
-const ServiceRequestsList = ({ 
-    serviceRequests, 
-    loading, 
-    getStatusColor, 
+const ServiceRequestsList = ({
+    serviceRequests,
+    loading,
+    getStatusColor,
     formatDate,
     openDetailModal,
     openStatusModal,
@@ -27,7 +27,7 @@ const ServiceRequestsList = ({
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                    {[1, 2, 3, 4, 5].map((i) => (
+                        {[1, 2, 3, 4, 5].map((i) => (
                             <tr key={i} className="animate-pulse">
                                 <td className="px-6 py-4 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-12"></div></td>
                                 <td className="px-6 py-4 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-32"></div></td>
@@ -36,11 +36,11 @@ const ServiceRequestsList = ({
                                 <td className="px-6 py-4 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-40"></div></td>
                                 <td className="px-6 py-4 whitespace-nowrap"><div className="h-4 bg-gray-200 rounded w-28"></div></td>
                                 <td className="px-6 py-4 whitespace-nowrap">
-                                        <div className="flex space-x-2">
+                                    <div className="flex space-x-2">
                                         <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
                                         <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
                                         <div className="w-8 h-8 bg-gray-200 rounded-full"></div>
-                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         ))}
@@ -141,131 +141,219 @@ const ServiceRequestsList = ({
     };
 
     return (
-        <div className="rounded-xl border border-gray-200 shadow-md">
-            <div className="overflow-x-auto overflow-y-auto max-h-screen">
-                <table className="min-w-full divide-y divide-gray-200 table-fixed w-full" style={{ minWidth: '1400px' }}>
-                    <thead className="bg-gray-100 hidden md:table-header-group sticky top-0 z-10 border-b-2 border-gray-200">
-                        <tr>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">
-                                លេខសម្គាល់
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">
-                                ឈ្មោះអតិថិជន
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-40">
-                                ស្ថានភាព
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
-                                លេខទូរស័ព្ទ
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-44">
-                                ប្រភេទសេវាកម្ម
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
-                                ភូមិ
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
-                                ឃុំ/សង្កាត់
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
-                                ស្រុក
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
-                                ខេត្ត
-                            </th>
-                            <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-36">
-                                សកម្មភាព
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
-                        {validRequests.map((request) => {
-                            const statusStyling = getStatusStyling(request.status);
-
-    return (
-                                <tr key={request.id} className="hover:bg-gray-50 transition duration-200 ease-in-out md:table-row flex flex-col md:flex-row border border-gray-200 md:border-none mb-4 md:mb-0 rounded-lg md:rounded-none p-4 md:p-0 bg-white shadow-lg md:shadow-none">
-                                    {/* ID */}
-                                    <td className="px-6 py-3 text-sm text-gray-500 md:table-cell flex items-center md:items-start border-b border-gray-100 md:border-none last:border-b-0 before:content-[attr(data-label)] before:font-semibold before:text-gray-700 before:w-32 before:flex-shrink-0 before:mr-4 md:before:content-none" data-label="លេខសម្គាល់:">
-                                        {request.id}
-                                    </td>
-
-                                    {/* Customer Name */}
-                                    <td className="px-6 py-3 text-sm font-medium text-gray-900 md:table-cell flex items-center md:items-start border-b border-gray-100 md:border-none last:border-b-0 before:content-[attr(data-label)] before:font-semibold before:text-gray-700 before:w-32 before:flex-shrink-0 before:mr-4 md:before:content-none" data-label="ឈ្មោះអតិថិជន:">
-                                        {request.name}
-                                    </td>
-
-                                    {/* Status */}
-                                    <td className="px-6 py-3 text-sm text-gray-500 md:table-cell flex items-center md:items-start border-b border-gray-100 md:border-none last:border-b-0 before:content-[attr(data-label)] before:font-semibold before:text-gray-700 before:w-32 before:flex-shrink-0 before:mr-4 md:before:content-none" data-label="ស្ថានភាព:">
+        <div className="w-full">
+            {/* Mobile Card View */}
+            <div className="block md:hidden">
+                <div className="space-y-4">
+                    {validRequests.map((request) => {
+                        const statusStyling = getStatusStyling(request.status);
+                        return (
+                            <div key={request.id} className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+                                <div className="space-y-3">
+                                    {/* Header with ID and Status */}
+                                    <div className="flex justify-between items-start">
+                                        <div>
+                                            <p className="text-sm font-semibold text-gray-900">#{request.id}</p>
+                                            <p className="text-lg font-medium text-gray-900">{request.name}</p>
+                                        </div>
                                         <span className={statusStyling.className} style={statusStyling.style}>
                                             <i className={`${statusStyling.icon} mr-2`}></i>
                                             {statusStyling.text}
                                         </span>
-                                    </td>
-
-
-                                    {/* Phone */}
-                                    <td className="px-6 py-3 text-sm text-gray-500 md:table-cell flex items-center md:items-start border-b border-gray-100 md:border-none last:border-b-0 before:content-[attr(data-label)] before:font-semibold before:text-gray-700 before:w-32 before:flex-shrink-0 before:mr-4 md:before:content-none" data-label="លេខទូរស័ព្ទ:">
-                                        {request.phone || 'N/A'}
-                                    </td>
-
-                                    {/* Service Type */}
-                                    <td className="px-6 py-3 text-sm text-gray-500 md:table-cell flex items-center md:items-start border-b border-gray-100 md:border-none last:border-b-0 before:content-[attr(data-label)] before:font-semibold before:text-gray-700 before:w-32 before:flex-shrink-0 before:mr-4 md:before:content-none" data-label="ប្រភេទសេវាកម្ម:">
-                                        {request.service_type || 'ការដាក់ពាក្រស្នើសុំប្រើប្រាស់ទឹកស្អាត'}
-                                    </td>
-
-                                    {/* Village */}
-                                    <td className="px-6 py-3 text-sm text-gray-500 md:table-cell flex items-center md:items-start border-b border-gray-100 md:border-none last:border-b-0 before:content-[attr(data-label)] before:font-semibold before:text-gray-700 before:w-32 before:flex-shrink-0 before:mr-4 md:before:content-none" data-label="ភូមិ:">
-                                        {request.village || 'N/A'}
-                                    </td>
-
-                                    {/* Commune */}
-                                    <td className="px-6 py-3 text-sm text-gray-500 md:table-cell flex items-center md:items-start border-b border-gray-100 md:border-none last:border-b-0 before:content-[attr(data-label)] before:font-semibold before:text-gray-700 before:w-32 before:flex-shrink-0 before:mr-4 md:before:content-none" data-label="ឃុំ/សង្កាត់:">
-                                        {request.commune?.name || 'N/A'}
-                                    </td>
-
-                                    {/* District */}
-                                    <td className="px-6 py-3 text-sm text-gray-500 md:table-cell flex items-center md:items-start border-b border-gray-100 md:border-none last:border-b-0 before:content-[attr(data-label)] before:font-semibold before:text-gray-700 before:w-32 before:flex-shrink-0 before:mr-4 md:before:content-none" data-label="ស្រុក:">
-                                        {request.district?.name || 'N/A'}
-                                    </td>
-
-                                    {/* Province */}
-                                    <td className="px-6 py-3 text-sm text-gray-500 md:table-cell flex items-center md:items-start border-b border-gray-100 md:border-none last:border-b-0 before:content-[attr(data-label)] before:font-semibold before:text-gray-700 before:w-32 before:flex-shrink-0 before:mr-4 md:before:content-none" data-label="ខេត្ត:">
-                                        {request.province?.name || 'N/A'}
-                                    </td>
-
-                                    {/* Actions */}
-                                    <td className="px-6 py-4 text-sm font-medium md:table-cell flex justify-center md:justify-start items-center border-t-2 border-gray-200 md:border-none pt-4 md:pt-4 mt-4 md:mt-0">
-                                        <div className="flex space-x-2 justify-center">
+                                    </div>
+                                    
+                                    {/* Details Grid */}
+                                    <div className="grid grid-cols-1 gap-2 text-sm">
+                                        <div className="flex justify-between">
+                                            <span className="font-bold text-gray-700">លេខទូរស័ព្ទ:</span>
+                                            <span className="text-gray-900">{request.phone || 'N/A'}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="font-bold text-gray-700">ប្រភេទសេវាកម្ម:</span>
+                                            <span className="text-gray-900 text-right">{request.service_type || 'ការដាក់ពាក្រស្នើសុំប្រើប្រាស់ទឹកស្អាត'}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="font-bold text-gray-700">ភូមិ:</span>
+                                            <span className="text-gray-900">{request.village || 'N/A'}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="font-bold text-gray-700">ឃុំ/សង្កាត់:</span>
+                                            <span className="text-gray-900">{request.commune?.name || 'N/A'}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="font-bold text-gray-700">ស្រុក:</span>
+                                            <span className="text-gray-900">{request.district?.name || 'N/A'}</span>
+                                        </div>
+                                        <div className="flex justify-between">
+                                            <span className="font-bold text-gray-700">ខេត្ត:</span>
+                                            <span className="text-gray-900">{request.province?.name || 'N/A'}</span>
+                                        </div>
+                                    </div>
+                                    
+                                    {/* Action Buttons */}
+                                    <div className="pt-3 border-t border-gray-200">
+                                        <div className="flex justify-center space-x-3">
                                             <button
                                                 onClick={() => openStatusModal(request)}
                                                 title="Update Status"
-                                                className="text-blue-600 hover:text-blue-800 transition duration-300 p-3 rounded-lg hover:bg-blue-50 border border-blue-200"
+                                                className="flex items-center justify-center px-3 py-2 text-blue-600 hover:text-blue-800 transition duration-300 rounded-lg hover:bg-blue-50 border border-blue-200"
                                             >
-                                                <i className="fas fa-edit"></i>
+                                                <i className="fas fa-edit mr-1"></i>
+                                                <span className="text-xs">កែប្រែ</span>
                                             </button>
                                             <button
                                                 onClick={() => openDetailModal(request)}
                                                 title="View Details"
-                                                className="text-gray-600 hover:text-gray-800 transition duration-300 p-3 rounded-lg hover:bg-gray-50 border border-gray-200"
+                                                className="flex items-center justify-center px-3 py-2 text-gray-600 hover:text-gray-800 transition duration-300 rounded-lg hover:bg-gray-50 border border-gray-200"
                                             >
-                                                <i className="fas fa-eye"></i>
+                                                <i className="fas fa-eye mr-1"></i>
+                                                <span className="text-xs">មើល</span>
                                             </button>
                                             <button
                                                 onClick={() => openDeleteModal(request)}
                                                 title="Delete"
-                                                className="text-red-600 hover:text-red-800 transition duration-300 p-3 rounded-lg hover:bg-red-50 border border-red-200"
+                                                className="flex items-center justify-center px-3 py-2 text-red-600 hover:text-red-800 transition duration-300 rounded-lg hover:bg-red-50 border border-red-200"
                                             >
-                                                <i className="fas fa-trash-alt"></i>
+                                                <i className="fas fa-trash-alt mr-1"></i>
+                                                <span className="text-xs">លុប</span>
                                             </button>
                                         </div>
-                                    </td>
-                                </tr>
-                            );
-                        })}
-                    </tbody>
-                </table>
+                                    </div>
+                                </div>
+                            </div>
+                        );
+                    })}
                 </div>
             </div>
+
+            {/* Desktop Table View */}
+            <div className="hidden md:block">
+                <div className="rounded-xl border border-gray-200 shadow-md">
+                    <div className="overflow-x-auto overflow-y-auto w-full" style={{ maxHeight: '600px' }}>
+                        <table className="min-w-full divide-y divide-gray-200 table-fixed w-full" style={{ minWidth: '1400px' }}>
+                            <thead className="bg-gray-100 sticky top-0 z-10 border-b-2 border-gray-200">
+                                <tr>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-20">
+                                        លេខសម្គាល់
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-48">
+                                        ឈ្មោះអតិថិជន
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-40">
+                                        ស្ថានភាព
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-32">
+                                        លេខទូរស័ព្ទ
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-70">
+                                        ប្រភេទសេវាកម្ម
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
+                                        ភូមិ
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
+                                        ឃុំ/សង្កាត់
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
+                                        ស្រុក
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-28">
+                                        ខេត្ត
+                                    </th>
+                                    <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider w-36">
+                                        សកម្មភាព
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody className="bg-white divide-y divide-gray-200">
+                                {validRequests.map((request) => {
+                                    const statusStyling = getStatusStyling(request.status);
+
+                                    return (
+                                        <tr key={request.id} className="hover:bg-gray-50 transition duration-200 ease-in-out">
+                                            {/* ID */}
+                                            <td className="px-6 py-3 text-sm text-gray-500 whitespace-nowrap">
+                                                {request.id}
+                                            </td>
+
+                                            {/* Customer Name */}
+                                            <td className="px-6 py-3 text-sm font-medium text-gray-900 whitespace-nowrap">
+                                                {request.name}
+                                            </td>
+
+                                            {/* Status */}
+                                            <td className="px-6 py-3 text-sm text-gray-500 whitespace-nowrap">
+                                                <span className={statusStyling.className} style={statusStyling.style}>
+                                                    <i className={`${statusStyling.icon} mr-2`}></i>
+                                                    {statusStyling.text}
+                                                </span>
+                                            </td>
+
+                                            {/* Phone */}
+                                            <td className="px-6 py-3 text-sm text-gray-500 whitespace-nowrap">
+                                                {request.phone || 'N/A'}
+                                            </td>
+
+                                            {/* Service Type */}
+                                            <td className="px-6 py-3 text-sm text-gray-500 whitespace-nowrap">
+                                                {request.service_type || 'ការដាក់ពាក្រស្នើសុំប្រើប្រាស់ទឹកស្អាត'}
+                                            </td>
+
+                                            {/* Village */}
+                                            <td className="px-6 py-3 text-sm text-gray-500 whitespace-nowrap">
+                                                {request.village || 'N/A'}
+                                            </td>
+
+                                            {/* Commune */}
+                                            <td className="px-6 py-3 text-sm text-gray-500 whitespace-nowrap">
+                                                {request.commune?.name || 'N/A'}
+                                            </td>
+
+                                            {/* District */}
+                                            <td className="px-6 py-3 text-sm text-gray-500 whitespace-nowrap">
+                                                {request.district?.name || 'N/A'}
+                                            </td>
+
+                                            {/* Province */}
+                                            <td className="px-6 py-3 text-sm text-gray-500 whitespace-nowrap">
+                                                {request.province?.name || 'N/A'}
+                                            </td>
+
+                                            {/* Actions */}
+                                            <td className="px-6 py-4 text-sm font-medium whitespace-nowrap">
+                                                <div className="flex space-x-2 justify-center">
+                                                    <button
+                                                        onClick={() => openStatusModal(request)}
+                                                        title="Update Status"
+                                                        className="text-blue-600 hover:text-blue-800 transition duration-300 p-3 rounded-lg hover:bg-blue-50 border border-blue-200"
+                                                    >
+                                                        <i className="fas fa-edit"></i>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => openDetailModal(request)}
+                                                        title="View Details"
+                                                        className="text-gray-600 hover:text-gray-800 transition duration-300 p-3 rounded-lg hover:bg-gray-50 border border-gray-200"
+                                                    >
+                                                        <i className="fas fa-eye"></i>
+                                                    </button>
+                                                    <button
+                                                        onClick={() => openDeleteModal(request)}
+                                                        title="Delete"
+                                                        className="text-red-600 hover:text-red-800 transition duration-300 p-3 rounded-lg hover:bg-red-50 border border-red-200"
+                                                    >
+                                                        <i className="fas fa-trash-alt"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
     );
 };
 

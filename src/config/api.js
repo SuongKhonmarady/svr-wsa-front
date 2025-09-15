@@ -1,10 +1,10 @@
 // API Configuration
 const API_CONFIG = {
   // Base API URL
-  BASE_URL: 'https://api-scholar.site/api',
+  BASE_URL: 'http://localhost:8000/api',
   
   // Storage URL for images
-  STORAGE_URL: 'https://api-scholar.site/storage',
+  STORAGE_URL: 'http://localhost:8000/storage',
 
   // Request timeout in milliseconds
   TIMEOUT: 300000, // Increased to 5 minutes for large file uploads

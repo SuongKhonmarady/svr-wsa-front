@@ -187,29 +187,112 @@ class NewsService {
   }
 
   // News API Methods
-  async getNews() {
-    const result = await this.get('/news')
+  async getNews(params = {}) {
+    // Support pagination and optional category/featured filter while keeping backward compatibility
+    const { page = 1, category, featured } = params || {}
+    
+    // Use dedicated featured endpoint when fetching featured news
+    if (featured === true || featured === 'true' || featured === 1 || featured === '1') {
+      const search = new URLSearchParams()
+      if (page) search.set('page', String(page))
+      const endpoint = search.toString() ? `/news/featured?${search.toString()}` : '/news/featured'
+      const result = await this.get(endpoint)
+      
+      if (result.error) {
+        return result
+      }
+
+      // Handle the featured news response structure
+      let newsData = null
+      let pagination = null
+      
+      if (result.data && result.data.success && Array.isArray(result.data.data)) {
+        newsData = result.data.data
+        const p = result.data.pagination || {}
+        pagination = {
+          page: p.current_page ?? page,
+          perPage: p.per_page ?? 10,
+          total: p.total ?? newsData.length,
+          lastPage: p.last_page ?? 1,
+          hasMore: p.has_more_pages ?? false
+        }
+      }
+
+      if (!newsData) {
+        console.warn('Unexpected featured news API response structure:', result.data)
+        return { data: null, error: 'Invalid data format received from server' }
+      }
+
+      return { data: newsData, pagination, error: null }
+    }
+    
+    // Regular news endpoint for non-featured or mixed content
+    const search = new URLSearchParams()
+    if (page) search.set('page', String(page))
+    if (category) search.set('category', category)
+
+    const endpoint = search.toString() ? `/news?${search.toString()}` : '/news'
+    const result = await this.get(endpoint)
 
     if (result.error) {
       return result
     }
 
     // Handle different response structures
-    let newsData = null
+  let newsData = null
+  let pagination = null
     
     if (result.data) {
       if (Array.isArray(result.data)) {
         // Direct array response
         newsData = result.data
+        pagination = {
+          page: page,
+          perPage: result.data.length,
+          total: result.data.length,
+          lastPage: 1,
+          hasMore: false,
+        }
       } else if (result.data.data && Array.isArray(result.data.data)) {
         // Nested data structure: { data: { data: [...] } }
         newsData = result.data.data
+        // Try to extract pagination info (supports both meta and pagination keys)
+        const meta = result.data.meta || {}
+        const p = result.data.pagination || {}
+        const current = p.current_page ?? meta.current_page ?? result.data.current_page ?? page ?? 1
+        const perPage = p.per_page ?? meta.per_page ?? result.data.per_page ?? 10
+        const total = p.total ?? meta.total ?? result.data.total ?? newsData.length
+        const lastPage = p.last_page ?? meta.last_page ?? result.data.last_page ?? Math.ceil(total / perPage)
+        const nextUrl = p.next_page_url ?? meta.next_page_url ?? result.data.next_page_url
+        const hasMore = (typeof p.has_more_pages !== 'undefined' ? !!p.has_more_pages : undefined)
+          ?? (nextUrl ? true : false)
+          ?? (current < lastPage)
+        pagination = { page: current, perPage, total, lastPage, hasMore }
       } else if (result.data.news && Array.isArray(result.data.news)) {
         // Structure with news property: { data: { news: [...] } }
         newsData = result.data.news
+        pagination = {
+          page: page,
+          perPage: result.data.news.length,
+          total: result.data.total ?? result.data.news.length,
+          lastPage: result.data.last_page ?? 1,
+          hasMore: (result.data.next_page_url ? true : false) || ((result.data.current_page ?? page) < (result.data.last_page ?? 1))
+        }
       } else if (result.data.success && result.data.data && Array.isArray(result.data.data)) {
         // Success wrapper structure: { data: { success: true, data: [...] } }
         newsData = result.data.data
+        // Look for pagination under "pagination" or "meta"
+        const meta = result.data.meta || {}
+        const p = result.data.pagination || {}
+        const current = p.current_page ?? meta.current_page ?? result.data.current_page ?? page ?? 1
+        const perPage = p.per_page ?? meta.per_page ?? result.data.per_page ?? 10
+        const total = p.total ?? meta.total ?? result.data.total ?? newsData.length
+        const lastPage = p.last_page ?? meta.last_page ?? result.data.last_page ?? Math.ceil(total / perPage)
+        const nextUrl = p.next_page_url ?? meta.next_page_url ?? result.data.next_page_url
+        const hasMore = (typeof p.has_more_pages !== 'undefined' ? !!p.has_more_pages : undefined)
+          ?? (nextUrl ? true : false)
+          ?? (current < lastPage)
+        pagination = { page: current, perPage, total, lastPage, hasMore }
       }
     }
 
@@ -218,7 +301,7 @@ class NewsService {
       return { data: null, error: 'Invalid data format received from server' }
     }
 
-    return { data: newsData, error: null }
+    return { data: newsData, pagination, error: null }
   }
 
   async getNewsBySlug(slug) {
@@ -289,8 +372,12 @@ class NewsService {
     return { data: newsData, error: null }
   }
 
-  async getNewsByCategory(categorySlug) {
-    const result = await this.get(`/news?category=${categorySlug}`)
+  async getNewsByCategory(categorySlug, page = 1) {
+    const search = new URLSearchParams()
+    if (categorySlug) search.set('category', categorySlug)
+    if (page) search.set('page', String(page))
+    const endpoint = `/news?${search.toString()}`
+    const result = await this.get(endpoint)
 
     if (result.error) {
       return result

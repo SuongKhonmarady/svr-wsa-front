@@ -15,25 +15,40 @@ function NewsManagement() {
   const [modalOpen, setModalOpen] = useState(false)
   const [selectedNews, setSelectedNews] = useState(null)
   const [searchTerm, setSearchTerm] = useState('')
+  const [currentPage, setCurrentPage] = useState(1)
+  const [pagination, setPagination] = useState(null)
+  const [loadingMore, setLoadingMore] = useState(false)
 
   useEffect(() => {
-    fetchNews()
+    fetchNews(1, true)
     fetchCategories()
   }, [])
 
-  const fetchNews = async () => {
+  const fetchNews = async (page = 1, replace = false) => {
     try {
-      setLoading(true)
-      const result = await newsService.getNews()
+      if (page === 1 && replace) {
+        setLoading(true)
+      } else {
+        setLoadingMore(true)
+      }
+      
+      const result = await newsService.getNews({ page })
       if (result.error) {
         showError('Failed to fetch news: ' + result.error)
       } else {
-        setNews(result.data)
+        if (replace) {
+          setNews(result.data || [])
+        } else {
+          setNews(prev => [...prev, ...(result.data || [])])
+        }
+        setPagination(result.pagination)
+        setCurrentPage(page)
       }
     } catch (err) {
       showError('Failed to fetch news')
     } finally {
       setLoading(false)
+      setLoadingMore(false)
     }
   }
 
@@ -96,7 +111,7 @@ function NewsManagement() {
         throw new Error(result.error)
       } else {
         // Refresh the news list
-        await fetchNews()
+        await fetchNews(1, true)
         showSuccess(newsId ? 'News updated successfully!' : 'News created successfully!')
         setModalOpen(false)
       }
@@ -105,6 +120,12 @@ function NewsManagement() {
     }
   }
 
+
+  const loadMoreNews = () => {
+    if (pagination && pagination.hasMore && !loadingMore) {
+      fetchNews(currentPage + 1, false)
+    }
+  }
 
   const filteredNews = news.filter(item =>
     item.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -152,7 +173,7 @@ function NewsManagement() {
               </div>
               <div className="flex justify-center sm:justify-end">
                 <button
-                  onClick={fetchNews}
+                  onClick={() => fetchNews(1, true)}
                   disabled={loading}
                   className={`w-full sm:w-auto inline-flex items-center justify-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                 >
@@ -187,6 +208,9 @@ function NewsManagement() {
           onEdit={handleEditNews}
           onDelete={handleDeleteNews}
           loading={loading}
+          pagination={pagination}
+          onLoadMore={loadMoreNews}
+          loadingMore={loadingMore}
         />
 
         {/* News modal */}

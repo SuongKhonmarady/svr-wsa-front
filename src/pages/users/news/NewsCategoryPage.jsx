@@ -98,20 +98,27 @@ function NewsCategoryPage() {
     const [category, setCategory] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [loadingMore, setLoadingMore] = useState(false);
 
     useEffect(() => {
         if (categorySlug) {
-            fetchCategoryAndNews();
+            fetchCategoryAndNews(1, true);
         }
     }, [categorySlug]);
 
-    const fetchCategoryAndNews = async () => {
+    const fetchCategoryAndNews = async (targetPage = 1, replace = false) => {
         try {
-            setLoading(true);
+            if (targetPage === 1 && replace) {
+                setLoading(true);
+            } else {
+                setLoadingMore(true);
+            }
             setError(null);
 
             // Fetch news by category (this also returns category info)
-            const newsResult = await newsService.getNewsByCategory(categorySlug);
+            const newsResult = await newsService.getNewsByCategory(categorySlug, targetPage);
 
             console.log('API Response:', newsResult); // Debug log
 
@@ -127,9 +134,16 @@ function NewsCategoryPage() {
 
             // Extract news data
             if (newsResult.data && newsResult.data.data) {
-                setNews(newsResult.data.data);
+                const incoming = newsResult.data.data;
+                setNews(prev => (replace ? incoming : [...prev, ...incoming]));
+                const meta = newsResult.data.meta || {};
+                const current = meta.current_page ?? targetPage;
+                const last = meta.last_page ?? (incoming.length < 10 ? targetPage : targetPage + 1);
+                setHasMore(current < last);
+                setPage(targetPage);
             } else {
                 setNews([]);
+                setHasMore(false);
             }
 
         } catch (err) {
@@ -137,7 +151,13 @@ function NewsCategoryPage() {
             console.error('Error fetching category and news:', err);
         } finally {
             setLoading(false);
+            setLoadingMore(false);
         }
+    };
+
+    const loadMore = () => {
+        if (loadingMore || !hasMore) return;
+        fetchCategoryAndNews(page + 1, false);
     };
 
     const formatDate = (dateString) => {
@@ -343,17 +363,27 @@ function NewsCategoryPage() {
                     </div>
                 )}
 
-                {/* Back to All News */}
+                {/* Load more / Back to All News */}
                 <div className="mt-16 text-center">
-                    <Link
-                        to="/news"
-                        className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
-                    >
-                        <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-                        </svg>
-                        Back to All News
-                    </Link>
+                    {hasMore ? (
+                        <button
+                            onClick={loadMore}
+                            disabled={loadingMore}
+                            className="inline-flex items-center px-6 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50"
+                        >
+                            {loadingMore ? 'កំពុងផ្ទុក...' : 'មើលបន្ថែម'}
+                        </button>
+                    ) : (
+                        <Link
+                            to="/news"
+                            className="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 transition-colors duration-200"
+                        >
+                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                            </svg>
+                            Back to All News
+                        </Link>
+                    )}
                 </div>
             </div>
         </div>

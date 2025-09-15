@@ -13,6 +13,7 @@ const About = React.lazy(() => import('./pages/users/about/about'));
 const Services = React.lazy(() => import('./pages/users/services/services'));
 const WaterSupplyRequest = React.lazy(() => import('./pages/users/services/WaterSupplyRequest'));
 const News = React.lazy(() => import('./pages/users/news/news'));
+const FeaturedNews = React.lazy(() => import('./pages/users/news/FeaturedNews'));
 const Laws = React.lazy(() => import('./pages/users/laws/laws'));
 const Data = React.lazy(() => import('./pages/users/data/data'));
 const Monthly = React.lazy(() => import('./pages/users/data/monthlyReport/monthly'));
@@ -138,6 +139,14 @@ function App() {
             element={
               <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
                 <News />
+              </Layout>
+            }
+          />
+          <Route
+            path="/news/featured"
+            element={
+              <Layout activeNav={activeNav} setActiveNav={setActiveNav}>
+                <FeaturedNews />
               </Layout>
             }
           />

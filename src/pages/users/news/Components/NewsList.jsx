@@ -5,17 +5,22 @@ import newsService from '../../../../services/newsService';
 function NewsList() {
   const [newsData, setNewsData] = useState([]);
   const [categories, setCategories] = useState([]);
+  // Remove combined featured in this page; dedicated Featured page will handle it
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [visibleItems, setVisibleItems] = useState(new Set());
   const [animationTriggered, setAnimationTriggered] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   const observerRef = useRef(null);
   const containerRef = useRef(null);
   const requestIdRef = useRef(0);
 
   useEffect(() => {
-    fetchNewsAndCategories();
+    // Load first page of regular news
+    fetchNewsAndCategories(1, true);
   }, []); // Empty dependency array to run only once
 
   // Intersection Observer for scroll animations
@@ -54,16 +59,21 @@ function NewsList() {
     }
   }, [loading, newsData, animationTriggered]);
 
-  const fetchNewsAndCategories = async () => {
+  const fetchNewsAndCategories = async (targetPage = 1, replace = false) => {
     // Generate a unique request ID for this call
     const currentRequestId = ++requestIdRef.current;
 
     try {
-      setLoading(true);
+      if (targetPage === 1 && replace) {
+        setLoading(true);
+      } else {
+        setLoadingMore(true);
+      }
 
       // Fetch news and categories in parallel
       const [newsResult, categoriesResult] = await Promise.all([
-        newsService.getNews(),
+        // Do not filter by featured here so featured items appear in "All"
+        newsService.getNews({ page: targetPage }),
         newsService.getCategories()
       ]);
 
@@ -75,7 +85,13 @@ function NewsList() {
       if (newsResult.error) {
         setError(newsResult.error);
       } else {
-        setNewsData(newsResult.data || []);
+  const incoming = newsResult.data || [];
+        setNewsData(prev => (replace ? incoming : [...prev, ...incoming]));
+        const p = newsResult.pagination;
+        // Prefer explicit server flag if present, else infer by batch size
+        const hasMoreFromApi = p && typeof p.hasMore === 'boolean' ? p.hasMore : incoming.length >= 10;
+        setHasMore(hasMoreFromApi);
+        setPage(targetPage);
       }
 
       if (categoriesResult.error) {
@@ -97,15 +113,28 @@ function NewsList() {
       // Only update loading state if this is still the current request
       if (currentRequestId === requestIdRef.current) {
         setLoading(false);
+        setLoadingMore(false);
       }
     }
   };
 
-  // Get featured news
-  const featuredNews = newsData.filter(news => news.featured).slice(0, 3);
+  // No featured fetch here anymore; featured has its own page
 
-  // Get regular news (non-featured)
-  const regularNews = newsData.filter(news => !news.featured);
+  const loadMore = () => {
+    if (loadingMore || !hasMore) return;
+    fetchNewsAndCategories(page + 1, false);
+  };
+
+  // Helper: detect featured across different data shapes
+  const isFeatured = (n) => {
+    const v = n?.featured ?? n?.is_featured ?? n?.highlighted;
+    if (typeof v === 'boolean') return v;
+    if (typeof v === 'number') return v === 1;
+    if (typeof v === 'string') return v === '1' || v.toLowerCase() === 'true' || v === 'សំខាន់';
+    return false;
+  };
+
+  // Show all news here (featured and non-featured mixed)
 
   const formatDate = (dateString) => {
     if (!dateString) return '';
@@ -286,75 +315,6 @@ function NewsList() {
 
       <div className="py-16 bg-white" ref={containerRef}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {/* Featured News */}
-          {featuredNews.length > 0 && (
-            <div className="mb-16">
-              <h2 className={`text-2xl sm:text-3xl font-bold text-gray-900 mb-8 font-khmer-title transition-all duration-1000 ${animationTriggered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
-                }`}>
-                ព័ត៌មានសំខាន់
-              </h2>
-              {featuredNews.map((news, index) => (
-                <div
-                  key={news.id}
-                  data-news-item
-                  data-index={index}
-                  className={`bg-white rounded-2xl shadow-xl overflow-hidden mb-8 transition-all duration-1000 ${visibleItems.has(index) || animationTriggered
-                    ? 'opacity-100 translate-y-0 scale-100'
-                    : 'opacity-0 translate-y-12 scale-95'
-                    }`}
-                  style={{ transitionDelay: `${index * 200}ms` }}
-                >
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
-                    <div className="relative h-70">
-                      <img
-                        src={news.image || "/image/mohamed-shaik-ScftZZiZnB8-unsplash.jpg"}
-                        alt={news.title}
-                        className="w-full h-70 md:h-90 object-cover"
-                      />
-                      {news.category && (
-                        <div className="absolute top-4 left-4">
-                          <Link
-                            to={getCategoryUrl(news.category)}
-                            className="bg-blue-600 text-white px-4 py-2 rounded-full text-sm font-medium hover:bg-blue-700 transition-colors duration-200"
-                          >
-                            {news.category.name}
-                          </Link>
-                        </div>
-                      )}
-                      {news.featured && (
-                        <div className="absolute top-4 right-4">
-                          <span className="bg-red-600 text-white px-3 py-1 rounded-full text-sm font-medium">
-                            សំខាន់
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                    <div className="p-8 lg:p-10">
-                      <div className="text-sm text-gray-500 mb-2 flex items-center">
-                        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        {getTimeAgo(news)}
-                      </div>
-                      <h3 className="text-xl sm:text-2xl font-bold text-gray-900 mb-2 leading-tight">
-                        {news.title}
-                      </h3>
-                      <p className="text-gray-600 mb-4 text-sm sm:text-lg leading-relaxed">
-                        {news.content ? news.content.substring(0, 200) + '...' : ''}
-                      </p>
-                      <a
-                        href={`/news/${news.slug || news.id}`}
-                        className="bg-blue-600 text-white px-8 py-3 rounded-lg hover:bg-blue-700 transition-colors duration-200 font-medium inline-block"
-                      >
-                        អានបន្ថែម
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
           {/* Category Filter */}
           <div className={`flex flex-wrap gap-3 mb-12 transition-all duration-1000 ${animationTriggered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
             }`} style={{ transitionDelay: '300ms' }}>
@@ -381,12 +341,17 @@ function NewsList() {
 
           {/* News Grid */}
           <div>
-            <h2 className={`text-2xl sm:text-3xl font-bold text-gray-900 mb-8 font-khmer-title transition-all duration-1000 ${animationTriggered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
+            <div className={`flex items-center justify-between mb-8 transition-all duration-1000 ${animationTriggered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`} style={{ transitionDelay: '500ms' }}>
-              ព័ត៌មានថ្មីៗទាំងអស់
-            </h2>
+              <h2 className="text-2xl sm:text-3xl font-bold text-gray-900 font-khmer-title">
+                ព័ត៌មានថ្មីៗទាំងអស់
+              </h2>
+              <Link to="/news/featured" className="bg-red-600 text-white px-4 py-2 rounded-lg hover:bg-red-700 transition-colors duration-200">
+                ព័ត៌មានសំខាន់
+              </Link>
+            </div>
 
-            {regularNews.length === 0 ? (
+            {newsData.length === 0 ? (
               <div className={`text-center py-16 transition-all duration-1000 ${animationTriggered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
                 }`} style={{ transitionDelay: '700ms' }}>
                 <div className="text-gray-400 text-6xl mb-4">📰</div>
@@ -396,12 +361,12 @@ function NewsList() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {regularNews.map((news, index) => (
+                {newsData.map((news, index) => (
                   <article
                     key={news.id}
                     data-news-item
-                    data-index={featuredNews.length + index}
-                    className={`bg-white rounded-2xl shadow-lg overflow-hidden news-card-hover ${visibleItems.has(featuredNews.length + index) || animationTriggered
+                    data-index={index}
+                    className={`bg-white rounded-2xl shadow-lg overflow-hidden news-card-hover ${visibleItems.has(index) || animationTriggered
                       ? 'opacity-100 translate-y-0 scale-100'
                       : 'opacity-0 translate-y-12 scale-95'
                       }`}
@@ -415,6 +380,11 @@ function NewsList() {
                           className="w-full h-48 object-cover transition-transform duration-500 hover:scale-110"
                         />
                       </a>
+                      {isFeatured(news) && (
+                        <div className="absolute top-4 right-4">
+                          <span className="bg-red-600 text-white px-2 py-1 rounded-full text-xs font-medium">សំខាន់</span>
+                        </div>
+                      )}
                       {news.category && (
                         <div className="absolute top-4 left-4">
                           <Link
@@ -456,13 +426,23 @@ function NewsList() {
             )}
           </div>
 
-          {/* Show total count */}
-          {newsData.length > 0 && (
+          {/* Load more / total */}
+          {(newsData.length > 0 || hasMore) && (
             <div className={`text-center mt-12 transition-all duration-1000 ${animationTriggered ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
               }`} style={{ transitionDelay: '1000ms' }}>
-              <p className="text-gray-600">
-                បង្ហាញព័ត៌មាន {newsData.length} សរុប
-              </p>
+              {hasMore ? (
+                <button
+                  onClick={loadMore}
+                  disabled={loadingMore}
+                  className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 disabled:opacity-50"
+                >
+                  {loadingMore ? 'កំពុងផ្ទុក...' : 'មើលបន្ថែម'}
+                </button>
+              ) : (
+                newsData.length > 0 && (
+                  <p className="text-gray-600">បង្ហាញព័ត៌មាន {newsData.length} សរុប</p>
+                )
+              )}
             </div>
           )}
         </div>

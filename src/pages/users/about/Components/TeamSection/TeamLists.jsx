@@ -77,6 +77,26 @@ function TeamLists() {
     ]
   }
 
+  // Safe image error handler to prevent infinite loops
+  const handleImageError = (e, memberName) => {
+    // Prevent infinite loop by checking if we're already using fallback
+    if (e.target.src.includes('svrwu-logo.png') || e.target.hasAttribute('data-fallback-used')) {
+      // Hide the image and show a placeholder
+      e.target.style.display = 'none';
+      
+      // Create placeholder if it doesn't already exist
+      if (!e.target.parentNode.querySelector('.image-placeholder')) {
+        const placeholder = document.createElement('div');
+        placeholder.className = 'image-placeholder w-full h-full rounded-full bg-gray-300 flex items-center justify-center text-gray-600 text-2xl font-bold border-3 border-white shadow-lg';
+        placeholder.textContent = memberName ? memberName.charAt(0).toUpperCase() : '?';
+        e.target.parentNode.appendChild(placeholder);
+      }
+      return;
+    }
+    e.target.setAttribute('data-fallback-used', 'true');
+    e.target.src = '/image/svrwu-logo.png';
+  }
+
   const renderTeamSection = (title, members, gridCols, delayMultiplier = 1, isSmall = false) => (
     <div className="mb-8">
       {/* Section Header */}
@@ -88,32 +108,30 @@ function TeamLists() {
         <div className="w-16 h-0.5 bg-gradient-to-r from-blue-600 to-blue-400 mx-auto rounded-full"></div>
       </div>
 
-             {/* Team Cards Grid */}
-       {gridCols === 1 ? (
-         <div className="flex justify-center">
-           {members.map((member, index) => (
-             <div 
-               key={index} 
-               className="group relative bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 overflow-hidden w-full max-w-xs"
-               style={{
-                 animationDelay: `${index * 100 * delayMultiplier}ms`
-               }}
-             >
+      {/* Team Cards Grid */}
+      {gridCols === 1 ? (
+        <div className="flex justify-center">
+          {members.map((member, index) => (
+            <div
+              key={index}
+              className="group relative bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 overflow-hidden w-full max-w-xs"
+              style={{
+                animationDelay: `${index * 100 * delayMultiplier}ms`
+              }}
+            >
               {/* Card Background Pattern */}
               <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-blue-50 opacity-50"></div>
-              
+
               {/* Card Content */}
               <div className="relative p-4 text-center">
                 {/* Profile Image */}
                 <div className="relative mb-4">
                   <div className="relative w-20 h-20 mx-auto">
-                    <img 
-                      src={member.image} 
+                    <img
+                      src={member.image}
                       alt={member.name}
                       className="w-full h-full rounded-full object-cover border-3 border-white shadow-lg"
-                      onError={(e) => {
-                        e.target.src = '/image/410640094_122096341784159313_2294110224216625627_n.jpg';
-                      }}
+                      onError={(e) => handleImageError(e, member.name)}
                     />
                     {/* Status Badge */}
                     <div className="absolute -bottom-1 -right-1 bg-green-500 text-white p-1.5 rounded-full shadow-md border-2 border-white">
@@ -123,7 +141,7 @@ function TeamLists() {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Member Info */}
                 <div className="space-y-2">
                   <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300">
@@ -149,30 +167,28 @@ function TeamLists() {
           ))}
         </div>
       ) : (
-                 <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-${gridCols} gap-4 lg:gap-6 justify-items-center`}>
-           {members.map((member, index) => (
-             <div 
-               key={index} 
-               className="group relative bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 overflow-hidden w-full max-w-xs"
-               style={{
-                 animationDelay: `${index * 100 * delayMultiplier}ms`
-               }}
-             >
+        <div className={`grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-${gridCols} gap-4 lg:gap-6 justify-items-center`}>
+          {members.map((member, index) => (
+            <div
+              key={index}
+              className="group relative bg-white rounded-xl shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 overflow-hidden w-full max-w-xs"
+              style={{
+                animationDelay: `${index * 100 * delayMultiplier}ms`
+              }}
+            >
               {/* Card Background Pattern */}
               <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-white to-blue-50 opacity-50"></div>
-              
+
               {/* Card Content */}
               <div className="relative p-4 text-center">
                 {/* Profile Image */}
                 <div className="relative mb-4">
                   <div className="relative w-20 h-20 mx-auto">
-                    <img 
-                      src={member.image} 
+                    <img
+                      src={member.image}
                       alt={member.name}
                       className="w-full h-full rounded-full object-cover border-3 border-white shadow-lg"
-                      onError={(e) => {
-                        e.target.src = '/image/410640094_122096341784159313_2294110224216625627_n.jpg';
-                      }}
+                      onError={(e) => handleImageError(e, member.name)}
                     />
                     {/* Status Badge */}
                     <div className="absolute -bottom-1 -right-1 bg-green-500 text-white p-1.5 rounded-full shadow-md border-2 border-white">
@@ -182,7 +198,7 @@ function TeamLists() {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Member Info */}
                 <div className="space-y-2">
                   <h3 className="text-lg font-bold text-gray-900 group-hover:text-blue-600 transition-colors duration-300">
@@ -215,13 +231,13 @@ function TeamLists() {
     <div className="space-y-8">
       {/* នាយកប្រតិបត្តិ - Top Level */}
       {renderTeamSection("នាយកប្រតិបត្តិ", teamMembers.director, 1, 1, false)}
-      
+
       {/* នាយករង - Second Level */}
       {renderTeamSection("នាយករង", teamMembers.managers, 2, 2, false)}
-      
+
       {/* ប្រធាន - Third Level */}
       {renderTeamSection("ប្រធាន", teamMembers.supervisors, 4, 3, false)}
-      
+
       {/* បុគ្គលិក - Staff Level */}
       {renderTeamSection("បុគ្គលិក", teamMembers.staff, 4, 4, false)}
     </div>

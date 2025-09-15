@@ -72,7 +72,20 @@ function NewsTable({ news, onEdit, onDelete, onView, loading, pagination, onLoad
                         alt={item.title}
                         className="w-full h-full object-cover"
                         onError={(e) => {
-                          e.target.src = '/image/svrwu-logo.png'
+                          // Prevent infinite loop by checking if we're already using fallback
+                          if (e.target.src.includes('svrwu-logo.png') || e.target.hasAttribute('data-fallback-used')) {
+                            // Hide the image element
+                            e.target.style.display = 'none';
+                            // Show a placeholder background
+                            e.target.parentNode.style.backgroundColor = '#f3f4f6';
+                            e.target.parentNode.style.display = 'flex';
+                            e.target.parentNode.style.alignItems = 'center';
+                            e.target.parentNode.style.justifyContent = 'center';
+                            e.target.parentNode.innerHTML = '<span style="color: #6b7280; font-size: 12px;">No Image</span>';
+                            return;
+                          }
+                          e.target.setAttribute('data-fallback-used', 'true');
+                          e.target.src = '/image/svrwu-logo.png';
                         }}
                       />
                     </div>

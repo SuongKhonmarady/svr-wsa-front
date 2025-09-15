@@ -208,12 +208,19 @@ function NewsSection() {
                 >
                   <div className="relative">
                     <img
-                      src={item.image || '/image/svrwsa_logo_high_quality.png'}
+                      src={item.image || '/image/svrwu-logo.png'}
                       alt={item.title || 'News image'}
                       className="w-full h-48 object-cover"
                       onError={(e) => {
                         console.log('Image failed to load:', item.image);
-                        e.target.src = '/image/svrwsa_logo_high_quality.png';
+                        // Prevent infinite loop by checking if we're already using the fallback
+                        if (e.target.src.includes('svrwsa_logo_high_quality.png')) {
+                          // Use a different fallback or remove the src to show broken image
+                          e.target.src = '/image/svrwu-logo.png';
+                          e.target.style.display = 'none'; // Hide broken image
+                          return;
+                        }
+                        e.target.src = '/image/svrwu-logo.png';
                       }}
                     />
                     <div className="absolute top-4 left-4">
